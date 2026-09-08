@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f0e8;
+  --foreground: #1c1c1a;
+
+  /* --- Skincare / tech palette (logo + product pages) — used throughout --- */
+  --onyx: #0a0a0c;
+  --dark-azure: #0a1020;
+  --light-azure: #8fb6de;
+  --paper-white: #f5f4ef;
+
+  /* --- Coffee palette (packaging pages) — partially reused --- */
+  --midnight-blue: #16224a;
+  --mirage-blue: #a9bfe3;
+  --sunset-orange: #e4572e;
+
+  /* --- Coffee palette — intentionally not used on this site --- */
+  --beige: #efead8;
+  --fake-black: #1a1a1c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
