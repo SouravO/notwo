@@ -248,7 +248,7 @@ export default function MissionVision() {
   return (
     <section
       ref={containerRef}
-      className={`${display.variable} ${mono.variable} relative left-1/2 min-h-screen w-screen -translate-x-1/2 overflow-hidden bg-[#21376B] px-4 pt-0 pb-10 text-[#EFEDE0] sm:px-8 lg:px-16 lg:pb-16`}
+      className={`${display.variable} ${mono.variable} relative left-1/2 min-h-screen w-screen -translate-x-1/2 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#17191c] sm:px-8 lg:px-16 lg:pb-16`}
     >
       <div className="max-w-7xl mx-auto relative z-10 mb-1 lg:mb-2 pt-14 sm:pt-16 lg:pt-24">
         <div className="relative flex flex-col items-center text-center">
@@ -258,28 +258,28 @@ export default function MissionVision() {
           >
             <span
               ref={titleWrapRef}
-              className="whitespace-nowrap bg-gradient-to-r from-[#EFEDE0] via-[#D0D5DF] to-[#B2BEDE] bg-clip-text text-transparent"
+              className="whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent"
             >
               K
               <span data-grow-outer className="inline-block overflow-hidden">
-                <span data-grow-inner className="inline-block whitespace-nowrap bg-gradient-to-r from-[#EFEDE0] via-[#D0D5DF] to-[#B2BEDE] bg-clip-text text-transparent">NOW </span>
+                <span data-grow-inner className="inline-block whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">NOW </span>
               </span>
               Y
               <span data-grow-outer className="inline-block overflow-hidden">
-                <span data-grow-inner className="inline-block whitespace-nowrap bg-gradient-to-r from-[#EFEDE0] via-[#D0D5DF] to-[#B2BEDE] bg-clip-text text-transparent">OUR </span>
+                <span data-grow-inner className="inline-block whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">OUR </span>
               </span>
               S
               <span data-grow-outer className="inline-block overflow-hidden">
-                <span data-grow-inner className="inline-block whitespace-nowrap bg-gradient-to-r from-[#EFEDE0] via-[#D0D5DF] to-[#B2BEDE] bg-clip-text text-transparent">KIN</span>
+                <span data-grow-inner className="inline-block whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">KIN</span>
               </span>
             </span>
             <br />
-            <span className="mt-2 block font-[family-name:var(--font-display)] text-3xl font-semibold italic leading-[1.12] text-[#EFEDE0]/90 sm:text-5xl lg:text-6xl">
+            <span className="mt-2 block font-[family-name:var(--font-display)] text-3xl font-semibold italic leading-[1.12] text-[#17191c]/90 sm:text-5xl lg:text-6xl">
               before you treat it.
             </span>
           </h1>
 
-          <p className="mt-6 max-w-lg mx-auto font-[family-name:var(--font-mono)] text-sm leading-relaxed text-[#EFEDE0]/75 sm:text-base">
+          <p className="mt-6 max-w-lg mx-auto font-[family-name:var(--font-mono)] text-sm leading-relaxed text-[#17191c]/75 sm:text-base">
             Modern skincare has become confusing. Thousands of products, thousands of ingredients, and thousands of opinions. But only one thing truly matters: understanding your skin.
           </p>
         </div>

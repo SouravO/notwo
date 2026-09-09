@@ -31,8 +31,9 @@ const GRADIENT =
 /**
  * 3D Model Component
  */
-function SkinAnalyzerScene({ proxyRef }) {
+function SkinAnalyzerScene({ proxyRef, calloutOpacityRef }) {
   const modelRef = useRef(null);
+  const calloutRef = useRef(null);
   const { scene } = useGLTF("/model.glb");
 
   const clonedScene = useMemo(() => {
@@ -56,6 +57,10 @@ function SkinAnalyzerScene({ proxyRef }) {
 
     const time = state.clock.getElapsedTime();
     modelRef.current.position.y += Math.sin(time * 1.5) * 0.02;
+
+    if (calloutRef.current) {
+      calloutRef.current.style.opacity = calloutOpacityRef.current.value;
+    }
   });
 
   return (
@@ -81,9 +86,9 @@ function SkinAnalyzerScene({ proxyRef }) {
         <Html
           position={[0.5, 1.2, 0.5]}
           center
-          className="callout-1 opacity-0 pointer-events-none"
+          className="pointer-events-none"
         >
-          <div className="relative flex items-center md:items-start flex-row md:flex-col gap-4 md:gap-0 w-[240px]">
+          <div ref={calloutRef} className="relative flex w-[240px] flex-row items-center gap-4 opacity-0 md:flex-col md:items-start md:gap-0">
             <div className="z-10 h-2 w-2 rounded-full bg-[#8fb6de] shadow-[0_0_10px_rgba(143,182,222,0.7)]" />
             <div className="ml-[3px] mt-[-4px] hidden h-12 w-px bg-gradient-to-b from-[#8fb6de] to-transparent md:block" />
             <div className="rounded-lg border border-[#8fb6de]/25 bg-[#0a1020]/90 p-4 shadow-[0_8px_32px_rgba(0,0,0,0.35)] backdrop-blur-md">
@@ -113,6 +118,7 @@ export default function Model() {
   const midSpecCopyRef = useRef(null);
   const specsLeftRef = useRef(null);
   const specsRightRef = useRef(null);
+  const calloutOpacityRef = useRef({ value: 0 });
 
   const proxyRef = useRef({
     x: 0, 
@@ -138,7 +144,7 @@ export default function Model() {
         let { isDesktop, isMobile, reduceMotion } = context.conditions;
 
         const setInitialState = () => {
-          gsap.set(".callout-1", { opacity: 0 });
+          gsap.set(calloutOpacityRef.current, { value: 0 });
 
           if (isDesktop) {
             gsap.set(introCopyRef.current, { opacity: 1, x: 0, y: 0 });
@@ -193,11 +199,11 @@ export default function Model() {
             .to(proxyRef.current, {
               x: -1.8, y: -0.2, rotY: 0.9, rotX: -0.1, scale: 1.1, duration: 1.2, ease: "power2.inOut",
             }, "step2")
-            .to(".callout-1", { opacity: 1, duration: 0.5 }, "step2+=0.4")
+            .to(calloutOpacityRef.current, { value: 1, duration: 0.5 }, "step2+=0.4")
             .to(midSpecCopyRef.current, { opacity: 1, x: 0, duration: 0.8 }, "step2+=0.5");
 
           tl.addLabel("step3", "+=0.3")
-            .to(".callout-1", { opacity: 0, duration: 0.5 }, "step3")
+            .to(calloutOpacityRef.current, { value: 0, duration: 0.5 }, "step3")
             .to(midSpecCopyRef.current, { opacity: 0, x: 40, duration: 0.8 }, "step3")
             .to(proxyRef.current, {
               x: 0, y: -0.1, rotY: 0, rotX: 0.05, scale: 1.7, duration: 1.5, ease: "power2.inOut"
@@ -221,11 +227,11 @@ export default function Model() {
             .to(proxyRef.current, {
               x: 0, y: 0.45, rotY: 0.9, rotX: -0.1, scale: 0.9, duration: 1.2, ease: "power2.inOut",
             }, "step2")
-            .to(".callout-1", { opacity: 1, duration: 0.5 }, "step2+=0.4")
+            .to(calloutOpacityRef.current, { value: 1, duration: 0.5 }, "step2+=0.4")
             .to(midSpecCopyRef.current, { opacity: 1, y: 0, duration: 0.8 }, "step2+=0.5");
 
           tl.addLabel("step3", "+=0.3")
-            .to(".callout-1", { opacity: 0, duration: 0.5 }, "step3")
+            .to(calloutOpacityRef.current, { value: 0, duration: 0.5 }, "step3")
             .to(midSpecCopyRef.current, { opacity: 0, y: -20, duration: 0.8 }, "step3")
             .to(proxyRef.current, {
               x: 0, y: 0.7, rotY: 0, rotX: 0.05, scale: 1.1, duration: 1.5, ease: "power2.inOut" 
@@ -277,7 +283,10 @@ export default function Model() {
             gl={{ antialias: true, powerPreference: "high-performance" }}
           >
             <Suspense fallback={null}>
-              <SkinAnalyzerScene proxyRef={proxyRef} />
+              <SkinAnalyzerScene
+                proxyRef={proxyRef}
+                calloutOpacityRef={calloutOpacityRef}
+              />
             </Suspense>
           </Canvas>
         </div>

@@ -1,23 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f0e8;
-  --foreground: #1c1c1a;
-
-  /* --- Skincare / tech palette (logo + product pages) — used throughout --- */
+  /* --- Metallic / neutral luxury foundation — carries most of the visual weight --- */
   --onyx: #0a0a0c;
-  --dark-azure: #0a1020;
-  --light-azure: #8fb6de;
+  --fake-black: #1a1a1c;
   --paper-white: #f5f4ef;
+  --beige: #efead8;
 
-  /* --- Coffee palette (packaging pages) — partially reused --- */
+  /* --- Futuristic technical accents — reserved for AI / data / activation moments --- */
+  --dark-azure: #0a1020;
   --midnight-blue: #16224a;
+  --light-azure: #8fb6de;
   --mirage-blue: #a9bfe3;
   --sunset-orange: #e4572e;
 
-  /* --- Coffee palette — intentionally not used on this site --- */
-  --beige: #efead8;
-  --fake-black: #1a1a1c;
+  --background: var(--beige);
+  --foreground: var(--fake-black);
 }
 
 @theme inline {

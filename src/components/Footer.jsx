@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+// Already on-brand: Onyx bg, metallic-white text hierarchy, Light Azure used
+// only as a hover accent on links, and a white-stroke embossed wordmark that
+// reads as engraved steel. No color changes made here.
+
 const columns = [
   { title: "Product", links: ["Skin scan", "Formulations", "Routines", "Pricing"] },
   { title: "Company", links: ["About", "Science", "Careers"] },

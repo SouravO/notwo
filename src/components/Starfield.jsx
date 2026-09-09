@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 
 /**
  * Lightweight canvas starfield used behind dark sections for the space mood.
- * No external dependency — plain canvas + rAF, capped particle count,
- * and it fully respects prefers-reduced-motion.
+ * Stars are plain white — this stays neutral so it works over Onyx, Fake
+ * Black, or Dark Azure backgrounds alike. No color changes made here.
  */
 export default function StarField({ density = 0.00012, className = "" }) {
   const canvasRef = useRef(null);

@@ -24,11 +24,28 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const closeMenu = () => setOpen(false);
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") closeMenu();
+    };
+    const onResize = () => {
+      if (window.innerWidth >= 768) closeMenu();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${scrolled ? "py-3" : "py-6"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500 sm:px-6 ${scrolled ? "py-3" : "py-3 sm:py-6"}`}>
       <nav
         aria-label="Main navigation"
-        className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border px-6 transition-all duration-500 sm:px-8 ${
+        className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border px-4 transition-all duration-500 sm:px-6 lg:px-8 ${
           scrolled
             ? "border-white/10 bg-[#0a0a0c]/80 py-3 shadow-[0_0_40px_-12px_rgba(143,182,222,0.35)] backdrop-blur-xl"
             : "border-transparent bg-transparent py-4"
@@ -41,7 +58,7 @@ export default function Navbar() {
           <span className="text-white/40">]</span>
         </Link>
 
-        <div className="hidden items-center gap-8 text-sm font-medium text-white/60 sm:flex">
+        <div className="hidden items-center gap-6 text-sm font-medium text-white/60 md:flex lg:gap-8">
           {links.map((link) => (
             <a key={link.href} href={link.href} className="group relative py-1 transition-colors hover:text-white">
               {link.label}
@@ -52,16 +69,17 @@ export default function Navbar() {
 
         <a
           href="#contact"
-          className="hidden rounded-full bg-[#f5f4ef] px-5 py-2 text-sm font-semibold text-[#0a0a0c] transition-transform hover:scale-105 sm:block"
+          className="hidden rounded-full bg-[#f5f4ef] px-5 py-2 text-sm font-semibold text-[#0a0a0c] transition-transform hover:scale-105 md:block"
         >
           Start your scan
         </a>
 
         <button
-          aria-label="Toggle menu"
+          aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
+          aria-controls="mobile-navigation"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 sm:hidden"
+          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8fb6de] md:hidden"
         >
           <motion.span animate={{ rotate: open ? 45 : 0, y: open ? 6 : 0 }} className="h-[1.5px] w-5 bg-white" />
           <motion.span animate={{ opacity: open ? 0 : 1 }} className="h-[1.5px] w-5 bg-white" />
@@ -76,7 +94,8 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="mx-4 mt-2 overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0c]/95 backdrop-blur-xl sm:hidden"
+            id="mobile-navigation"
+            className="mx-auto mt-2 max-w-7xl overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0c]/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col gap-1 p-4">
               {links.map((link) => (

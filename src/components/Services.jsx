@@ -117,26 +117,26 @@ export default function Services() {
   }, []);
 
   return (
-    <div className={`${display.variable} ${mono.variable} w-full bg-[#FAF5EE]`}>
+    <div className={`${display.variable} ${mono.variable} w-full bg-[#E3E6E8]`}>
       <section
         ref={containerRef}
-        className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#FAF5EE]"
+        className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#FAFBFC_0%,#D2D7DB_28%,#FFFFFF_50%,#BEC5CA_72%,#EEF1F3_100%)]"
       >
         {/* Animated Fluid Ambient Glow Orbs */}
         <div
           ref={orb1Ref}
-          className="pointer-events-none absolute -left-20 top-1/4 h-[350px] w-[350px] rounded-full bg-gradient-to-tr from-[#E9B9CC]/40 to-[#A45F86]/20 blur-3xl md:h-[500px] md:w-[500px]"
+          className="pointer-events-none absolute -left-20 top-1/4 h-[350px] w-[350px] rounded-full bg-gradient-to-tr from-white/80 to-[#8E989F]/25 blur-3xl md:h-[500px] md:w-[500px]"
         />
         <div
           ref={orb2Ref}
-          className="pointer-events-none absolute -right-20 bottom-1/4 h-[380px] w-[380px] rounded-full bg-gradient-to-br from-[#8C5A82]/25 to-[#FAF5EE]/10 blur-3xl md:h-[550px] md:w-[550px]"
+          className="pointer-events-none absolute -right-20 bottom-1/4 h-[380px] w-[380px] rounded-full bg-gradient-to-br from-[#758089]/25 to-white/35 blur-3xl md:h-[550px] md:w-[550px]"
         />
 
         {/* Subtle Luxury Grid Overlay */}
         <div 
           className="pointer-events-none absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: `radial-gradient(#2B2330 1px, transparent 1px)`,
+            backgroundImage: `radial-gradient(#20252A 1px, transparent 1px)`,
             backgroundSize: "32px 32px",
           }}
         />
@@ -150,13 +150,13 @@ export default function Services() {
                 d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
                 fill="none"
               />
-              <text className="fill-[#2B2330]/50 font-[family-name:var(--font-mono)] text-[9.5px] tracking-[2.8px] uppercase">
+              <text className="fill-[#20252A]/60 font-[family-name:var(--font-mono)] text-[9.5px] tracking-[2.8px] uppercase">
                 <textPath href="#textPath">
                   • Pure Honesty • Skin First • BareLogic
                 </textPath>
               </text>
             </svg>
-            <div className="absolute h-2 w-2 rounded-full bg-[#8C5A82]" />
+            <div className="absolute h-2 w-2 rounded-full bg-[#59636B]" />
           </div>
         </div>
 
@@ -167,48 +167,48 @@ export default function Services() {
         >
           {/* Eyebrow Tag */}
           <div className="mb-8 flex items-center gap-3">
-            <span className="h-[1px] w-8 bg-[#8C5A82]" />
-            <span className="font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-[0.25em] text-[#8C5A82]">
+            <span className="h-[1px] w-8 bg-[#59636B]" />
+            <span className="font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-[0.25em] text-[#475159]">
               Our Uncompromised Promise
             </span>
-            <span className="h-[1px] w-8 bg-[#8C5A82]" />
+            <span className="h-[1px] w-8 bg-[#59636B]" />
           </div>
 
           {/* Kinetic Headline with Word-by-Word Scroll Reveal */}
-          <h2 className="font-[family-name:var(--font-display)] text-3xl font-medium leading-[1.25] text-[#2B2330] sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="font-[family-name:var(--font-display)] text-3xl font-medium leading-[1.25] text-[#171B1F] sm:text-5xl md:text-6xl lg:text-7xl">
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all">
               We promise to
             </span>{" "}
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all italic font-normal text-[#3E1F3D]">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all italic font-normal text-[#3E4850]">
               recommend only
             </span>{" "}
             <br className="hidden sm:inline" />
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all">
               what your skin
             </span>{" "}
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all underline decoration-[#E9B9CC] decoration-wavy decoration-1 underline-offset-8">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all underline decoration-[#78838A] decoration-wavy decoration-1 underline-offset-8">
               truly needs.
             </span>
           </h2>
 
           {/* Bold Impact Phrases */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-[family-name:var(--font-display)] text-2xl italic sm:mt-12 sm:text-4xl md:text-5xl">
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#8C5A82]">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#52606A]">
               Nothing more.
             </span>
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#2B2330]/40 font-light">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#171B1F]/45 font-light">
               —
             </span>
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#2B2330]">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#171B1F]">
               Nothing less.
             </span>
           </div>
 
           {/* Expanding Decorative Separator Line */}
-          <div className="accent-line my-10 h-[1.5px] w-24 origin-center scale-x-0 bg-gradient-to-r from-transparent via-[#8C5A82] to-transparent sm:my-12 sm:w-36" />
+          <div className="accent-line my-10 h-[1.5px] w-24 origin-center scale-x-0 bg-gradient-to-r from-transparent via-[#59636B] to-transparent sm:my-12 sm:w-36" />
 
           {/* Subtext */}
-          <p className="scroll-subtext max-w-md translate-y-4 font-[family-name:var(--font-mono)] text-sm tracking-wide text-[#2B2330]/75 opacity-0 sm:text-base">
+          <p className="scroll-subtext max-w-md translate-y-4 font-[family-name:var(--font-mono)] text-sm tracking-wide text-[#283038]/80 opacity-0 sm:text-base">
             Because genuine care begins with uncompromised honesty.
           </p>
         </div>

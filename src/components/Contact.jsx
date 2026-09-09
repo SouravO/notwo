@@ -3,9 +3,12 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-// Brand tokens used here: Dark Azure (section bg), Paper White (the form panel
-// itself — the palette's light surface, finally given a real, visible role),
-// Mirage Blue (focus/underline accent on the light panel).
+// Brand tokens used here: Fake Black (section bg — a contact moment, not a
+// diagnostic one, so it sits in the neutral dark family rather than Dark
+// Azure, which stays reserved for the scan/AI sections), Paper White (the
+// form panel — the palette's light surface), Mirage Blue (input focus
+// accent), Midnight Blue (active label), Sunset Orange (CTA hover — the
+// one high-value activation accent in this section).
 
 export default function Contact() {
   const [status, setStatus] = useState("idle");
@@ -20,7 +23,7 @@ export default function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative overflow-hidden bg-[#0a1020] px-6 py-28 sm:px-10 sm:py-36"
+      className="relative overflow-hidden bg-[#1a1a1c] px-6 py-28 sm:px-10 sm:py-36"
     >
       <div className="pointer-events-none absolute bottom-[-10%] right-[-8%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,_#8fb6de_0%,_transparent_70%)] opacity-10 blur-3xl" />
 
@@ -67,7 +70,7 @@ export default function Contact() {
             <span className="relative z-10">
               {status === "sending" ? "Sending" : status === "sent" ? "Message sent" : "Send message"}
             </span>
-            <span className="absolute inset-0 -translate-x-full bg-[#8fb6de]/25 transition-transform duration-500 group-hover:translate-x-0" />
+            <span className="absolute inset-0 -translate-x-full bg-[#e4572e]/20 transition-transform duration-500 group-hover:translate-x-0" />
           </button>
         </motion.form>
       </div>
@@ -96,7 +99,7 @@ function Field({ label, name, type }) {
       <label
         htmlFor={name}
         className={`pointer-events-none absolute left-0 transition-all duration-200 ${
-          active ? "top-0 text-xs text-[#5b7bab]" : "top-6 text-sm text-[#0a0a0c]/40"
+          active ? "top-0 text-xs text-[#16224a]" : "top-6 text-sm text-[#0a0a0c]/40"
         }`}
       >
         {label}

@@ -22,8 +22,10 @@ const mono = Space_Grotesk({
   variable: "--font-mono",
 });
 
-const GRADIENT =
-  "linear-gradient(115deg, #3E1F3D 0%, #6E3F63 30%, #A45F86 55%, #C97AA0 75%, #E9B9CC 100%)";
+const TITLE_GRADIENT =
+  "linear-gradient(115deg, #F4FBFD 0%, #B9E4F2 30%, #62B6D7 55%, #247CA5 75%, #0B3B59 100%)";
+const BUTTON_GRADIENT =
+  "linear-gradient(115deg, #06131D 0%, #0B3650 38%, #176D94 72%, #4DA6C8 100%)";
 
 const GUESS_WORDS = [
   { text: "Oily?", top: "6%", left: "4%" },
@@ -213,7 +215,7 @@ export default function SkinType() {
           .to(glow, { opacity: 0.9, scale: 1.15, duration: 0.8, ease: "none" }, 0.35)
           .to(flash, { opacity: 0.55, scale: 1.25, duration: 0.2, ease: "none" }, 0.78)
           .to(flash, { opacity: 0, duration: 0.3, ease: "none" }, 0.95)
-          .to(brackets, { opacity: 1, borderColor: "#3E1F3D", duration: 0.4, ease: "none" }, 0.75);
+          .to(brackets, { opacity: 1, borderColor: "#6FC4E4", duration: 0.4, ease: "none" }, 0.75);
       }
     }, stageRef);
 
@@ -264,7 +266,7 @@ export default function SkinType() {
     <div
       ref={stageRef}
       data-stage
-      className={`${display.variable} ${mono.variable} overflow-hidden border-b border-[#2B2330]/10 px-4 py-14 first:pt-0 sm:px-6 md:-mx-8 md:w-[calc(100%+4rem)] md:px-0 md:py-24 lg:-mx-12 lg:w-[calc(100%+6rem)] xl:-mx-20 xl:w-[calc(100%+10rem)] 2xl:-mx-32 2xl:w-[calc(100%+16rem)]`}
+      className={`${display.variable} ${mono.variable} overflow-hidden border-b border-[#78BBD3]/20 bg-[radial-gradient(ellipse_at_50%_45%,#000000_0%,#020A10_31%,#0A3048_68%,#357C9D_100%)] px-4 py-14 text-[#EAF6FA] first:pt-0 sm:px-6 md:-mx-8 md:w-[calc(100%+4rem)] md:px-0 md:py-24 lg:-mx-12 lg:w-[calc(100%+6rem)] xl:-mx-20 xl:w-[calc(100%+10rem)] 2xl:-mx-32 2xl:w-[calc(100%+16rem)]`}
     >
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-10 md:grid-cols-[1.15fr_0.85fr] md:gap-16 md:px-8 lg:px-12 xl:px-20 2xl:px-32">
         <div ref={parallaxTextRef} className="flex h-full flex-col justify-center">
@@ -272,7 +274,7 @@ export default function SkinType() {
             data-reveal
             className="mb-8 max-w-[11ch] font-[family-name:var(--font-display)] text-[clamp(2.1rem,10vw,3rem)] font-semibold italic leading-[1.05] sm:mb-10 sm:max-w-none sm:text-4xl md:text-5xl"
             style={{
-              backgroundImage: GRADIENT,
+              backgroundImage: TITLE_GRADIENT,
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
               color: "transparent",
@@ -318,13 +320,13 @@ export default function SkinType() {
           <div ref={parallaxImageRef} className="flex h-full w-full flex-col items-stretch">
             <div className="relative h-[min(118vw,30rem)] min-h-[360px] w-full md:h-full md:min-h-[540px]">
               <div aria-hidden="true" className="h-full w-full">
-                <div className="absolute inset-0 rounded-[28px] border border-[#2B2330]/10 bg-gradient-to-b from-[#FFFBF6]/70 to-[#FFFBF6]/15" />
+                <div className="absolute inset-0 rounded-[28px] border border-[#79C2DC]/35 bg-gradient-to-b from-[#163E53]/70 to-[#02090E]/65" />
 
                 <div ref={bracketsRef} className="pointer-events-none absolute inset-5 opacity-40">
-                  <span className="absolute left-0 top-0 h-5 w-5 rounded-tl-md border-l-2 border-t-2 border-[#8C5A82]" />
-                  <span className="absolute right-0 top-0 h-5 w-5 rounded-tr-md border-r-2 border-t-2 border-[#8C5A82]" />
-                  <span className="absolute bottom-0 left-0 h-5 w-5 rounded-bl-md border-b-2 border-l-2 border-[#8C5A82]" />
-                  <span className="absolute bottom-0 right-0 h-5 w-5 rounded-br-md border-b-2 border-r-2 border-[#8C5A82]" />
+                  <span className="absolute left-0 top-0 h-5 w-5 rounded-tl-md border-l-2 border-t-2 border-[#75C7E8]" />
+                  <span className="absolute right-0 top-0 h-5 w-5 rounded-tr-md border-r-2 border-t-2 border-[#75C7E8]" />
+                  <span className="absolute bottom-0 left-0 h-5 w-5 rounded-bl-md border-b-2 border-l-2 border-[#75C7E8]" />
+                  <span className="absolute bottom-0 right-0 h-5 w-5 rounded-br-md border-b-2 border-r-2 border-[#75C7E8]" />
                 </div>
 
                 <div
@@ -332,7 +334,7 @@ export default function SkinType() {
                   className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[50px]"
                   style={{
                     background:
-                      "radial-gradient(circle, rgba(201,122,160,0.55) 0%, rgba(140,90,130,0.25) 45%, rgba(250,245,238,0) 75%)",
+                      "radial-gradient(circle, rgba(83,181,220,0.5) 0%, rgba(22,102,143,0.25) 45%, rgba(0,0,0,0) 75%)",
                   }}
                 />
 
@@ -340,7 +342,7 @@ export default function SkinType() {
                   ref={flashRef}
                   className="pointer-events-none absolute left-1/2 top-1/2 h-[55%] w-[55%] -translate-x-1/2 -translate-y-1/2 rounded-full"
                   style={{
-                    background: "radial-gradient(circle, rgba(255,251,246,0.95) 0%, rgba(255,251,246,0) 70%)",
+                    background: "radial-gradient(circle, rgba(222,247,255,0.9) 0%, rgba(222,247,255,0) 70%)",
                   }}
                 />
 
@@ -368,7 +370,7 @@ export default function SkinType() {
                     className="absolute left-0 top-0 h-16 w-full opacity-0"
                     style={{
                       background:
-                        "linear-gradient(180deg, rgba(201,122,160,0) 0%, rgba(201,122,160,0.4) 100%)",
+                        "linear-gradient(180deg, rgba(78,183,224,0) 0%, rgba(78,183,224,0.42) 100%)",
                     }}
                   />
                   <div
@@ -376,8 +378,8 @@ export default function SkinType() {
                     className="absolute left-0 top-0 h-[3px] w-full opacity-0"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent 0%, #C97AA0 15%, #FCEFE3 50%, #C97AA0 85%, transparent 100%)",
-                      boxShadow: "0 0 18px 3px rgba(201,122,160,0.85)",
+                        "linear-gradient(90deg, transparent 0%, #2A8DB8 15%, #E1F8FF 50%, #2A8DB8 85%, transparent 100%)",
+                      boxShadow: "0 0 18px 3px rgba(71,185,226,0.85)",
                     }}
                   />
                 </div>
@@ -387,7 +389,7 @@ export default function SkinType() {
                     <span
                       key={w.text}
                       data-guess-word
-                      className="absolute font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.15em] text-[#2B2330]/70 sm:text-xs"
+                      className="absolute font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.15em] text-[#C5EAF7]/80 sm:text-xs"
                       style={{ top: w.top, left: w.left }}
                     >
                       {w.text}
@@ -405,24 +407,24 @@ export default function SkinType() {
                     className="absolute h-28 w-28 animate-pulse rounded-full blur-2xl sm:h-36 sm:w-36"
                     style={{
                       background:
-                        "radial-gradient(circle, rgba(250,239,227,0.9) 0%, rgba(201,122,160,0.55) 45%, rgba(201,122,160,0) 75%)",
+                        "radial-gradient(circle, rgba(215,246,255,0.85) 0%, rgba(63,173,215,0.5) 45%, rgba(63,173,215,0) 75%)",
                     }}
                   />
                   <button
                     type="button"
                     onClick={handleReveal}
                     disabled={isAnimating}
-                    className="pointer-events-auto relative flex min-h-12 max-w-[calc(100vw-5rem)] shrink-0 items-center justify-center gap-2 whitespace-normal rounded-full border-2 border-[#FFFBF6]/80 px-5 py-3 text-center font-[family-name:var(--font-mono)] text-[10px] uppercase leading-tight tracking-[0.14em] text-[#FFFBF6] shadow-[0_10px_24px_-6px_rgba(62,31,61,0.55),0_0_36px_6px_rgba(233,185,204,0.6)] transition-transform duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-70 sm:max-w-none sm:px-7 sm:py-3.5 sm:text-xs sm:tracking-[0.15em]"
-                    style={{ backgroundImage: GRADIENT }}
+                    className="pointer-events-auto relative flex min-h-12 max-w-[calc(100vw-5rem)] shrink-0 items-center justify-center gap-2 whitespace-normal rounded-full border-2 border-[#D9F4FC]/80 px-5 py-3 text-center font-[family-name:var(--font-mono)] text-[10px] uppercase leading-tight tracking-[0.14em] text-[#F4FCFF] shadow-[0_10px_24px_-6px_rgba(0,8,14,0.8),0_0_36px_6px_rgba(59,171,215,0.55)] transition-transform duration-300 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-70 sm:max-w-none sm:px-7 sm:py-3.5 sm:text-xs sm:tracking-[0.15em]"
+                    style={{ backgroundImage: BUTTON_GRADIENT }}
                   >
                     {isAnimating ? "Scanning\u2026" : revealed ? "Scan Again" : "Reveal My Clear Skin"}
                     {!revealed && !isAnimating && (
                       <span aria-hidden="true" className="absolute -right-1 -top-1 flex h-3.5 w-3.5">
                         <span
                           className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-80"
-                          style={{ backgroundImage: GRADIENT }}
+                          style={{ backgroundImage: BUTTON_GRADIENT }}
                         />
-                        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border border-[#8C5A82] bg-[#FFFBF6]" />
+                        <span className="relative inline-flex h-3.5 w-3.5 rounded-full border border-[#75C7E8] bg-[#E1F8FF]" />
                       </span>
                     )}
                   </button>
