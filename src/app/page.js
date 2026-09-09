@@ -5,6 +5,7 @@ import About from "@/components/About";
 import SkinType from "@/components/SkinType";
 import Services from "@/components/Services";
 import Model from "@/components/model";
+import ProductShowcase from "@/components/ProductShowcase";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -17,6 +18,7 @@ export default function Home() {
       <SkinType />
       <Services />
       <Model />
+      <ProductShowcase />
       <Contact />
       <Footer />
     </main>
