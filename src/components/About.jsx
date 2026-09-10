@@ -191,8 +191,9 @@ export default function MissionVision() {
 
   return (
     <section
+      id="about"
       ref={containerRef}
-      className={`${display.variable} ${mono.variable} relative left-1/2 min-h-screen w-screen -translate-x-1/2 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#17191c] sm:px-8 lg:px-16 lg:pb-16`}
+      className={`${display.variable} ${mono.variable} relative left-1/2 min-h-screen w-screen -translate-x-1/2 scroll-mt-24 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#17191c] sm:px-8 lg:px-16 lg:pb-16`}
     >
       <div className="max-w-7xl mx-auto relative z-10 mb-1 lg:mb-2 pt-14 sm:pt-16 lg:pt-24">
         <div className="relative flex flex-col items-center text-center">
@@ -283,7 +284,7 @@ export default function MissionVision() {
               Trusted Personalization
             </h2>
             <p className="font-[family-name:var(--font-mono)] text-[12.5px] leading-relaxed text-[#222220]/70">
-              To become India’s most trusted personalized skincare company by combining technology, science, and skincare into one seamless experience.
+              To become India's most trusted personalized skincare company by combining technology, science, and skincare into one seamless experience.
             </p>
           </div>
 
@@ -313,7 +314,7 @@ export default function MissionVision() {
               No Assumptions. Only Science.
             </h2>
             <p className="font-[family-name:var(--font-mono)] text-[12.5px] leading-relaxed text-[#222220]/70">
-              Don’t Guess. Know. Every skincare journey starts with one fundamental question: What does your skin actually need?
+              Don't Guess. Know. Every skincare journey starts with one question. What does your skin actually need?
             </p>
           </div>
         </div>

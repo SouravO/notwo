@@ -1,6 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  images: {
+    localPatterns: [
+      {
+        pathname: "/feature-*.png",
+        search: "?v=2",
+      },
+      {
+        pathname: "/skin.png",
+      },
+      {
+        pathname: "/Banner.png",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

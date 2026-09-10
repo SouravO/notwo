@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 
 // Assets imported directly
@@ -94,8 +95,8 @@ export default function ProductShowcase() {
 
       // 2. Play Countdown Progress Bar & Transition Queue
       const playNext = () => {
-        const isSeeAll = SLIDES[animState.current.currentIndex]?.isSeeAll;
-        const holdDuration = isSeeAll ? 4.0 : 3.0;
+        // Uniform 2s hold — slides advance continuously, no pause-on-hover
+        const holdDuration = 2.0;
 
         // Animate bottom timeline progress bar
         if (progressBarRef.current) {
@@ -197,28 +198,11 @@ export default function ProductShowcase() {
     };
   }, []);
 
-  // Hover Pause Behavior (Desktop Pointer Only)
-  const handlePointerEnter = (e) => {
-    if (e.pointerType === 'mouse') {
-      if (animState.current.timer) animState.current.timer.pause();
-      if (animState.current.progressTween) animState.current.progressTween.pause();
-    }
-  };
-
-  const handlePointerLeave = (e) => {
-    if (e.pointerType === 'mouse') {
-      if (animState.current.timer) animState.current.timer.play();
-      if (animState.current.progressTween) animState.current.progressTween.play();
-    }
-  };
-
   const currentSlideData = SLIDES[activeIndex];
 
   return (
     <section
       ref={sectionRef}
-      onPointerEnter={handlePointerEnter}
-      onPointerLeave={handlePointerLeave}
       className="relative w-full h-[100svh] min-h-[650px] bg-[#070709] text-white overflow-hidden flex flex-col justify-between selection:bg-cyan-500/20 selection:text-cyan-200"
     >
       {/* SHARED ONYX ATMOSPHERE & GLOW */}
@@ -276,12 +260,15 @@ export default function ProductShowcase() {
               /* FINAL STATE: SEE ALL BUTTON */
               <div className="w-full h-full flex flex-col items-center justify-center text-center px-6">
                 <div className="w-[1px] h-12 bg-gradient-to-b from-transparent to-white/20 mb-8" />
-                
+
                 <p className="text-xs font-mono tracking-[0.3em] uppercase text-slate-400 mb-4">
                   COMPLETE FORMULATION RANGE
                 </p>
 
-                <button className="group relative inline-flex items-center gap-4 px-10 py-5 border border-white/20 bg-white/[0.02] hover:bg-white hover:text-black text-xs font-mono tracking-[0.3em] uppercase text-white transition-all duration-500 backdrop-blur-md shadow-2xl">
+                <Link
+                  href="/products"
+                  className="group relative inline-flex items-center gap-4 px-10 py-5 border border-white/20 bg-white/[0.02] hover:bg-white hover:text-black text-xs font-mono tracking-[0.3em] uppercase text-white transition-all duration-500 backdrop-blur-md shadow-2xl cursor-pointer"
+                >
                   <span>SEE ALL</span>
                   <svg
                     className="w-4 h-4 text-slate-400 group-hover:text-black group-hover:translate-x-1 transition-all duration-300"
@@ -291,14 +278,14 @@ export default function ProductShowcase() {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
-                </button>
+                </Link>
 
                 <div className="w-[1px] h-12 bg-gradient-to-t from-transparent to-white/20 mt-8" />
               </div>
             ) : (
               /* PRODUCT FRAME (LEFT: PRODUCT IMAGE | RIGHT: EDITORIAL COPY) */
               <div className="w-full h-full flex flex-col md:flex-row items-center">
-                
+
                 {/* LEFT SIDE: Product Asset Stage */}
                 <div className="product-asset w-full md:w-[48%] h-[50%] md:h-full flex flex-col justify-center items-center relative px-6 md:px-12 pt-6 md:pt-0">
                   {/* Subtle ground reflection shadow */}
@@ -325,7 +312,7 @@ export default function ProductShowcase() {
 
                 {/* RIGHT SIDE: Product Information */}
                 <div className="product-info w-full md:w-[52%] h-[50%] md:h-full flex flex-col justify-start md:justify-center items-center md:items-start text-center md:text-left px-6 lg:px-16 pb-8 md:pb-0">
-                  
+
                   {/* AI Technical Marker */}
                   <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/10 text-[10px] font-mono tracking-[0.25em] uppercase text-slate-300 mb-4 backdrop-blur-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
@@ -336,7 +323,7 @@ export default function ProductShowcase() {
                   <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-wide text-white mb-3">
                     {slide.name}
                   </h3>
-                  
+
                   {/* Tagline */}
                   <p className="text-base sm:text-lg text-slate-200 font-light mb-3">
                     {slide.tagline}
@@ -390,7 +377,7 @@ export default function ProductShowcase() {
 
         {/* Minimal Dot Indicators */}
         <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-          <span className="tracking-widest">PAUSE ON HOVER</span>
+          <span className="tracking-widest">AUTO-ROTATING // 2.0S</span>
           <div className="flex items-center gap-2">
             {SLIDES.map((s, i) => (
               <span

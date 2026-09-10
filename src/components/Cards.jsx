@@ -24,28 +24,28 @@ const WHY_CHOOSE = [
     id: "01",
     title: "Personalized Approach",
     copy: "Every recommendation is meticulously crafted based on your unique skin analysis, ensuring a routine that truly belongs to you.",
-    img: "/feature-1.png", // Replace with your card image path
+    img: "/feature-1.png?v=2",
     accent: "#8C5A82",
   },
   {
     id: "02",
     title: "Scientific Assessment",
     copy: "We replace guesswork with advanced diagnostic technology, analyzing your skin's deep moisture levels, elasticity, and needs.",
-    img: "/feature-2.png", // Replace with your card image path
+    img: "/feature-2.png?v=2",
     accent: "#A45F86",
   },
   {
     id: "03",
     title: "Premium Formulations",
     copy: "Carefully selected, highly active ingredients backed by clinical research to deliver visible, long-lasting results.",
-    img: "/feature-3.png", // Replace with your card image path
+    img: "/feature-3.png?v=2",
     accent: "#E9B9CC",
   },
   {
     id: "04",
     title: "Progress Tracking",
     copy: "Monitor your skin's transformation over time. Compare reports and adjust your routine as your skin improves.",
-    img: "/feature-4.png", // Replace with your card image path
+    img: "/feature-4.png?v=2",
     accent: "#C97AA0",
   },
 ];
@@ -216,7 +216,7 @@ function WhyChooseStack() {
           {/* Main Background Image */}
           <div className="pointer-events-none absolute inset-0 z-0">
             <Image
-              src="/skin.jpg"
+              src="/skin.png"
               alt="Background"
               aria-hidden="true"
               className="h-full w-full object-cover object-center"

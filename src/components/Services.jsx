@@ -119,8 +119,9 @@ export default function Services() {
   return (
     <div className={`${display.variable} ${mono.variable} w-full bg-[#E3E6E8]`}>
       <section
+        id="services"
         ref={containerRef}
-        className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#FAFBFC_0%,#D2D7DB_28%,#FFFFFF_50%,#BEC5CA_72%,#EEF1F3_100%)]"
+        className="relative flex h-screen w-full scroll-mt-24 flex-col items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#FAFBFC_0%,#D2D7DB_28%,#FFFFFF_50%,#BEC5CA_72%,#EEF1F3_100%)]"
       >
         {/* Animated Fluid Ambient Glow Orbs */}
         <div
@@ -152,7 +153,7 @@ export default function Services() {
               />
               <text className="fill-[#20252A]/60 font-[family-name:var(--font-mono)] text-[9.5px] tracking-[2.8px] uppercase">
                 <textPath href="#textPath">
-                  • Pure Honesty • Skin First • BareLogic
+                  • Skin Intelligence • Pure Science • KYS
                 </textPath>
               </text>
             </svg>
@@ -169,7 +170,7 @@ export default function Services() {
           <div className="mb-8 flex items-center gap-3">
             <span className="h-[1px] w-8 bg-[#59636B]" />
             <span className="font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-[0.25em] text-[#475159]">
-              Our Uncompromised Promise
+              Our Promise
             </span>
             <span className="h-[1px] w-8 bg-[#59636B]" />
           </div>
@@ -187,7 +188,7 @@ export default function Services() {
               what your skin
             </span>{" "}
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all underline decoration-[#78838A] decoration-wavy decoration-1 underline-offset-8">
-              truly needs.
+              needs.
             </span>
           </h2>
 
@@ -209,7 +210,7 @@ export default function Services() {
 
           {/* Subtext */}
           <p className="scroll-subtext max-w-md translate-y-4 font-[family-name:var(--font-mono)] text-sm tracking-wide text-[#283038]/80 opacity-0 sm:text-base">
-            Because genuine care begins with uncompromised honesty.
+            Because trust begins with honesty.
           </p>
         </div>
       </section>

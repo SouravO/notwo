@@ -6,6 +6,7 @@ import SkinType from "@/components/SkinType";
 import Services from "@/components/Services";
 import Model from "@/components/model";
 import ProductShowcase from "@/components/ProductShowcase";
+import Cards from "@/components/Cards";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -19,6 +20,7 @@ export default function Home() {
       <Services />
       <Model />
       <ProductShowcase />
+      <Cards />
       <Contact />
       <Footer />
     </main>

@@ -13,7 +13,7 @@ export default function Hero() {
   const introLayerRef = useRef(null);
   const titleTextRef = useRef(null);
   const introElixirRef = useRef(null);
-  
+
   const heroContentRef = useRef(null);
   const boardWrapperRef = useRef(null);
   const boardImgRef = useRef(null);
@@ -24,12 +24,53 @@ export default function Hero() {
 
   useLayoutEffect(() => {
     const previousScrollRestoration = window.history.scrollRestoration;
+    const sectionHash = window.location.hash;
+    const currentUrl = new URL(window.location.href);
+    const shouldSkipIntro = currentUrl.searchParams.get("notwo_skip_intro") === "1";
+    if (shouldSkipIntro) {
+      window.history.replaceState(null, "", `${currentUrl.pathname}${sectionHash}`);
+    }
     window.history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
 
-    // Some browsers restore their previous scroll position after hydration.
-    // Repeat the reset on the next frame so the intro always owns first paint.
-    const scrollResetFrame = window.requestAnimationFrame(() => window.scrollTo(0, 0));
+    const scrollResetFrame = window.requestAnimationFrame(() => {
+      if (shouldSkipIntro) {
+        const target = document.getElementById(sectionHash.slice(1));
+        if (target) {
+          window.scrollTo({
+            top: target.getBoundingClientRect().top + window.scrollY - 96,
+            behavior: "auto",
+          });
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+        return;
+      }
+
+      window.scrollTo(0, 0);
+    });
+
+    if (shouldSkipIntro) {
+      gsap.set(introLayerRef.current, { display: "none", autoAlpha: 0 });
+      gsap.set(heroContentRef.current, { opacity: 1, x: 0, y: 0 });
+      gsap.set(boardWrapperRef.current, { x: 0, y: 0, opacity: 1 });
+      gsap.set(boardImgRef.current, { opacity: 1, scale: 1 });
+      gsap.set(elixirRef.current, {
+        left: "74.5%",
+        top: "52.3%",
+        xPercent: -50,
+        yPercent: -50,
+        scale: 1,
+        rotationZ: 0,
+        opacity: 1,
+      });
+      gsap.set(shadowRef.current, { opacity: 0.6 });
+      setIsAnimationComplete(true);
+
+      return () => {
+        window.cancelAnimationFrame(scrollResetFrame);
+        window.history.scrollRestoration = previousScrollRestoration;
+      };
+    }
 
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
@@ -44,100 +85,77 @@ export default function Hero() {
       });
 
       // MASTER CINEMATIC TIMELINE
-      mm.add("(prefers-reduced-motion: no-preference)", (context) => {
+      // The intro phase (title -> elixir fade-in -> layer clears) and the board
+      // reveal phase are IDENTICAL in shape between mobile and desktop, so
+      // they're built once here — only the values that genuinely differ
+      // (offscreen distance, the desktop re-center step, reveal timing) branch.
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
         const isDesktop = window.innerWidth >= 1024;
-        
+
         const tl = gsap.timeline({
           onComplete: () => setIsAnimationComplete(true),
         });
 
+        const boardOffscreenX = isDesktop ? "28vw" : "18vw";
+        const boardRevealX = isDesktop ? "-25vw" : 0;
+        const heroContentY = isDesktop ? 30 : 20;
+        const heroRevealTime = isDesktop ? 4.25 : 3.9;
+
+        // ---- SHARED INITIAL STATES ----
+        gsap.set(heroContentRef.current, { opacity: 0, y: heroContentY });
+        gsap.set(shadowRef.current, { opacity: 0 });
+
+        gsap.set(boardWrapperRef.current, { x: boardOffscreenX, y: 0, opacity: 0 });
+        gsap.set(boardImgRef.current, { opacity: 0, scale: 0.95 });
+
+        gsap.set(introLayerRef.current, { backgroundColor: "#0a0a0c" });
+        gsap.set(titleTextRef.current, { scale: 1.5, opacity: 1, filter: "brightness(1.2)" });
+
+        const initialElixirState = {
+          scale: 2.2,
+          rotationZ: -10,
+          opacity: 0,
+          filter: "drop-shadow(0px 30px 20px rgba(0,0,0,0.8))",
+        };
+
+        gsap.set(introElixirRef.current, { ...initialElixirState, y: 30 });
+        gsap.set(elixirRef.current, {
+          ...initialElixirState,
+          left: "50%",
+          top: "50%",
+          xPercent: -50,
+          yPercent: -50,
+        });
+
+        // ---- SHARED INTRO SEQUENCE: title -> elixir fade-in -> layer clears ----
+        tl.to({}, { duration: 0.55 })
+          .to(titleTextRef.current, { scale: 0.55, opacity: 0, filter: "blur(8px)", duration: 0.55, ease: "power2.in" }, 0.55)
+          .to(introElixirRef.current, { opacity: 1, y: 0, duration: 0.65, ease: "power2.out" }, 1.05)
+          .to(introLayerRef.current, { backgroundColor: "rgba(10, 10, 12, 0)", duration: 0.45, ease: "power2.inOut" }, 1.75)
+          // ---- SHARED BOARD REVEAL (x target is the only breakpoint difference) ----
+          .to(boardWrapperRef.current, { x: boardRevealX, opacity: 1, duration: 0.7, ease: "power3.out" }, 2.05)
+          .to(boardImgRef.current, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 2.05)
+          .to(shadowRef.current, { opacity: 0.6, duration: 0.6 }, 2.05)
+          .to(introElixirRef.current, { autoAlpha: 0, duration: 0.15 }, 2.75)
+          .to(elixirRef.current, { autoAlpha: 1, duration: 0.15 }, 2.75)
+          .to(elixirRef.current, {
+            left: "74.5%",
+            scale: 1,
+            rotationZ: 0,
+            filter: "drop-shadow(0px 6px 10px rgba(0,0,0,0.5))",
+            duration: 0.8,
+            ease: "power2.inOut",
+          }, 2.9)
+          .to(elixirRef.current, { top: "52.3%", duration: 0.8, ease: "back.out(1.1)" }, 2.9)
+          .to(introLayerRef.current, { autoAlpha: 0, duration: 0.1 }, 3.05);
+
+        // Desktop only: the board reveals off-center, then re-centers.
+        // Mobile reveals directly at its final resting position.
         if (isDesktop) {
-          // =========================================================
-          // DESKTOP TIMELINE (UNTOUCHED)
-          // =========================================================
-          gsap.set(heroContentRef.current, { opacity: 0, y: 30 });
-          gsap.set(shadowRef.current, { opacity: 0 });
-          
-          gsap.set(boardWrapperRef.current, { x: "28vw", opacity: 0 });
-          gsap.set(boardImgRef.current, { opacity: 0, scale: 0.95 });
-          
-          gsap.set(introLayerRef.current, { backgroundColor: "#0a0a0c" });
-          gsap.set(titleTextRef.current, { scale: 1.5, opacity: 1, filter: "brightness(1.2)" });
-          
-          const initialElixirState = {
-            scale: 2.2,
-            rotationZ: -10,
-            opacity: 0,
-            filter: "drop-shadow(0px 30px 20px rgba(0,0,0,0.8))"
-          };
-          
-          gsap.set(introElixirRef.current, { ...initialElixirState, y: 30 });
-          gsap.set(elixirRef.current, { 
-            ...initialElixirState, left: "50%", top: "50%", xPercent: -50, yPercent: -50 
-          });
-
-          tl.to({}, { duration: 0.55 })
-            .to(titleTextRef.current, { scale: 0.55, opacity: 0, filter: "blur(8px)", duration: 0.55, ease: "power2.in" }, 0.55)
-            .to(introElixirRef.current, { opacity: 1, y: 0, duration: 0.65, ease: "power2.out" }, 1.05)
-            .to(introLayerRef.current, { backgroundColor: "rgba(10, 10, 12, 0)", duration: 0.45, ease: "power2.inOut" }, 1.75)
-            .to(boardWrapperRef.current, { x: "-25vw", opacity: 1, duration: 0.7, ease: "power3.out" }, 2.05)
-            .to(boardImgRef.current, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 2.05)
-            .to(shadowRef.current, { opacity: 0.6, duration: 0.6 }, 2.05)
-            .to(introElixirRef.current, { autoAlpha: 0, duration: 0.15 }, 2.75)
-            .to(elixirRef.current, { autoAlpha: 1, duration: 0.15 }, 2.75)
-            .to(elixirRef.current, {
-              left: "74.5%", scale: 1, rotationZ: 0, filter: "drop-shadow(0px 6px 10px rgba(0,0,0,0.5))",
-              duration: 0.8, ease: "power2.inOut"
-            }, 2.9)
-            .to(elixirRef.current, { top: "52.3%", duration: 0.8, ease: "back.out(1.1)" }, 2.9)
-            .to(introLayerRef.current, { autoAlpha: 0, duration: 0.1 }, 3.05)
-            .to(boardWrapperRef.current, { x: 0, duration: 0.7, ease: "power3.inOut" }, 3.85)
-            .to(heroContentRef.current, { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" }, 4.25);
-
-        } else {
-          // =========================================================
-          // MOBILE & TABLET TIMELINE
-          // =========================================================
-          // Calculate exact dynamic vertical offset needed to center the Box on mobile
-          // since the text is stacked above it in the CSS Grid.
-          gsap.set(heroContentRef.current, { opacity: 0, y: 20 });
-          gsap.set(shadowRef.current, { opacity: 0 });
-          
-          gsap.set(boardWrapperRef.current, { x: "18vw", y: 0, opacity: 0 });
-          gsap.set(boardImgRef.current, { opacity: 0, scale: 0.95 });
-          
-          gsap.set(introLayerRef.current, { backgroundColor: "#0a0a0c" });
-          gsap.set(titleTextRef.current, { scale: 1.5, opacity: 1, filter: "brightness(1.2)" });
-          
-          const initialElixirState = {
-            scale: 2.2,
-            rotationZ: -10,
-            opacity: 0,
-            filter: "drop-shadow(0px 30px 20px rgba(0,0,0,0.8))"
-          };
-          
-          gsap.set(introElixirRef.current, { ...initialElixirState, y: 30 });
-          gsap.set(elixirRef.current, { 
-            ...initialElixirState, left: "50%", top: "50%", xPercent: -50, yPercent: -50 
-          });
-
-          tl.to({}, { duration: 0.55 })
-            .to(titleTextRef.current, { scale: 0.55, opacity: 0, filter: "blur(8px)", duration: 0.55, ease: "power2.in" }, 0.55)
-            .to(introElixirRef.current, { opacity: 1, y: 0, duration: 0.65, ease: "power2.out" }, 1.05)
-            .to(introLayerRef.current, { backgroundColor: "rgba(10, 10, 12, 0)", duration: 0.45, ease: "power2.inOut" }, 1.75)
-            .to(boardWrapperRef.current, { x: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 2.05)
-            .to(boardImgRef.current, { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 2.05)
-            .to(shadowRef.current, { opacity: 0.6, duration: 0.6 }, 2.05)
-            .to(introElixirRef.current, { autoAlpha: 0, duration: 0.15 }, 2.75)
-            .to(elixirRef.current, { autoAlpha: 1, duration: 0.15 }, 2.75)
-            .to(elixirRef.current, {
-              left: "74.5%", scale: 1, rotationZ: 0, filter: "drop-shadow(0px 6px 10px rgba(0,0,0,0.5))",
-              duration: 0.8, ease: "power2.inOut"
-            }, 2.9)
-            .to(elixirRef.current, { top: "52.3%", duration: 0.8, ease: "back.out(1.1)" }, 2.9)
-            .to(introLayerRef.current, { autoAlpha: 0, duration: 0.1 }, 3.05)
-            .to(heroContentRef.current, { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" }, 3.9);
+          tl.to(boardWrapperRef.current, { x: 0, duration: 0.7, ease: "power3.inOut" }, 3.85);
         }
+
+        tl.to(heroContentRef.current, { opacity: 1, y: 0, duration: 0.65, ease: "power3.out" }, heroRevealTime);
       });
 
       return () => mm.revert();
@@ -167,10 +185,11 @@ export default function Hero() {
         >
           NO TWO
         </h1>
-        
+
         <div className="absolute inset-0 z-30 flex items-center justify-center">
           <div className="relative w-full max-w-[760px] flex items-center justify-center">
-            <div ref={introElixirRef} className="absolute w-[60%]">
+            {/* opacity-0 by default so this can never flash visible before GSAP mounts */}
+            <div ref={introElixirRef} className="absolute w-[60%] opacity-0">
               <Image
                 src={CalmElixirImg}
                 alt="Calm Elixir Intro"
@@ -188,9 +207,9 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-6 lg:gap-8 lg:grid-cols-[1fr_1.1fr] xl:max-w-[1500px] xl:grid-cols-[0.85fr_1.15fr]">
-        
+
         {/* LEFT COMPOSITION: HERO TEXT */}
-        <div ref={heroContentRef} className="max-w-xl z-20">
+        <div ref={heroContentRef} className="max-w-xl z-20 opacity-0">
           <h1
             id="hero-title"
             className="text-4xl font-light tracking-tight text-[#f5f4ef] sm:text-5xl lg:text-6xl uppercase leading-[1.1]"
@@ -217,19 +236,19 @@ export default function Hero() {
 
         {/* RIGHT COMPOSITION: PRODUCT SYSTEM */}
         <div className="relative flex h-auto w-full items-center justify-center z-10 mt-4 lg:mt-0 lg:h-[480px] xl:h-[580px]">
-          
-          <div ref={boardWrapperRef} className="relative w-full max-w-[760px] transform-style-3d">
-            
+
+          <div ref={boardWrapperRef} className="relative w-full max-w-[760px] transform-style-3d opacity-0">
+
             <div
               ref={shadowRef}
-              className="absolute bottom-[2%] left-[10%] h-[30px] w-[80%] rounded-[100%] bg-black/90 blur-2xl pointer-events-none"
+              className="absolute bottom-[2%] left-[10%] h-[30px] w-[80%] rounded-[100%] bg-black/90 blur-2xl pointer-events-none opacity-0"
             />
 
             <Image
               ref={boardImgRef}
               src={BoxImg}
               alt="NO TWO System Board"
-              className="relative z-10 h-auto w-full object-contain drop-shadow-2xl select-none"
+              className="relative z-10 h-auto w-full object-contain drop-shadow-2xl select-none opacity-0"
               draggable={false}
               priority
             />
@@ -237,7 +256,7 @@ export default function Hero() {
             {/* LOCKED FINAL POSITION */}
             <div
               ref={elixirRef}
-              className="absolute z-20 w-[60%] pointer-events-none"
+              className="absolute z-20 w-[60%] pointer-events-none opacity-0"
             >
               <Image
                 src={CalmElixirImg}
@@ -247,7 +266,7 @@ export default function Hero() {
                 priority
               />
             </div>
-            
+
           </div>
         </div>
       </div>

@@ -114,10 +114,10 @@ export default function Model() {
   const pinRef = useRef(null);
 
   // 4 Story Points Refs
-  const r1Ref = useRef(null); // Philosophy (Right)
-  const r2Ref = useRef(null); // Diagnostics (Left)
-  const r3Ref = useRef(null); // Deep Tissue (Right)
-  const r4Ref = useRef(null); // AI Processing (Left)
+  const r1Ref = useRef(null); // Step 01 - Analyze (Right)
+  const r2Ref = useRef(null); // Step 02 - Understand (Left)
+  const r3Ref = useRef(null); // Step 03 - Personalize (Right)
+  const r4Ref = useRef(null); // Step 04 - Transform (Left)
   const calloutOpacityRef = useRef({ value: 0 });
 
   const proxyRef = useRef({
@@ -303,16 +303,14 @@ export default function Model() {
           >
             <div className="flex items-center gap-3 mb-6 opacity-80">
                <div className="h-px w-8 bg-white/40"></div>
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">The Philosophy</span>
+               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 01</span>
             </div>
             <h2 className="mb-6 font-[family-name:var(--font-display)] text-5xl md:text-[4rem] font-medium italic leading-[1.05] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Don&rsquo;t Guess.
-              <br />
-              Know.
+              Analyze
             </h2>
             <div className="space-y-4 font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              <p>Every skincare journey starts with one question.</p>
-              <p className="font-medium text-white/90">What does your skin actually need?</p>
+              <p>Your skin scanned using</p>
+              <p className="font-medium text-white/90">professional skin analysis technology.</p>
             </div>
           </div>
 
@@ -322,14 +320,14 @@ export default function Model() {
             className="absolute top-1/2 -translate-y-1/2 left-[5%] w-[42%] max-md:right-6 max-md:left-6 max-md:w-auto max-md:top-auto max-md:bottom-[10%] max-md:translate-y-0 pointer-events-auto"
           >
             <div className="flex items-center gap-3 mb-6 opacity-80">
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Phase 01</span>
+               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 02</span>
                <div className="h-px w-12 bg-gradient-to-r from-white/40 to-transparent"></div>
             </div>
             <h2 className="mb-6 font-[family-name:var(--font-display)] text-4xl md:text-5xl font-medium italic leading-[1.1] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Precision<br/>Diagnostics
+              Understand
             </h2>
             <p className="font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              Our system evaluates multiple physiological parameters within minutes, transforming assumptions into absolute certainty.
+              Receive complete report explaining your skin condition.
             </p>
           </div>
 
@@ -339,14 +337,14 @@ export default function Model() {
             className="absolute top-1/2 -translate-y-1/2 right-[5%] w-[42%] max-md:right-6 max-md:left-6 max-md:w-auto max-md:top-auto max-md:bottom-[10%] max-md:translate-y-0 pointer-events-auto text-left"
           >
             <div className="flex items-center justify-start gap-3 mb-6 opacity-80 md:flex-row-reverse">
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Phase 02</span>
+               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 03</span>
                <div className="h-px w-12 bg-gradient-to-r from-white/40 to-transparent md:bg-gradient-to-l md:from-white/40 md:to-transparent"></div>
             </div>
             <h2 className="mb-6 font-[family-name:var(--font-display)] text-4xl md:text-5xl font-medium italic leading-[1.1] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Deep Tissue<br/>Scanning
+              Personalize
             </h2>
             <p className="font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              By analyzing sub-surface layers, we expose hidden pigmentation, vascular conditions, and structural damage before they ever surface.
+              Experts recommend skincare routine based on your unique skin profile.
             </p>
           </div>
 
@@ -356,14 +354,14 @@ export default function Model() {
             className="absolute top-1/2 -translate-y-1/2 left-[5%] w-[42%] max-md:right-6 max-md:left-6 max-md:w-auto max-md:top-auto max-md:bottom-[10%] max-md:translate-y-0 pointer-events-auto text-left"
           >
             <div className="flex items-center gap-3 mb-6 opacity-80">
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Final Specification</span>
+               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 04</span>
                <div className="h-px w-12 bg-gradient-to-r from-white/40 to-transparent"></div>
             </div>
             <h2 className="mb-6 font-[family-name:var(--font-display)] text-4xl md:text-5xl font-medium italic leading-[1.1] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              AI Processing
+              Transform
             </h2>
             <p className="font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              Advanced algorithms cross-reference millions of data points to generate your hyper-personalized, precision-engineered daily protocol.
+              Follow routine. Track improvements. Re-analyze periodically. Healthy skin becomes measurable.
             </p>
           </div>
 

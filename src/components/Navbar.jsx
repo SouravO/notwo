@@ -8,14 +8,29 @@ import { motion, AnimatePresence } from "framer-motion";
 // glow + link underline), Paper White (CTA button).
 
 const links = [
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#about", label: "About" },
+  { href: "/#model", label: "Services" },
+  { href: "/products", label: "Products" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const prepareSectionNavigation = (event, href) => {
+    const isHomeDestination = href === "/" || href.startsWith("/#");
+
+    if (window.location.pathname === "/products" && isHomeDestination) {
+      event.preventDefault();
+      const sectionId = href.startsWith("/#") ? href.slice(2) : "";
+      const destination = sectionId
+        ? `/?notwo_skip_intro=1#${sectionId}`
+        : "/?notwo_skip_intro=1";
+
+      window.location.assign(destination);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -51,28 +66,36 @@ export default function Navbar() {
             : "border-transparent bg-transparent py-4"
         }`}
       >
-        <Link href="/" className="flex items-center gap-1 text-lg font-semibold tracking-tight text-white">
-          <span className="text-white/40">[</span>
-          NOTWO
+        <Link
+          href="/"
+          onClick={(event) => prepareSectionNavigation(event, "/")}
+          className="flex items-center gap-1 text-lg font-semibold tracking-tight text-white"
+        >
+          NO TWO
           <span className="ml-0.5 -translate-y-2 text-[10px] text-white/40">™</span>
-          <span className="text-white/40">]</span>
         </Link>
 
         <div className="hidden items-center gap-6 text-sm font-medium text-white/60 md:flex lg:gap-8">
           {links.map((link) => (
-            <a key={link.href} href={link.href} className="group relative py-1 transition-colors hover:text-white">
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={(event) => prepareSectionNavigation(event, link.href)}
+              className="group relative py-1 transition-colors hover:text-white"
+            >
               {link.label}
               <span className="absolute inset-x-0 -bottom-0.5 h-px scale-x-0 bg-gradient-to-r from-[#8fb6de] to-white/60 transition-transform duration-300 group-hover:scale-x-100" />
-            </a>
+            </Link>
           ))}
         </div>
 
-        <a
-          href="#contact"
+        <Link
+          href="/#contact"
+          onClick={(event) => prepareSectionNavigation(event, "/#contact")}
           className="hidden rounded-full bg-[#f5f4ef] px-5 py-2 text-sm font-semibold text-[#0a0a0c] transition-transform hover:scale-105 md:block"
         >
           Start your scan
-        </a>
+        </Link>
 
         <button
           aria-label={open ? "Close menu" : "Open menu"}
@@ -99,22 +122,28 @@ export default function Navbar() {
           >
             <div className="flex flex-col gap-1 p-4">
               {links.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setOpen(false)}
+                  onClick={(event) => {
+                    prepareSectionNavigation(event, link.href);
+                    setOpen(false);
+                  }}
                   className="rounded-xl px-4 py-3 text-sm font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
-              <a
-                href="#contact"
-                onClick={() => setOpen(false)}
+              <Link
+                href="/#contact"
+                onClick={(event) => {
+                  prepareSectionNavigation(event, "/#contact");
+                  setOpen(false);
+                }}
                 className="mt-2 rounded-xl bg-[#f5f4ef] px-4 py-3 text-center text-sm font-semibold text-[#0a0a0c]"
               >
                 Start your scan
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}
