@@ -1,71 +1,71 @@
 import Link from "next/link";
 
-// Already on-brand: Onyx bg, metallic-white text hierarchy, Light Azure used
-// only as a hover accent on links, and a white-stroke embossed wordmark that
-// reads as engraved steel. No color changes made here.
-
-const columns = [
-  { title: "Product", links: ["Skin scan", "Formulations", "Routines", "Pricing"] },
-  { title: "Company", links: ["About", "Science", "Careers"] },
-  { title: "Connect", links: ["Instagram", "TikTok", "Contact"] },
+const navigation = [
+  { label: "About", href: "/#about" },
+  { label: "Services", href: "/#model" },
+  { label: "Products", href: "/products" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-[#0a0a0c] px-6 pt-20 sm:px-10">
-      <div className="mx-auto grid max-w-7xl gap-12 pb-16 sm:grid-cols-[1.2fr_2fr]">
-        <div>
-          <Link href="/" className="flex items-center gap-1 text-2xl font-semibold text-white">
-            <span className="text-white/40">[</span>
-            NOTWO
-            <span className="ml-0.5 -translate-y-3 text-xs text-white/40">™</span>
-            <span className="text-white/40">]</span>
-          </Link>
-          <p className="mt-4 max-w-xs text-sm leading-6 text-white/40">
-            AI-formulated skincare, engineered around skin that only you have.
-          </p>
+    <footer className="relative isolate overflow-hidden border-t border-white/10 bg-[#08090b] px-6 pt-16 sm:px-10 sm:pt-20">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#8fb6de]/50 to-transparent" />
+
+      <div className="relative mx-auto max-w-7xl">
+        <div className="grid gap-12 border-b border-white/10 pb-14 lg:grid-cols-12 lg:gap-8 lg:pb-16">
+          <div className="lg:col-span-5">
+            <Link href="/" className="inline-flex items-start text-2xl font-semibold tracking-tight text-white">
+              NO TWO
+              <sup className="ml-1 mt-0.5 text-[9px] font-medium text-white/40">TM</sup>
+            </Link>
+            <p className="mt-5 max-w-sm text-base leading-7 text-white/50">
+              Intelligent skincare, shaped around the skin you are in.
+            </p>
+          </div>
+
+          <nav aria-label="Footer navigation" className="lg:col-span-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/40">Explore</p>
+            <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 sm:max-w-sm lg:grid-cols-1">
+              {navigation.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="group inline-flex items-center gap-2 text-sm text-white/65 transition-colors hover:text-white"
+                  >
+                    <span>{link.label}</span>
+                    <span aria-hidden="true" className="translate-x-0 text-[#8fb6de] opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100">
+                      ↗
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex flex-col items-start lg:col-span-4 lg:items-end">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/40">Personalized care</p>
+            <p className="mt-5 max-w-xs text-sm leading-6 text-white/50 lg:text-right">
+              Start with a skin scan and receive a routine that responds to you.
+            </p>
+            <Link
+              href="/#contact"
+              className="mt-6 inline-flex items-center gap-3 rounded-full border border-white/20 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:border-[#8fb6de] hover:bg-[#8fb6de] hover:text-[#08090b]"
+            >
+              Start your scan <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-sm font-medium text-white/70">{col.title}</h4>
-              <ul className="mt-5 space-y-3">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-white/45 transition-colors hover:text-[#8fb6de]">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        <div className="flex flex-col gap-3 py-6 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} NO TWO. All rights reserved.</p>
+          <p>Made for skin that is uniquely yours.</p>
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 border-t border-white/10 py-6 text-xs text-white/30 sm:flex-row sm:items-center sm:justify-between">
-        <p>© {new Date().getFullYear()} NOTWO. All rights reserved.</p>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-white/60">
-            Privacy
-          </a>
-          <a href="#" className="hover:text-white/60">
-            Terms
-          </a>
-        </div>
-      </div>
-
-      {/* Embossed wordmark, echoing the brand's steel packaging */}
       <p
         aria-hidden="true"
-        className="pointer-events-none select-none pb-4 text-center font-semibold leading-none tracking-tighter"
-        style={{
-          fontSize: "clamp(4rem, 18vw, 13rem)",
-          color: "transparent",
-          WebkitTextStroke: "1px rgba(255,255,255,0.07)",
-          textShadow: "0 1px 0 rgba(255,255,255,0.05)",
-        }}
+        className="pointer-events-none -mb-[0.16em] mt-3 select-none text-center text-[20vw] font-semibold leading-none tracking-[-0.1em] text-white/[0.025] sm:text-[17vw]"
       >
         NO TWO
       </p>
