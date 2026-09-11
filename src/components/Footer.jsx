@@ -48,12 +48,6 @@ export default function Footer() {
             <p className="mt-5 max-w-xs text-sm leading-6 text-white/50 lg:text-right">
               Start with a skin scan and receive a routine that responds to you.
             </p>
-            <Link
-              href="/#contact"
-              className="mt-6 inline-flex items-center gap-3 rounded-full border border-white/20 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:border-[#8fb6de] hover:bg-[#8fb6de] hover:text-[#08090b]"
-            >
-              Start your scan <span aria-hidden="true">↗</span>
-            </Link>
           </div>
         </div>
 

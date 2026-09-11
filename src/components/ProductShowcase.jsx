@@ -8,7 +8,7 @@ import gsap from 'gsap';
 // Assets imported directly
 import hydraCreamImg from '@/app/assets/HydraCream.png';
 import purityGelImg from '@/app/assets/PurityGel.png';
-import radianceSerumImg from '@/app/assets/RadienceSerum.png';
+import radianceSerumImg from '@/app/assets/RadianceSerum.png';
 import calmElixirImg from '@/app/assets/calm-elixir.png';
 
 const SLIDES = [

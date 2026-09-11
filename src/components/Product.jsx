@@ -8,7 +8,7 @@ import gsap from 'gsap';
 // Reused product assets (placeholders for the 4 new formulas until real images are ready)
 import hydraCreamImg from '@/app/assets/HydraCream.png';
 import purityGelImg from '@/app/assets/PurityGel.png';
-import radianceSerumImg from '@/app/assets/RadienceSerum.png';
+import radianceSerumImg from '@/app/assets/RadianceSerum.png';
 import calmElixirImg from '@/app/assets/calm-elixir.png';
 
 // Hero background lives in /public, so it's referenced by path, not imported.
@@ -284,20 +284,6 @@ export default function Product() {
             <p className="text-sm md:text-base text-slate-300 font-light max-w-md">
               Not sure which formula matches your skin? Run the scan and the system will narrow it down for you.
             </p>
-            <Link
-              href="/"
-              className="group inline-flex items-center gap-4 px-8 py-4 border border-white/20 bg-white/[0.02] hover:bg-white hover:text-black text-xs font-mono tracking-[0.3em] uppercase text-white transition-all duration-500 backdrop-blur-md shrink-0"
-            >
-              Start your scan
-              <svg
-                className="w-4 h-4 text-slate-400 group-hover:text-black group-hover:translate-x-1 transition-all duration-300"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </Link>
           </div>
         </div>
       </section>

@@ -89,14 +89,6 @@ export default function Navbar() {
           ))}
         </div>
 
-        <Link
-          href="/#contact"
-          onClick={(event) => prepareSectionNavigation(event, "/#contact")}
-          className="hidden rounded-full bg-[#f5f4ef] px-5 py-2 text-sm font-semibold text-[#0a0a0c] transition-transform hover:scale-105 md:block"
-        >
-          Start your scan
-        </Link>
-
         <button
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
@@ -134,16 +126,6 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                href="/#contact"
-                onClick={(event) => {
-                  prepareSectionNavigation(event, "/#contact");
-                  setOpen(false);
-                }}
-                className="mt-2 rounded-xl bg-[#f5f4ef] px-4 py-3 text-center text-sm font-semibold text-[#0a0a0c]"
-              >
-                Start your scan
-              </Link>
             </div>
           </motion.div>
         )}
