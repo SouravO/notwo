@@ -7,14 +7,15 @@ import gsap from "gsap";
 import HydraCreamImg from "@/app/assets/HydraCream.png";
 import PurityGelImg from "@/app/assets/PurityGel.png";
 import RadianceSerumImg from "@/app/assets/RadianceSerum.png";
-import CalmElixirImg from "@/app/assets/calm-elixir.png";
+// import CalmElixirImg from "@/app/assets/calm-elixir.png";
 
 // FIXED PRODUCT DATA
 const PRODUCTS = [
   { id: "01", name: "HYDRA CREAM", img: HydraCreamImg, size: "lg" },
   { id: "02", name: "PURITY GEL", img: PurityGelImg, size: "lg" },
   { id: "03", name: "RADIANCE SERUM", img: RadianceSerumImg, size: "lg" },
-  { id: "04", name: "CALM ELIXIR", img: CalmElixirImg, size: "md" },
+  { id: "04", name: "PURITY GEL", img: PurityGelImg, size: "lg" },
+
 ];
 
 const SIZE_CLASSES = {
@@ -59,12 +60,12 @@ export default function Hero() {
       // State proxies for mathematical rendering
       const orbit = { rotation: 45 }; // Starts at 45deg (Hydra Cream approaching from dark right)
       const global = { alpha: 0 }; // Master darkness fade
-      let currentRadii = { x: 240, y: 55 }; // Default desktop orbit size
+      let currentRadii = { x: 210, y: 55 }; // Default desktop orbit size
 
       // Responsive adjustments
-      mm.add("(min-width: 1024px)", () => { currentRadii = { x: 240, y: 55 }; });
-      mm.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 160, y: 40 }; });
-      mm.add("(max-width: 639px)", () => { currentRadii = { x: 95, y: 25 }; }); // Compact mobile orbit
+      mm.add("(min-width: 1024px)", () => { currentRadii = { x: 210, y: 55 }; });
+      mm.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 145, y: 40 }; });
+      mm.add("(max-width: 639px)", () => { currentRadii = { x: 85, y: 25 }; }); // Compact mobile orbit
 
       // The 3D Engine: Maps current rotation to physical screen coordinates
       const renderOrbit = () => {
@@ -82,7 +83,9 @@ export default function Hero() {
           const cos = Math.cos(angleRad); // 1 = Right, -1 = Left
 
           const x = cos * rX;
-          const y = sin * rY;
+          // Offset the orbit against its depth curve so whichever item reaches
+          // the front always lands directly on the podium's center surface.
+          const y = (sin - 1) * rY;
 
           // Depth progression (0 to 1). 1 means it is exactly in the front spotlight.
           const depthProgress = (sin + 1) / 2;
@@ -92,7 +95,7 @@ export default function Hero() {
           const activeStrength = Math.pow(frontProgress, 4);
 
           // Physical attributes
-          const scale = 0.82 + activeStrength * 0.33; // ~0.8 resting -> 1.15 active
+          const scale = 0.82 + activeStrength * 0.43; // ~0.8 resting -> 1.25 on the podium
           const targetOpacity = 0.15 + depthProgress * 0.2 + activeStrength * 0.65;
           const finalOpacity = targetOpacity * global.alpha; // Multiplied by global darkness
           const brightness = 0.25 + depthProgress * 0.25 + activeStrength * 0.6; // 0.25 -> 1.1
@@ -169,7 +172,7 @@ export default function Hero() {
     <section
       ref={sectionRef}
       aria-labelledby="hero-title"
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#030304] px-4 py-16 sm:py-20 sm:px-10 lg:py-0"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#3a3a40_0%,#15161a_55%,#030304_100%)] lg:bg-[linear-gradient(90deg,#3a3a40_0%,#25262b_35%,#111216_62%,#030304_100%)] px-4 py-16 sm:py-20 sm:px-10 lg:py-0"
     >
       {/* Ambient background depth */}
       <div ref={bgRef} className="absolute inset-0 pointer-events-none opacity-0">
@@ -205,8 +208,6 @@ export default function Hero() {
 
         {/* RIGHT: CINEMATIC PRODUCT ORBIT (order-1 on mobile so it renders first/on top, order-2 on lg to keep desktop layout) */}
         <div className="relative w-full lg:w-[58%] flex flex-col justify-end order-1 lg:order-2 z-10">
-          <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-[#030304] to-transparent z-20 pointer-events-none" />
-
           <div className="relative w-full min-h-[320px] sm:min-h-[420px] lg:min-h-[560px]">
             {/* FIXED SPOTLIGHT WITH PARTICLES */}
             <div
@@ -258,10 +259,13 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* ORBIT STAGE */}
+            {/*
+              light.png is the only scenic layer here: it supplies both the
+              spotlight and podium. Product assets are positioned over it.
+            */}
             <div className="absolute inset-0 z-10 cursor-default">
-              {/* Lowered invisible floor coordinate point to sit directly inside the light pool */}
-              <div className="absolute top-[80%] sm:top-[85%] lg:top-[92%] left-1/2 w-0 h-0">
+              {/* Anchor the bottle bases to the top face of light.png's podium. */}
+              <div className="absolute top-[88%] sm:top-[91%] lg:top-[97%] left-1/2 w-0 h-0">
                 {PRODUCTS.map((product, idx) => (
                   <div
                     key={product.id}
