@@ -69,174 +69,173 @@ export default function Hero({ isActive = true }) {
   useLayoutEffect(() => {
     if (!isActive) return;
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
-      const stageRightShift = window.matchMedia("(min-width: 1024px)").matches ? 48 : 0;
+    const mediaQueries = gsap.matchMedia(sectionRef);
+    const stageRightShift = window.matchMedia("(min-width: 1024px)").matches ? 48 : 0;
 
-      // State proxies for mathematical rendering
-      const orbit = { rotation: 90 }; // Starts with Hydra Cream already at the front (in the light)
-      const orbitStep = 360 / PRODUCTS.length;
-      const global = { alpha: 1 }; // Master fade
-      const reveals = PRODUCTS.map(() => ({ v: 1 })); // Per-product reveal (Hydra Cream shows first)
-      let currentRadii = { x: 250, y: 58 }; // Default desktop orbit size
+    // State proxies for mathematical rendering
+    const orbit = { rotation: 90 }; // Starts with Hydra Cream already at the front (in the light)
+    const orbitStep = 360 / PRODUCTS.length;
+    const global = { alpha: 1 }; // Master fade
+    const reveals = PRODUCTS.map(() => ({ v: 1 })); // Per-product reveal (Hydra Cream shows first)
+    let currentRadii = { x: 250, y: 58 }; // Default desktop orbit size
 
-      // Responsive adjustments
-      mm.add("(min-width: 1024px)", () => { currentRadii = { x: 250, y: 58 }; });
-      mm.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 160, y: 40 }; });
-      mm.add("(max-width: 639px)", () => { currentRadii = { x: 95, y: 25 }; }); // Compact mobile orbit
+    // Responsive adjustments
+    mediaQueries.add("(min-width: 1024px)", () => { currentRadii = { x: 250, y: 58 }; });
+    mediaQueries.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 160, y: 40 }; });
+    mediaQueries.add("(max-width: 639px)", () => { currentRadii = { x: 95, y: 25 }; }); // Compact mobile orbit
 
-      // The 3D Engine: Maps current rotation to physical screen coordinates
-      const renderOrbit = () => {
-        const rX = currentRadii.x;
-        const rY = currentRadii.y;
+    // The 3D Engine: Maps current rotation to physical screen coordinates
+    const renderOrbit = () => {
+      const rX = currentRadii.x;
+      const rY = currentRadii.y;
 
-        productRefs.current.forEach((ref, i) => {
-          if (!ref) return;
+      productRefs.current.forEach((ref, i) => {
+        if (!ref) return;
 
-          // Keep the products evenly spaced around the orbit.
-          const angleDeg = orbit.rotation - i * orbitStep;
-          const angleRad = angleDeg * (Math.PI / 180);
+        // Keep the products evenly spaced around the orbit.
+        const angleDeg = orbit.rotation - i * orbitStep;
+        const angleRad = angleDeg * (Math.PI / 180);
 
-          const sin = Math.sin(angleRad); // 1 = Front, -1 = Back
-          const cos = Math.cos(angleRad); // 1 = Right, -1 = Left
+        const sin = Math.sin(angleRad); // 1 = Front, -1 = Back
+        const cos = Math.cos(angleRad); // 1 = Right, -1 = Left
 
-          const x = cos * rX;
-          const y = sin * rY;
+        const x = cos * rX;
+        const y = sin * rY;
 
-          // Depth progression (0 to 1). 1 means it is exactly in the front spotlight.
-          const depthProgress = (sin + 1) / 2;
+        // Depth progression (0 to 1). 1 means it is exactly in the front spotlight.
+        const depthProgress = (sin + 1) / 2;
 
-          // Non-linear "spotlight peak" - rapidly increases only when dead center
-          const frontProgress = Math.max(0, sin);
-          const activeStrength = Math.pow(frontProgress, 4);
+        // Non-linear "spotlight peak" - rapidly increases only when dead center
+        const frontProgress = Math.max(0, sin);
+        const activeStrength = Math.pow(frontProgress, 4);
 
-          // Physical attributes
-          const scale = 0.82 + activeStrength * 0.33; // ~0.8 resting -> 1.15 active
-          const targetOpacity = 0.15 + depthProgress * 0.2 + activeStrength * 0.65;
-          const finalOpacity = targetOpacity * global.alpha * reveals[i].v; // Multiplied by reveal state
-          const brightness = 0.25 + depthProgress * 0.25 + activeStrength * 0.6; // 0.25 -> 1.1
+        // Physical attributes
+        const scale = 0.82 + activeStrength * 0.33; // ~0.8 resting -> 1.15 active
+        const targetOpacity = 0.15 + depthProgress * 0.2 + activeStrength * 0.65;
+        const finalOpacity = targetOpacity * global.alpha * reveals[i].v; // Multiplied by reveal state
+        const brightness = 0.25 + depthProgress * 0.25 + activeStrength * 0.6; // 0.25 -> 1.1
 
-          // Apply to bottle wrapper
-          gsap.set(ref, {
-            xPercent: -50,
-            x,
-            y,
-            scale,
-            opacity: finalOpacity,
-            filter: `brightness(${brightness})`,
-            zIndex: Math.round(depthProgress * 100),
-            transformOrigin: "center bottom", // Anchors all products to one shared floor point
-          });
+        // Apply to bottle wrapper
+        gsap.set(ref, {
+          xPercent: -50,
+          x,
+          y,
+          scale,
+          opacity: finalOpacity,
+          filter: `brightness(${brightness})`,
+          zIndex: Math.round(depthProgress * 100),
+          transformOrigin: "center bottom", // Anchors all products to one shared floor point
         });
-      };
-
-      // --- REDUCED MOTION ---
-      mm.add("(prefers-reduced-motion: reduce)", () => {
-        global.alpha = 1;
-        orbit.rotation = 90; // Lock Hydra Cream to front
-        renderOrbit();
-        gsap.set(stageRef.current, { x: stageRightShift });
-        gsap.set([bgRef.current, spotlightRef.current], { opacity: 1 });
-        gsap.set(copyGlowRef.current, { opacity: 1 });
-        gsap.set(lineRefs.current, { yPercent: 0, opacity: 1 });
-        gsap.set(fadeRefs.current, { opacity: 1, y: 0 });
       });
+    };
 
-      // --- CINEMATIC STORY MOTION ---
-      mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const stage = stageRef.current;
-        const section = sectionRef.current;
+    // --- REDUCED MOTION ---
+    mediaQueries.add("(prefers-reduced-motion: reduce)", () => {
+      global.alpha = 1;
+      orbit.rotation = 90; // Lock Hydra Cream to front
+      renderOrbit();
+      gsap.set(stageRef.current, { x: stageRightShift });
+      gsap.set([bgRef.current, spotlightRef.current], { opacity: 1 });
+      gsap.set(copyGlowRef.current, { opacity: 1 });
+      gsap.set(lineRefs.current, { yPercent: 0, opacity: 1 });
+      gsap.set(fadeRefs.current, { opacity: 1, y: 0 });
+    });
 
-        // How far left the stage must sit so the spotlight is centered on the screen
-        gsap.set(stage, { x: 0 });
-        const stageBox = stage.getBoundingClientRect();
-        const sectionBox = section.getBoundingClientRect();
-        const centerOffset =
-          sectionBox.left + sectionBox.width / 2 - (stageBox.left + stageBox.width / 2);
+    // --- CINEMATIC STORY MOTION ---
+    mediaQueries.add("(prefers-reduced-motion: no-preference)", () => {
+      const stage = stageRef.current;
+      const section = sectionRef.current;
 
-        // Initial hidden states (total darkness)
-        gsap.set(stage, { x: centerOffset });
-        gsap.set(bgRef.current, { opacity: 0 });
-        gsap.set(spotlightRef.current, { opacity: 0, clipPath: "inset(0% 0% 100% 0%)" });
-        gsap.set(copyGlowRef.current, { opacity: 0 });
-        gsap.set(lineRefs.current, { yPercent: 110, opacity: 0 });
-        gsap.set(fadeRefs.current, { opacity: 0, y: 16 });
-        gsap.set(reveals, { v: 0 }); // products fully hidden until their reveal
+      // How far left the stage must sit so the spotlight is centered on the screen
+      gsap.set(stage, { x: 0 });
+      const stageBox = stage.getBoundingClientRect();
+      const sectionBox = section.getBoundingClientRect();
+      const centerOffset =
+        sectionBox.left + sectionBox.width / 2 - (stageBox.left + stageBox.width / 2);
 
-        const stepDur = 1.2;
-        const holdDur = 1.0;
+      // Initial hidden states (total darkness)
+      gsap.set(stage, { x: centerOffset });
+      gsap.set(bgRef.current, { opacity: 0 });
+      gsap.set(spotlightRef.current, { opacity: 0, clipPath: "inset(0% 0% 100% 0%)" });
+      gsap.set(copyGlowRef.current, { opacity: 0 });
+      gsap.set(lineRefs.current, { yPercent: 110, opacity: 0 });
+      gsap.set(fadeRefs.current, { opacity: 0, y: 16 });
+      gsap.set(reveals, { v: 0 }); // products fully hidden until their reveal
 
-        // 1. The Seamless Looping Engine (paused until the reveal finishes)
-        // immediateRender: false -> building the loop must NOT change the orbit position
-        orbitTlRef.current = gsap.timeline({ paused: true, repeat: -1, onUpdate: renderOrbit });
-        for (let i = 0; i < PRODUCTS.length; i += 1) {
-          const fromRotation = 90 + orbitStep * i;
-          const toRotation = fromRotation + orbitStep;
+      const stepDur = 1.2;
+      const holdDur = 1.0;
 
-          orbitTlRef.current
-            .to({}, { duration: holdDur })
-            .fromTo(
-              orbit,
-              { rotation: fromRotation },
-              { rotation: toRotation, duration: stepDur, ease: "power2.inOut", immediateRender: false }
-            );
-        }
+      // 1. The Seamless Looping Engine (paused until the reveal finishes)
+      // immediateRender: false -> building the loop must NOT change the orbit position
+      orbitTlRef.current = gsap.timeline({ paused: true, repeat: -1, onUpdate: renderOrbit });
+      for (let i = 0; i < PRODUCTS.length; i += 1) {
+        const fromRotation = 90 + orbitStep * i;
+        const toRotation = fromRotation + orbitStep;
 
-        // Lock the formation: Hydra Cream in the front of the light, everything still hidden
-        orbit.rotation = 90;
-        renderOrbit();
+        orbitTlRef.current
+          .to({}, { duration: holdDur })
+          .fromTo(
+            orbit,
+            { rotation: fromRotation },
+            { rotation: toRotation, duration: stepDur, ease: "power2.inOut", immediateRender: false }
+          );
+      }
 
-        // 2. The Master Story Timeline
-        const story = gsap.timeline();
+      // Lock the formation: Hydra Cream in the front of the light, everything still hidden
+      orbit.rotation = 90;
+      renderOrbit();
 
-        story
-          // Beat 1 — Hold on full darkness
-          .to({}, { duration: DARK_HOLD })
+      // 2. The Master Story Timeline
+      const story = gsap.timeline();
 
-          // Beat 2 — Spotlight snaps ON quickly (top-to-bottom reveal + flicker)
-          .to(spotlightRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power3.out" })
-          .to(spotlightRef.current, {
-            keyframes: [
-              { opacity: 0.5, duration: 0.04 },
-              { opacity: 0.2, duration: 0.05 },
-              { opacity: 0.95, duration: 0.06 },
-              { opacity: 0.6, duration: 0.04 },
-              { opacity: 0.85, duration: 0.25, ease: "power2.out" },
-            ],
-            onComplete: () => gsap.set(spotlightRef.current, { clearProps: "clipPath" }),
-          }, "<")
-          .to(bgRef.current, { opacity: 1, duration: 0.4, ease: "power1.out" }, "<")
+      story
+        // Beat 1 — Hold on full darkness
+        .to({}, { duration: DARK_HOLD })
 
-          // Beat 3 — Short beat: only the light is on the empty stage
-          .to({}, { duration: PRODUCT_GAP })
+        // Beat 2 — Spotlight snaps ON quickly (top-to-bottom reveal + flicker)
+        .to(spotlightRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power3.out" })
+        .to(spotlightRef.current, {
+          keyframes: [
+            { opacity: 0.5, duration: 0.04 },
+            { opacity: 0.2, duration: 0.05 },
+            { opacity: 0.95, duration: 0.06 },
+            { opacity: 0.6, duration: 0.04 },
+            { opacity: 0.85, duration: 0.25, ease: "power2.out" },
+          ],
+          onComplete: () => gsap.set(spotlightRef.current, { clearProps: "clipPath" }),
+        }, "<")
+        .to(bgRef.current, { opacity: 1, duration: 0.4, ease: "power1.out" }, "<")
 
-          // Beat 4 — Hydra Cream fades in first, right on the light (no movement)
-          .to(reveals[0], { v: 1, duration: 0.7, ease: "power2.out", onUpdate: renderOrbit })
+        // Beat 3 — Short beat: only the light is on the empty stage
+        .to({}, { duration: PRODUCT_GAP })
 
-          // Beat 5 — the remaining products fade in around it (still no movement)
-          .to(reveals.slice(1), { v: 1, duration: 0.6, stagger: 0.12, ease: "power2.out", onUpdate: renderOrbit }, "-=0.25")
+        // Beat 4 — Hydra Cream fades in first, right on the light (no movement)
+        .to(reveals[0], { v: 1, duration: 0.7, ease: "power2.out", onUpdate: renderOrbit })
 
-          // Beat 6 — reveal is complete, THEN the spin starts from Hydra Cream (skips part of the first hold so it starts promptly)
-          .add(() => orbitTlRef.current && orbitTlRef.current.play(0.4))
+        // Beat 5 — the remaining products fade in around it (still no movement)
+        .to(reveals.slice(1), { v: 1, duration: 0.6, stagger: 0.12, ease: "power2.out", onUpdate: renderOrbit }, "-=0.25")
 
-          // Let the products spin in the center for a moment
-          .to({}, { duration: CENTER_SPIN_TIME })
+        // Beat 6 — reveal is complete, THEN the spin starts from Hydra Cream (skips part of the first hold so it starts promptly)
+        .add(() => orbitTlRef.current && orbitTlRef.current.play(0.4))
 
-          // Beat 7 — Spotlight + Products travel from center to the right corner
-          // AND the left text starts revealing at that exact same moment (everything is anchored to the "travel" label)
-          .addLabel("travel")
-          .to(stage, { x: stageRightShift, duration: 1.6, ease: "power3.inOut" }, "travel")
+        // Let the products spin in the center for a moment
+        .to({}, { duration: CENTER_SPIN_TIME })
 
-          // Beat 8 — Text reveals line by line on the left, starting together with the stage movement
-          .to(lineRefs.current, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.14, ease: "power3.out" }, "travel")
-          .to(copyGlowRef.current, { opacity: 1, duration: 1.2, ease: "power2.out" }, "travel")
-          .to(fadeRefs.current, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "travel+=0.5");
-      });
+        // Beat 7 — Spotlight + Products travel from center to the right corner
+        // AND the left text starts revealing at that exact same moment (everything is anchored to the "travel" label)
+        .addLabel("travel")
+        .to(stage, { x: stageRightShift, duration: 1.6, ease: "power3.inOut" }, "travel")
 
-      return () => mm.revert();
-    }, sectionRef);
+        // Beat 8 — Text reveals line by line on the left, starting together with the stage movement
+        .to(lineRefs.current, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.14, ease: "power3.out" }, "travel")
+        .to(copyGlowRef.current, { opacity: 1, duration: 1.2, ease: "power2.out" }, "travel")
+        .to(fadeRefs.current, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "travel+=0.5");
+    });
 
-    return () => ctx.revert();
+    return () => {
+      mediaQueries.revert();
+      orbitTlRef.current = null;
+    };
   }, [isActive]);
 
   return (
