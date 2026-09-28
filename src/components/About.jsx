@@ -254,7 +254,7 @@ export default function MissionVision() {
             ref={parallaxImgRef}
             className="absolute inset-0 h-[134%] w-full -top-[17%] bg-cover bg-center"
             style={{
-              backgroundImage: `url('/parallax.png')`,
+              backgroundImage: `url('/Parallax.png')`,
             }}
           />
         </div>
