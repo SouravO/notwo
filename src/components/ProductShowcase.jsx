@@ -297,7 +297,6 @@ export default function ProductShowcase() {
                       alt={slide.name}
                       fill
                       sizes="(max-width: 768px) 60vw, 35vw"
-                      priority={index === 0}
                       className="object-contain filter contrast-[1.02] brightness-[1.02] drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]"
                     />
                   </div>

@@ -7,31 +7,45 @@ import gsap from "gsap";
 import HydraCreamImg from "@/app/assets/HydraCream.png";
 import PurityGelImg from "@/app/assets/PurityGel.png";
 import RadianceSerumImg from "@/app/assets/RadianceSerum.png";
-import CalmElixirImg from "@/app/assets/calm-elixir.png";
 
 // FIXED PRODUCT DATA
 const PRODUCTS = [
   { id: "01", name: "HYDRA CREAM", img: HydraCreamImg, size: "lg" },
   { id: "02", name: "PURITY GEL", img: PurityGelImg, size: "lg" },
   { id: "03", name: "RADIANCE SERUM", img: RadianceSerumImg, size: "lg" },
-  { id: "04", name: "CALM ELIXIR", img: CalmElixirImg, size: "md" },
+  { id: "04", name: "HYDRA CREAM", img: HydraCreamImg, size: "lg" },
 ];
 
 const SIZE_CLASSES = {
-  lg: "h-[110px] sm:h-[160px] lg:h-[250px]",
-  md: "h-[90px] sm:h-[130px] lg:h-[200px]",
+  lg: "h-[110px] sm:h-[160px] lg:h-[270px]",
+  md: "h-[90px] sm:h-[130px] lg:h-[216px]",
 };
 
-export default function Hero() {
+// HEADLINE LINES (each one is revealed separately)
+const HEADLINE_LINES = [
+  { text: "No two skins", strong: false },
+  { text: "read the same.", strong: false },
+  { text: "Neither should", strong: true },
+  { text: "your routine.", strong: true },
+];
+
+// STORY TIMING (seconds) — tweak these to adjust the pacing
+const DARK_HOLD = 0.04; // brief handoff from the intro loader to the spotlight
+const PRODUCT_GAP = 0.5; // beat between the spotlight being on and the first product appearing
+const CENTER_SPIN_TIME = 2.2; // how long products spin in the center before moving right
+
+export default function Hero({ isActive = true }) {
   const sectionRef = useRef(null);
-  const textElementsRef = useRef([]);
+  const stageRef = useRef(null); // spotlight + orbit column (moves center -> right)
+  const lineRefs = useRef([]);
+  const fadeRefs = useRef([]);
+  const copyGlowRef = useRef(null);
   const productRefs = useRef([]);
   const spotlightRef = useRef(null);
   const bgRef = useRef(null);
 
   // Animation timelines
   const orbitTlRef = useRef(null);
-  const introTweenRef = useRef(null);
 
   // Particles state
   const [particles, setParticles] = useState([]);
@@ -53,16 +67,21 @@ export default function Hero() {
   }, []);
 
   useLayoutEffect(() => {
+    if (!isActive) return;
+
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
+      const stageRightShift = window.matchMedia("(min-width: 1024px)").matches ? 48 : 0;
 
       // State proxies for mathematical rendering
-      const orbit = { rotation: 45 }; // Starts at 45deg (Hydra Cream approaching from dark right)
-      const global = { alpha: 0 }; // Master darkness fade
-      let currentRadii = { x: 240, y: 55 }; // Default desktop orbit size
+      const orbit = { rotation: 90 }; // Starts with Hydra Cream already at the front (in the light)
+      const orbitStep = 360 / PRODUCTS.length;
+      const global = { alpha: 1 }; // Master fade
+      const reveals = PRODUCTS.map(() => ({ v: 1 })); // Per-product reveal (Hydra Cream shows first)
+      let currentRadii = { x: 250, y: 58 }; // Default desktop orbit size
 
       // Responsive adjustments
-      mm.add("(min-width: 1024px)", () => { currentRadii = { x: 240, y: 55 }; });
+      mm.add("(min-width: 1024px)", () => { currentRadii = { x: 250, y: 58 }; });
       mm.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 160, y: 40 }; });
       mm.add("(max-width: 639px)", () => { currentRadii = { x: 95, y: 25 }; }); // Compact mobile orbit
 
@@ -74,8 +93,8 @@ export default function Hero() {
         productRefs.current.forEach((ref, i) => {
           if (!ref) return;
 
-          // Sequential 90-degree separation
-          const angleDeg = orbit.rotation - i * 90;
+          // Keep the products evenly spaced around the orbit.
+          const angleDeg = orbit.rotation - i * orbitStep;
           const angleRad = angleDeg * (Math.PI / 180);
 
           const sin = Math.sin(angleRad); // 1 = Front, -1 = Back
@@ -86,7 +105,7 @@ export default function Hero() {
 
           // Depth progression (0 to 1). 1 means it is exactly in the front spotlight.
           const depthProgress = (sin + 1) / 2;
-          
+
           // Non-linear "spotlight peak" - rapidly increases only when dead center
           const frontProgress = Math.max(0, sin);
           const activeStrength = Math.pow(frontProgress, 4);
@@ -94,7 +113,7 @@ export default function Hero() {
           // Physical attributes
           const scale = 0.82 + activeStrength * 0.33; // ~0.8 resting -> 1.15 active
           const targetOpacity = 0.15 + depthProgress * 0.2 + activeStrength * 0.65;
-          const finalOpacity = targetOpacity * global.alpha; // Multiplied by global darkness
+          const finalOpacity = targetOpacity * global.alpha * reveals[i].v; // Multiplied by reveal state
           const brightness = 0.25 + depthProgress * 0.25 + activeStrength * 0.6; // 0.25 -> 1.1
 
           // Apply to bottle wrapper
@@ -116,54 +135,109 @@ export default function Hero() {
         global.alpha = 1;
         orbit.rotation = 90; // Lock Hydra Cream to front
         renderOrbit();
-        gsap.set([bgRef.current, spotlightRef.current, textElementsRef.current], { opacity: 1, y: 0 });
+        gsap.set(stageRef.current, { x: stageRightShift });
+        gsap.set([bgRef.current, spotlightRef.current], { opacity: 1 });
+        gsap.set(copyGlowRef.current, { opacity: 1 });
+        gsap.set(lineRefs.current, { yPercent: 0, opacity: 1 });
+        gsap.set(fadeRefs.current, { opacity: 1, y: 0 });
       });
 
-      // --- CINEMATIC MOTION ---
+      // --- CINEMATIC STORY MOTION ---
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Initial hidden states
+        const stage = stageRef.current;
+        const section = sectionRef.current;
+
+        // How far left the stage must sit so the spotlight is centered on the screen
+        gsap.set(stage, { x: 0 });
+        const stageBox = stage.getBoundingClientRect();
+        const sectionBox = section.getBoundingClientRect();
+        const centerOffset =
+          sectionBox.left + sectionBox.width / 2 - (stageBox.left + stageBox.width / 2);
+
+        // Initial hidden states (total darkness)
+        gsap.set(stage, { x: centerOffset });
         gsap.set(bgRef.current, { opacity: 0 });
-        gsap.set(textElementsRef.current, { opacity: 0, y: 16 });
-        gsap.set(spotlightRef.current, { opacity: 0, scaleY: 0.85, transformOrigin: "top center" });
+        gsap.set(spotlightRef.current, { opacity: 0, clipPath: "inset(0% 0% 100% 0%)" });
+        gsap.set(copyGlowRef.current, { opacity: 0 });
+        gsap.set(lineRefs.current, { yPercent: 110, opacity: 0 });
+        gsap.set(fadeRefs.current, { opacity: 0, y: 16 });
+        gsap.set(reveals, { v: 0 }); // products fully hidden until their reveal
 
         const stepDur = 1.2;
         const holdDur = 1.0;
 
-        // 1. The Seamless Looping Engine
-        orbitTlRef.current = gsap.timeline({ paused: true, repeat: -1, onUpdate: renderOrbit })
-          .to({}, { duration: holdDur }) // Hold at 90
-          .fromTo(orbit, { rotation: 90 }, { rotation: 180, duration: stepDur, ease: "power2.inOut" })
-          .to({}, { duration: holdDur }) // Hold at 180
-          .fromTo(orbit, { rotation: 180 }, { rotation: 270, duration: stepDur, ease: "power2.inOut" })
-          .to({}, { duration: holdDur }) // Hold at 270
-          .fromTo(orbit, { rotation: 270 }, { rotation: 360, duration: stepDur, ease: "power2.inOut" })
-          .to({}, { duration: holdDur }) // Hold at 360
-          .fromTo(orbit, { rotation: 360 }, { rotation: 450, duration: stepDur, ease: "power2.inOut" });
+        // 1. The Seamless Looping Engine (paused until the reveal finishes)
+        // immediateRender: false -> building the loop must NOT change the orbit position
+        orbitTlRef.current = gsap.timeline({ paused: true, repeat: -1, onUpdate: renderOrbit });
+        for (let i = 0; i < PRODUCTS.length; i += 1) {
+          const fromRotation = 90 + orbitStep * i;
+          const toRotation = fromRotation + orbitStep;
 
-        // 2. The Master Reveal
-        const masterTl = gsap.timeline();
-        
-        masterTl.to(bgRef.current, { opacity: 1, duration: 0.8, ease: "power1.out" }, 0)
-          .to(spotlightRef.current, { opacity: 0.85, scaleY: 1, duration: 1.5, ease: "power2.out" }, 0.3)
-          .to(textElementsRef.current, { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: "power2.out" }, 0.5)
-          .to(global, { alpha: 1, duration: 1.2, ease: "power2.out", onUpdate: renderOrbit }, 0.4);
+          orbitTlRef.current
+            .to({}, { duration: holdDur })
+            .fromTo(
+              orbit,
+              { rotation: fromRotation },
+              { rotation: toRotation, duration: stepDur, ease: "power2.inOut", immediateRender: false }
+            );
+        }
 
-        // 3. The Intro Approach (starts moving as lights come on)
-        introTweenRef.current = gsap.to(orbit, {
-          rotation: 90, // Brings Hydra from right (45) to front center (90)
-          duration: 1.8,
-          ease: "power2.inOut",
-          onUpdate: renderOrbit,
-          delay: 0.6,
-          onComplete: () => orbitTlRef.current.play() // Hand off to the continuous loop
-        });
+        // Lock the formation: Hydra Cream in the front of the light, everything still hidden
+        orbit.rotation = 90;
+        renderOrbit();
+
+        // 2. The Master Story Timeline
+        const story = gsap.timeline();
+
+        story
+          // Beat 1 — Hold on full darkness
+          .to({}, { duration: DARK_HOLD })
+
+          // Beat 2 — Spotlight snaps ON quickly (top-to-bottom reveal + flicker)
+          .to(spotlightRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power3.out" })
+          .to(spotlightRef.current, {
+            keyframes: [
+              { opacity: 0.5, duration: 0.04 },
+              { opacity: 0.2, duration: 0.05 },
+              { opacity: 0.95, duration: 0.06 },
+              { opacity: 0.6, duration: 0.04 },
+              { opacity: 0.85, duration: 0.25, ease: "power2.out" },
+            ],
+            onComplete: () => gsap.set(spotlightRef.current, { clearProps: "clipPath" }),
+          }, "<")
+          .to(bgRef.current, { opacity: 1, duration: 0.4, ease: "power1.out" }, "<")
+
+          // Beat 3 — Short beat: only the light is on the empty stage
+          .to({}, { duration: PRODUCT_GAP })
+
+          // Beat 4 — Hydra Cream fades in first, right on the light (no movement)
+          .to(reveals[0], { v: 1, duration: 0.7, ease: "power2.out", onUpdate: renderOrbit })
+
+          // Beat 5 — the remaining products fade in around it (still no movement)
+          .to(reveals.slice(1), { v: 1, duration: 0.6, stagger: 0.12, ease: "power2.out", onUpdate: renderOrbit }, "-=0.25")
+
+          // Beat 6 — reveal is complete, THEN the spin starts from Hydra Cream (skips part of the first hold so it starts promptly)
+          .add(() => orbitTlRef.current && orbitTlRef.current.play(0.4))
+
+          // Let the products spin in the center for a moment
+          .to({}, { duration: CENTER_SPIN_TIME })
+
+          // Beat 7 — Spotlight + Products travel from center to the right corner
+          // AND the left text starts revealing at that exact same moment (everything is anchored to the "travel" label)
+          .addLabel("travel")
+          .to(stage, { x: stageRightShift, duration: 1.6, ease: "power3.inOut" }, "travel")
+
+          // Beat 8 — Text reveals line by line on the left, starting together with the stage movement
+          .to(lineRefs.current, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.14, ease: "power3.out" }, "travel")
+          .to(copyGlowRef.current, { opacity: 1, duration: 1.2, ease: "power2.out" }, "travel")
+          .to(fadeRefs.current, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "travel+=0.5");
       });
 
       return () => mm.revert();
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isActive]);
 
   return (
     <section
@@ -179,54 +253,75 @@ export default function Hero() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-8 sm:gap-10 lg:gap-8 min-h-[60vh]">
         {/* LEFT: HERO TEXT (order-2 on mobile so it sits below the image, order-1 on lg to keep desktop layout) */}
-        <div className="w-full lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
-          <h1
-            id="hero-title"
-            ref={(el) => { textElementsRef.current[0] = el; }}
-            className="text-4xl font-light tracking-tight text-[#e2e2e5] sm:text-5xl lg:text-6xl uppercase leading-[1.1]"
-          >
-            No two skins<br />
-            read the same.<br />
-            <span className="font-semibold text-white">
-              Neither should<br />
-              your routine.
-            </span>
-          </h1>
+        <div className="relative w-full lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
+          {/* SILVER TEXT BACKDROP — stays solid silver behind all the text, then fades into black with a soft curved edge.
+              The elliptical mask fades every side of the box to transparent, so no rectangle is ever visible. */}
+          <div
+            ref={copyGlowRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute -left-[28%] -right-[30%] -top-[20%] -bottom-[20%] z-0 opacity-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 42% at 30% 45%, rgba(222,226,230,0.5) 0%, rgba(222,226,230,0) 100%), linear-gradient(100deg, rgba(196,201,206,0.97) 0%, rgba(184,189,195,0.95) 55%, rgba(150,155,161,0.8) 80%, rgba(3,3,4,0) 100%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 100% 50% at 6% 50%, #000 0%, #000 62%, rgba(0,0,0,0.75) 76%, rgba(0,0,0,0.3) 90%, rgba(0,0,0,0) 100%)",
+              maskImage:
+                "radial-gradient(ellipse 100% 50% at 6% 50%, #000 0%, #000 62%, rgba(0,0,0,0.75) 76%, rgba(0,0,0,0.3) 90%, rgba(0,0,0,0) 100%)",
+            }}
+          />
+          <div className="relative z-10">
+            <h1
+              id="hero-title"
+              className="font-serif text-4xl font-light italic tracking-[-0.045em] text-[#090a0c] sm:text-5xl lg:text-6xl xl:text-7xl uppercase leading-[1.02]"
+            >
+              {HEADLINE_LINES.map((line, i) => (
+                <span key={line.text} className="block overflow-hidden">
+                  <span
+                    ref={(el) => { lineRefs.current[i] = el; }}
+                    className={`block ${line.strong ? "font-sans font-semibold not-italic tracking-[-0.055em] text-[#090a0c]" : ""}`}
+                    style={{ opacity: 0 }}
+                  >
+                    {line.text}
+                  </span>
+                </span>
+              ))}
+            </h1>
 
-          <p
-            ref={(el) => { textElementsRef.current[1] = el; }}
-            className="mt-8 max-w-md text-sm lg:text-base leading-relaxed text-[#a1a1aa]"
-          >
-            NO TWO reads your skin through AI and builds a routine around what it
-            actually finds — not what everyone else is using.
-          </p>
 
-          <div ref={(el) => { textElementsRef.current[2] = el; }} className="mt-10">
-            <button className="group relative overflow-hidden bg-[#f5f4ef] px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#0a0a0c] transition-all hover:bg-white">
-              <span className="relative z-10">START YOUR SCAN</span>
-              <span className="absolute inset-0 -translate-x-full bg-[#c4c4c6]/40 transition-transform duration-500 group-hover:translate-x-0" />
-            </button>
+
+            <div
+              ref={(el) => { fadeRefs.current[1] = el; }}
+              className="mt-8"
+              style={{ opacity: 0 }}
+            >
+
+            </div>
           </div>
         </div>
 
         {/* RIGHT: CINEMATIC PRODUCT ORBIT (order-1 on mobile so it renders first/on top, order-2 on lg to keep desktop layout) */}
-        <div className="relative w-full lg:w-[58%] flex flex-col justify-end order-1 lg:order-2 z-10">
+        <div
+          ref={stageRef}
+          className="relative w-full lg:w-[58%] flex flex-col justify-end order-1 lg:order-2 z-10"
+        >
           <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-[#030304] to-transparent z-20 pointer-events-none" />
 
           <div className="relative w-full min-h-[320px] sm:min-h-[420px] lg:min-h-[560px]">
             {/* FIXED SPOTLIGHT WITH PARTICLES */}
             <div
               ref={spotlightRef}
-              className="absolute left-1/2 -translate-x-1/2 top-[-16%] sm:top-[-24%] lg:top-[-32%] w-[100%] sm:w-[108%] lg:w-[112%] h-[110%] sm:h-[128%] lg:h-[145%] pointer-events-none z-0"
+              className="absolute left-1/2 -translate-x-1/2 top-[-16%] sm:top-[-24%] lg:top-[-34%] w-[100%] sm:w-[108%] lg:w-[118%] h-[110%] sm:h-[128%] lg:h-[152%] pointer-events-none z-0"
+              style={{ opacity: 0 }}
               aria-hidden="true"
             >
               <img
                 src="/light.png"
                 alt="Overhead spotlight beam"
+                loading="lazy"
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-                style={{ mixBlendMode: 'screen' }}
+                style={{ mixBlendMode: "screen" }}
               />
-              
+
               {/* CSS Keyframes for the specific dust drift */}
               <style>{`
                 @keyframes floatDust {
@@ -236,10 +331,10 @@ export default function Hero() {
                   100% { transform: translate(var(--tx), var(--ty)) scale(var(--s)); opacity: 0; }
                 }
               `}</style>
-              
+
               {/* Particle Container mapping radial depth mask so they don't bleed out */}
-              <div 
-                className="absolute inset-0 z-10 overflow-hidden" 
+              <div
+                className="absolute inset-0 z-10 overflow-hidden"
                 style={{
                   maskImage: "radial-gradient(ellipse at center, black 0%, transparent 65%)",
                   WebkitMaskImage: "radial-gradient(ellipse at center, black 0%, transparent 65%)",
@@ -266,8 +361,8 @@ export default function Hero() {
 
             {/* ORBIT STAGE */}
             <div className="absolute inset-0 z-10 cursor-default">
-              {/* Lowered invisible floor coordinate point to sit directly inside the light pool */}
-              <div className="absolute top-[80%] sm:top-[85%] lg:top-[92%] left-1/2 w-0 h-0">
+              {/* Shared floor anchor aligns the front product base with the podium surface */}
+              <div className="absolute top-[76%] sm:top-[82%] lg:top-[88%] left-1/2 w-0 h-0">
                 {PRODUCTS.map((product, idx) => (
                   <div
                     key={product.id}
@@ -280,9 +375,9 @@ export default function Hero() {
                       <Image
                         src={product.img}
                         alt={product.name}
+                        loading={idx === 0 ? "eager" : "lazy"}
                         className="relative z-10 max-h-full w-auto object-contain select-none"
                         draggable={false}
-                        priority
                       />
                       {/* Dynamic Contact Shadow */}
                       <div className="absolute bottom-[1px] left-1/2 -translate-x-1/2 w-[45%] h-[3px] bg-black/90 blur-[2px] rounded-[100%] z-0 pointer-events-none" />

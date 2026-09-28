@@ -7,6 +7,7 @@ import gsap from "gsap";
 
 const display = Bodoni_Moda({
   subsets: ["latin"],
+  preload: false,
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
   variable: "--font-display",
@@ -14,6 +15,7 @@ const display = Bodoni_Moda({
 
 const mono = Space_Grotesk({
   subsets: ["latin"],
+  preload: false,
   weight: ["400", "500"],
   variable: "--font-mono",
 });
@@ -209,7 +211,7 @@ function WhyChooseStack() {
   }, []);
 
   return (
-    <section id="products" className={`${display.variable} ${mono.variable} relative isolate w-full bg-[#FAF5EE] pb-[10dvh]`}>
+    <section id="products" className={`${display.variable} ${mono.variable} relative isolate w-full scroll-mt-24 bg-[#FAF5EE] pb-[10dvh]`}>
       <div ref={sectionRef} className="relative w-full motion-reduce:h-auto" style={{ height: SECTION_HEIGHT }}>
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden motion-reduce:h-auto motion-reduce:sticky motion-reduce:top-auto motion-reduce:overflow-visible">
           

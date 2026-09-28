@@ -11,6 +11,7 @@ if (typeof window !== "undefined") {
 
 const display = Bodoni_Moda({
   subsets: ["latin"],
+  preload: false,
   weight: ["500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-display",
@@ -18,6 +19,7 @@ const display = Bodoni_Moda({
 
 const mono = Space_Grotesk({
   subsets: ["latin"],
+  preload: false,
   weight: ["400", "500", "600"],
   variable: "--font-mono",
 });

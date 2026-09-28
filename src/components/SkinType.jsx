@@ -11,6 +11,7 @@ if (typeof window !== "undefined") {
 
 const display = Bodoni_Moda({
   subsets: ["latin"],
+  preload: false,
   weight: ["500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-display",
@@ -18,6 +19,7 @@ const display = Bodoni_Moda({
 
 const mono = Space_Grotesk({
   subsets: ["latin"],
+  preload: false,
   weight: ["400", "500", "600"],
   variable: "--font-mono",
 });
@@ -351,6 +353,7 @@ export default function SkinType() {
                   ref={clearFaceRef}
                   src="/clearskin.png"
                   alt=""
+                  loading="lazy"
                   className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] rounded-[18px] object-cover sm:inset-5 sm:h-[calc(100%-2.5rem)] sm:w-[calc(100%-2.5rem)] sm:rounded-[20px]"
                 />
 
@@ -358,6 +361,7 @@ export default function SkinType() {
                   ref={faceRef}
                   src="/facescan.png"
                   alt=""
+                  loading="lazy"
                   className="absolute inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] rounded-[18px] object-cover sm:inset-5 sm:h-[calc(100%-2.5rem)] sm:w-[calc(100%-2.5rem)] sm:rounded-[20px]"
                 />
 

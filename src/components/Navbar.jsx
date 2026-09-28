@@ -1,43 +1,111 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Brand tokens used here: Onyx (glass bg on scroll), Light Azure (scroll shadow
-// glow + link underline), Paper White (CTA button).
+// Shared brand colors and destinations for desktop and mobile navigation.
 
 const links = [
   { href: "/#about", label: "About" },
-  { href: "/#model", label: "Services" },
+  { href: "/#products", label: "Services" },
   { href: "/products", label: "Products" },
+  { href: "/technology", label: "Technology" },
   { href: "/#contact", label: "Contact" },
 ];
 
+const routeLinks = {
+  "/products": "/products",
+  "/technology": "/technology",
+};
+
 export default function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState(null);
 
-  const prepareSectionNavigation = (event, href) => {
+  const prepareSectionNavigation = (href) => {
     const isHomeDestination = href === "/" || href.startsWith("/#");
 
-    if (window.location.pathname === "/products" && isHomeDestination) {
-      event.preventDefault();
-      const sectionId = href.startsWith("/#") ? href.slice(2) : "";
-      const destination = sectionId
-        ? `/?notwo_skip_intro=1#${sectionId}`
-        : "/?notwo_skip_intro=1";
+    if (window.location.pathname !== "/" && isHomeDestination) {
+      try {
+        window.sessionStorage.setItem("notwo_skip_intro_navigation", "1");
+      } catch {
+        // Keep client-side navigation working when session storage is unavailable.
+      }
+    }
+  };
 
-      window.location.assign(destination);
+  const navigateToSection = (event, href) => {
+    if (!href.startsWith("/#")) {
+      prepareSectionNavigation(href);
+      return;
+    }
+
+    event.preventDefault();
+    prepareSectionNavigation(href);
+
+    if (pathname !== "/") {
+      router.push(href, { scroll: false });
+      return;
+    }
+
+    const target = document.getElementById(href.slice(2));
+    if (target) {
+      window.history.pushState(null, "", href);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    if (pathname !== "/" || !window.location.hash) return;
+
+    const targetId = decodeURIComponent(window.location.hash.slice(1));
+    let frame;
+    let attempts = 0;
+    const scrollToTarget = () => {
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      if (attempts++ < 20) frame = window.requestAnimationFrame(scrollToTarget);
+    };
+
+    frame = window.requestAnimationFrame(scrollToTarget);
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
+
+  useEffect(() => {
+    const updateNavigationState = () => {
+      setScrolled(window.scrollY > 24);
+
+      if (routeLinks[pathname]) {
+        setActiveHref(routeLinks[pathname]);
+        return;
+      }
+
+      if (pathname !== "/") {
+        setActiveHref(null);
+        return;
+      }
+
+      const activeSection = ["about", "products", "contact"]
+        .map((id) => document.getElementById(id))
+        .filter((section) => section && section.getBoundingClientRect().top <= window.innerHeight * 0.42)
+        .at(-1);
+
+      setActiveHref(activeSection ? `/#${activeSection.id}` : null);
+    };
+
+    const onScroll = () => updateNavigationState();
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const closeMenu = () => setOpen(false);
@@ -62,31 +130,42 @@ export default function Navbar() {
         aria-label="Main navigation"
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border px-4 transition-all duration-500 sm:px-6 lg:px-8 ${
           scrolled
-            ? "border-white/10 bg-[#0a0a0c]/80 py-3 shadow-[0_0_40px_-12px_rgba(143,182,222,0.35)] backdrop-blur-xl"
-            : "border-transparent bg-transparent py-4"
+            ? "border-white/15 bg-[#0a0a0c]/80 py-2.5 shadow-[0_12px_40px_-18px_rgba(143,182,222,0.6)] backdrop-blur-2xl"
+            : "border-white/[0.08] bg-[#0a0a0c]/20 py-3 backdrop-blur-md"
         }`}
       >
         <Link
           href="/"
-          onClick={(event) => prepareSectionNavigation(event, "/")}
-          className="flex items-center gap-1 text-lg font-semibold tracking-tight text-white"
+          onClick={() => prepareSectionNavigation("/")}
+          className="group flex items-center gap-1 text-lg font-semibold tracking-tight text-white"
         >
-          NO TWO
+          <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
           <span className="ml-0.5 -translate-y-2 text-[10px] text-white/40">™</span>
+          <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(103,232,249,0.8)]" />
         </Link>
 
-        <div className="hidden items-center gap-6 text-sm font-medium text-white/60 md:flex lg:gap-8">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={(event) => prepareSectionNavigation(event, link.href)}
-              className="group relative py-1 transition-colors hover:text-white"
-            >
-              {link.label}
-              <span className="absolute inset-x-0 -bottom-0.5 h-px scale-x-0 bg-gradient-to-r from-[#8fb6de] to-white/60 transition-transform duration-300 group-hover:scale-x-100" />
-            </Link>
-          ))}
+        <div className="hidden items-center gap-1 text-[13px] font-medium text-white/65 md:flex">
+          {links.map((link) => {
+            const isActive = activeHref === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={(event) => navigateToSection(event, link.href)}
+                aria-current={isActive ? "page" : undefined}
+                className={`group relative isolate rounded-full px-4 py-2.5 transition-colors duration-300 hover:text-white ${isActive ? "text-white" : ""}`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="desktop-nav-active"
+                    className="absolute inset-0 -z-10 rounded-full border border-white/10 bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         <button
@@ -113,19 +192,30 @@ export default function Navbar() {
             className="mx-auto mt-2 max-w-7xl overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0c]/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col gap-1 p-4">
-              {links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={(event) => {
-                    prepareSectionNavigation(event, link.href);
-                    setOpen(false);
-                  }}
-                  className="rounded-xl px-4 py-3 text-sm font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {links.map((link) => {
+                const isActive = activeHref === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={(event) => {
+                      navigateToSection(event, link.href);
+                      setOpen(false);
+                    }}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`relative isolate overflow-hidden rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:text-white ${isActive ? "text-white" : "text-white/70"}`}
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="mobile-nav-active"
+                        className="absolute inset-0 -z-10 rounded-xl border border-white/10 bg-white/[0.08]"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
           </motion.div>
         )}

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import gsap from 'gsap';
 
 // Reused product assets (placeholders for the 4 new formulas until real images are ready)
@@ -142,13 +141,6 @@ export default function Product() {
 
   return (
     <main className="bg-[#070709] text-white">
-      <Link
-        href="/"
-        className="fixed right-4 top-4 z-50 rounded-full border border-white/20 bg-[#070709]/90 px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-white shadow-lg backdrop-blur-md transition-colors hover:border-white/50 hover:bg-white hover:text-[#070709] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:top-6"
-      >
-        Home
-      </Link>
-
       {/* HERO */}
       <section className="relative w-full h-[100svh] min-h-[600px] overflow-hidden">
         <Image
@@ -183,7 +175,7 @@ export default function Product() {
       </section>
 
       {/* FORMULATION CATALOG */}
-      <section className="relative w-full py-20 md:py-32 px-6 md:px-16">
+      <section className="relative w-full py-20 md:py-32 px-6 md:px-16 bg-[#070709] text-white">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-end justify-between mb-12 md:mb-16 border-b border-white/10 pb-6">
             <h2 className="text-xs md:text-sm font-mono tracking-[0.3em] uppercase text-slate-400">
@@ -218,11 +210,11 @@ export default function Product() {
 
           {/* Hairline-divided grid — sharp edges, no rounded cards */}
           {filteredFormulas.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-black/15 bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)]">
               {filteredFormulas.map((f) => (
                 <div
                   key={f.id}
-                  className="group relative bg-[#070709] p-6 md:p-8 flex flex-col overflow-hidden hover:bg-white/[0.02] transition-colors duration-500"
+                  className="group relative bg-transparent p-6 md:p-8 flex flex-col overflow-hidden hover:bg-black/[0.04] transition-colors duration-500"
                 >
                   <div
                     className="absolute -inset-10 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"
@@ -235,7 +227,7 @@ export default function Product() {
                       alt={f.name}
                       fill
                       sizes="(max-width: 768px) 45vw, 22vw"
-                      className="object-contain transition-transform duration-700 group-hover:scale-105 drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
+                      className="object-contain transition-transform duration-700 group-hover:scale-105 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
                     />
                     {f.placeholder && (
                       <span className="absolute top-0 right-0 text-[8px] font-mono tracking-widest uppercase text-amber-300/80 border border-amber-300/30 bg-black/50 px-1.5 py-0.5">
@@ -244,15 +236,15 @@ export default function Product() {
                     )}
                   </div>
 
-                  <div className="inline-flex items-center gap-2 text-[9px] font-mono tracking-[0.2em] uppercase text-slate-500 mb-3">
+                  <div className="inline-flex items-center gap-2 text-[9px] font-mono tracking-[0.2em] uppercase text-[#454a50] mb-3">
                     <span className="w-1 h-1 rounded-full bg-cyan-400" />
                     {f.code}
                   </div>
 
-                  <h3 className="text-lg md:text-xl font-light tracking-wide text-white mb-2">
+                  <h3 className="text-lg md:text-xl font-light tracking-wide text-[#17191c] mb-2">
                     {f.name}
                   </h3>
-                  <p className="text-xs text-slate-400 font-light leading-relaxed mb-4 flex-1">
+                  <p className="text-xs text-[#30343a] font-light leading-relaxed mb-4 flex-1">
                     {f.tagline}
                   </p>
 
@@ -260,15 +252,15 @@ export default function Product() {
                     {f.badges.slice(0, 2).map((b) => (
                       <span
                         key={b}
-                        className="px-2 py-0.5 border border-white/10 text-[9px] font-mono tracking-widest uppercase text-slate-400"
+                        className="px-2 py-0.5 border border-black/20 text-[9px] font-mono tracking-widest uppercase text-[#34383e]"
                       >
                         {b}
                       </span>
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-white/10 text-[9px] font-mono tracking-wider uppercase text-slate-500">
-                    <span className="text-cyan-400">[CLINICAL]</span> {f.clinicalStat}
+                  <div className="pt-3 border-t border-black/15 text-[9px] font-mono tracking-wider uppercase text-[#454a50]">
+                    <span className="text-[#087f8c]">[CLINICAL]</span> {f.clinicalStat}
                   </div>
                 </div>
               ))}
