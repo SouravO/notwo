@@ -28,10 +28,10 @@ const INTRO_PRODUCT_HEIGHTS = { lg: 270, md: 160, sm: 110 };
 
 // HEADLINE LINES
 const HEADLINE_LINES = [
-  { text: "No two skins", strong: false },
-  { text: "read the same.", strong: false },
-  { text: "Neither should", strong: true },
-  { text: "your routine.", strong: true },
+  { text: "No two skins" },
+  { text: "read the same." },
+  { text: "Neither should" },
+  { text: "your routine." },
 ];
 
 // HERO COPY (edit freely)
@@ -440,13 +440,13 @@ export default function Hero({ isActive = true }) {
            
             <h1
               id="hero-title"
-              className="font-serif text-4xl font-light italic tracking-[-0.045em] text-[#090a0c] sm:text-5xl lg:text-6xl xl:text-7xl uppercase leading-[1.02]"
+              className="font-serif text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#090a0c] uppercase leading-[1.02]"
             >
               {HEADLINE_LINES.map((line, i) => (
                 <span key={line.text} className="block overflow-hidden">
                   <span
                     ref={(el) => { lineRefs.current[i] = el; }}
-                    className={`block ${line.strong ? "font-sans font-semibold not-italic tracking-[-0.055em] text-[#090a0c]" : ""}`}
+                    className="block whitespace-nowrap"
                     style={{ opacity: 0 }}
                   >
                     {line.text}
@@ -499,7 +499,7 @@ export default function Hero({ isActive = true }) {
             >
               <span
                 ref={watermarkRef}
-                className="whitespace-nowrap font-sans font-semibold uppercase leading-none tracking-[-0.06em] text-[22vw] sm:text-[16vw] lg:text-[clamp(120px,11.5vw,190px)]"
+                className="whitespace-nowrap font-serif font-semibold uppercase leading-none tracking-[-0.06em] text-[22vw] sm:text-[16vw] lg:text-[clamp(120px,11.5vw,190px)]"
                 style={{
                   opacity: 0,
                   backgroundImage: "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 85%)",

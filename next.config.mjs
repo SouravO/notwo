@@ -10,7 +10,7 @@ const nextConfig = {
         pathname: "/skin.png",
       },
       {
-        pathname: "/Banner.png",
+        pathname: "/banner.png",
       },
     ],
   },

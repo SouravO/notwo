@@ -1,0 +1,80 @@
+"use client";
+
+import { useRef } from "react";
+
+const VIDEOS = Array.from({ length: 7 }, (_, index) => index + 1);
+
+export default function VideoFeedback() {
+  const railRef = useRef(null);
+
+  const slide = (direction) => {
+    if (!railRef.current) return;
+    const card = railRef.current.querySelector("[data-video-card]");
+    const distance = card ? card.getBoundingClientRect().width + 16 : 280;
+    railRef.current.scrollBy({ left: direction * distance, behavior: "smooth" });
+  };
+
+  return (
+    <section
+      id="feedback"
+      aria-labelledby="feedback-title"
+      className="overflow-hidden bg-[linear-gradient(135deg,#07090d_0%,#0b1824_52%,#142b3d_100%)] py-16 text-white sm:py-20 lg:py-24"
+    >
+      <div className="mx-auto max-w-[1600px]">
+        <h2
+          id="feedback-title"
+          className="mb-8 px-5 text-center font-serif text-3xl font-medium tracking-wide text-[#f2f5f7] sm:mb-12 sm:text-4xl lg:text-4xl"
+        >
+          Real stories. Real routines.
+        </h2>
+
+        <div
+          ref={railRef}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 sm:gap-5 sm:px-8 lg:px-12 [scrollbar-color:#8fb6de55_transparent] [scrollbar-width:thin]"
+        >
+          {VIDEOS.map((video) => (
+            <div
+              key={video}
+              data-video-card
+              className="w-[72vw] max-w-[320px] shrink-0 snap-start overflow-hidden rounded-xl border border-white/10 bg-[#080d13] shadow-[0_20px_55px_-30px_rgba(0,0,0,0.9)] sm:w-[42vw] md:w-[30vw] lg:w-[22vw]"
+            >
+              <video
+                className="aspect-[9/16] h-auto w-full object-cover"
+                controls
+                playsInline
+                preload="auto"
+                aria-label={`Customer feedback video ${video}`}
+              >
+                <source src="/notwo.mp4" type="video/mp4" />
+                Your browser does not support video playback.
+              </video>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-5 flex justify-end gap-2 px-5 sm:px-8 lg:px-12">
+          <button
+            type="button"
+            onClick={() => slide(-1)}
+            aria-label="Scroll feedback videos left"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#9bd5ee]/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bd5ee]"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+              <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => slide(1)}
+            aria-label="Scroll feedback videos right"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#9bd5ee]/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bd5ee]"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+              <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}

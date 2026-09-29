@@ -1,28 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Bodoni_Moda, Space_Grotesk } from "next/font/google";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
-
-const display = Bodoni_Moda({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
-
-const mono = Space_Grotesk({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["400", "500"],
-  variable: "--font-mono",
-});
 
 export default function Services() {
   const containerRef = useRef(null);
@@ -119,7 +103,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div className={`${display.variable} ${mono.variable} w-full bg-[#05090d]`}>
+    <div className={`w-full bg-[#05090d]`}>
       <section
         id="services"
         ref={containerRef}
@@ -153,7 +137,7 @@ export default function Services() {
                 d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
                 fill="none"
               />
-              <text className="fill-[#e6f0f4]/70 font-[family-name:var(--font-mono)] text-[9.5px] tracking-[2.8px] uppercase">
+              <text className="fill-[#e6f0f4]/70 font-sans text-[9.5px] tracking-[2.8px] uppercase">
                 <textPath href="#textPath">
                   • Skin Intelligence • Pure Science • KYS
                 </textPath>
@@ -171,14 +155,14 @@ export default function Services() {
           {/* Eyebrow Tag */}
           <div className="mb-8 flex items-center gap-3">
             <span className="h-[1px] w-8 bg-[#9bd5ee]/70" />
-            <span className="font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-[0.25em] text-[#b6d8e7]">
+            <span className="font-sans text-xs font-medium uppercase tracking-[0.25em] text-[#b6d8e7]">
               Our Promise
             </span>
             <span className="h-[1px] w-8 bg-[#9bd5ee]/70" />
           </div>
 
           {/* Kinetic Headline with Word-by-Word Scroll Reveal */}
-          <h2 className="font-[family-name:var(--font-display)] text-3xl font-medium leading-[1.25] tracking-[-0.025em] text-[#f3f7f9] sm:text-5xl md:text-6xl lg:text-7xl">
+          <h2 className="font-serif text-3xl font-medium leading-[1.25] tracking-[0.005em] text-[#f3f7f9] sm:text-5xl md:text-6xl lg:text-7xl">
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all">
               We promise to
             </span>{" "}
@@ -195,7 +179,7 @@ export default function Services() {
           </h2>
 
           {/* Bold Impact Phrases */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-[family-name:var(--font-display)] text-2xl italic sm:mt-12 sm:text-4xl md:text-5xl">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-serif text-2xl italic sm:mt-12 sm:text-4xl md:text-5xl">
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#9bd5ee]">
               Nothing more.
             </span>
@@ -211,7 +195,7 @@ export default function Services() {
           <div className="accent-line my-10 h-[1.5px] w-24 origin-center scale-x-0 bg-gradient-to-r from-transparent via-[#9bd5ee] to-transparent sm:my-12 sm:w-36" />
 
           {/* Subtext */}
-          <p className="scroll-subtext max-w-md translate-y-4 font-[family-name:var(--font-mono)] text-sm tracking-wide text-[#d2e4ec] opacity-0 sm:text-base">
+          <p className="scroll-subtext max-w-md translate-y-4 font-sans text-sm tracking-wide text-[#d2e4ec] opacity-0 sm:text-base">
             Because trust begins with honesty.
           </p>
         </div>

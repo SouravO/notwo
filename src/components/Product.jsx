@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import gsap from 'gsap';
 
 // Reused product assets (placeholders for the 4 new formulas until real images are ready)
 import hydraCreamImg from '@/app/assets/HydraCream.png';
@@ -10,10 +9,8 @@ import purityGelImg from '@/app/assets/PurityGel.png';
 import radianceSerumImg from '@/app/assets/RadianceSerum.png';
 import calmElixirImg from '@/app/assets/calm-elixir.png';
 
-// Hero background lives in /public, so it's referenced by path, not imported.
-// Adjust this string if your actual filename/casing/extension differs
-// (e.g. '/Banner.png', '/banner.jpg').
-const BANNER_SRC = '/Banner.png';
+// Hero background is served directly from /public.
+const BANNER_SRC = '/banner.png';
 
 const FORMULAS = [
   {
@@ -121,18 +118,7 @@ const FORMULAS = [
 const CATEGORIES = ['All', ...new Set(FORMULAS.map((f) => f.category))];
 
 export default function Product() {
-  const heroContentRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState('All');
-
-  // One orchestrated hero reveal on load
-  useEffect(() => {
-    if (!heroContentRef.current) return;
-    gsap.fromTo(
-      heroContentRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 1.2, ease: 'power4.out', delay: 0.2 }
-    );
-  }, []);
 
   const filteredFormulas =
     activeCategory === 'All'
@@ -142,36 +128,16 @@ export default function Product() {
   return (
     <main className="bg-[#070709] text-white">
       {/* HERO */}
-      <section className="relative w-full h-[100svh] min-h-[600px] overflow-hidden">
+      <section className="relative w-full overflow-hidden bg-[#070709]">
         <Image
           src={BANNER_SRC}
           alt=""
-          fill
+          width={2103}
+          height={748}
           priority
-          className="object-cover object-center opacity-70"
+          unoptimized
+          className="block h-auto w-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-[#070709]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-30" />
-
-        <div className="relative z-10 h-full w-full max-w-[1600px] mx-auto px-6 md:px-16 flex flex-col justify-end pb-24 md:pb-32">
-          <div ref={heroContentRef}>
-            <p className="text-[10px] md:text-xs font-mono tracking-[0.3em] uppercase text-slate-300 flex items-center gap-2 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              COMPLETE FORMULATION RANGE
-            </p>
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-light tracking-wide text-white mb-6 max-w-3xl">
-              The Archive
-            </h1>
-            <p className="text-sm md:text-base text-slate-300 font-light max-w-md leading-relaxed">
-              Every formula the NO TWO system has ever prescribed — indexed below, from first hydration to the newest overnight repair.
-            </p>
-          </div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 text-slate-400">
-          <span className="text-[9px] font-mono tracking-[0.3em] uppercase">Scroll to catalog</span>
-          <span className="w-[1px] h-10 bg-gradient-to-b from-white/40 to-transparent" />
-        </div>
       </section>
 
       {/* FORMULATION CATALOG */}

@@ -1,24 +1,8 @@
 "use client";
 
 import { forwardRef, useLayoutEffect, useRef } from "react";
-import { Bodoni_Moda, Space_Grotesk } from "next/font/google";
 import Image from "next/image";
 import gsap from "gsap";
-
-const display = Bodoni_Moda({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
-
-const mono = Space_Grotesk({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["400", "500"],
-  variable: "--font-mono",
-});
 
 // Reduced to 4 premium cards, added specific image fields
 const WHY_CHOOSE = [
@@ -92,7 +76,7 @@ const WhyCard = forwardRef(function WhyCard({ item, index, variant = "stack" }, 
       {/* Content Section */}
       <div className="relative flex flex-col justify-center p-8 md:w-1/2 md:p-12 lg:p-16">
         <div className="flex items-center gap-4 text-[#2B2330]/60">
-          <span className="font-[family-name:var(--font-mono)] text-xl tracking-wider">
+          <span className="font-sans text-xl tracking-wider">
             {id}
           </span>
           <span
@@ -101,7 +85,7 @@ const WhyCard = forwardRef(function WhyCard({ item, index, variant = "stack" }, 
           />
         </div>
         
-        <h3 className="mt-6 font-[family-name:var(--font-display)] text-3xl font-medium leading-[1.1] text-[#2B2330] sm:text-4xl md:text-5xl">
+        <h3 className="mt-6 font-serif text-3xl font-medium leading-[1.1] text-[#2B2330] sm:text-4xl md:text-4xl">
           {title}
         </h3>
         
@@ -211,7 +195,7 @@ function WhyChooseStack() {
   }, []);
 
   return (
-    <section id="products" className={`${display.variable} ${mono.variable} relative isolate w-full scroll-mt-24 bg-[#FAF5EE] pb-[10dvh]`}>
+    <section id="products" className={`relative isolate w-full scroll-mt-24 bg-[#FAF5EE] pb-[10dvh]`}>
       <div ref={sectionRef} className="relative w-full motion-reduce:h-auto" style={{ height: SECTION_HEIGHT }}>
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden motion-reduce:h-auto motion-reduce:sticky motion-reduce:top-auto motion-reduce:overflow-visible">
           

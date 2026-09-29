@@ -31,7 +31,7 @@ export default function Contact() {
         <div>
           <h2
             id="contact-title"
-            className="max-w-md text-4xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-5xl"
+            className="max-w-md text-4xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl"
           >
             Talk to the team behind your formula.
           </h2>

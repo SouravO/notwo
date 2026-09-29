@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useMemo, useState, Suspense } from "react";
-import { Bodoni_Moda, Space_Grotesk } from "next/font/google";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -11,21 +10,6 @@ import { AdditiveBlending, Box3, CanvasTexture, Vector3 } from "three";
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
-
-const display = Bodoni_Moda({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
-
-const mono = Space_Grotesk({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["300", "400", "500"],
-  variable: "--font-mono",
-});
 
 /* ------------------------------------------------------------------ */
 /* Constants                                                           */
@@ -150,7 +134,7 @@ function Tag({ proxyRef, k, pos, side = "r", label, value, index = 0, micro = fa
         >
           <span className="h-1 w-1 shrink-0 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
           <span className={`h-px ${micro ? "w-3" : "w-6"} bg-white/40`} />
-          <span className="flex flex-col font-[family-name:var(--font-mono)] uppercase leading-tight">
+          <span className="flex flex-col font-sans uppercase leading-tight">
             <span className="text-[8px] tracking-[0.28em] text-white/50 md:text-[9px]">{label}</span>
             {value && <span className="text-[10px] tracking-[0.12em] text-white/85 max-lg:hidden">{value}</span>}
           </span>
@@ -308,7 +292,7 @@ function StepMark({ n }) {
     "04": <>{rule("w-3 bg-white/60")}{label}{rule("w-3 bg-white/60")}</>,
   };
   return (
-    <div className="mb-5 flex items-center gap-3 font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-[0.3em] text-white/65">
+    <div className="mb-5 flex items-center gap-3 font-sans text-[10px] font-medium uppercase tracking-[0.3em] text-white/65">
       {variants[n]}
     </div>
   );
@@ -316,7 +300,7 @@ function StepMark({ n }) {
 
 function Meter({ s }) {
   return (
-    <div className="mt-7 flex items-center gap-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.28em] text-white/40">
+    <div className="mt-7 flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">
       <span className={`flex gap-1 ${s.bar}`}>
         {Array.from({ length: s.segments ?? 1 }, (_, i) => (
           <span key={i} className="relative h-px flex-1 overflow-hidden bg-white/15">
@@ -335,13 +319,13 @@ function StageCopy({ s, animated }) {
       <StepMark n={s.n} />
       <div style={{ filter: "drop-shadow(0 0 18px rgba(226,232,240,0.2))" }}>
         <h2
-          className="pr-[0.08em] font-[family-name:var(--font-display)] text-[clamp(2.6rem,12vw,3.5rem)] font-medium italic leading-[1.02] md:text-[clamp(2.75rem,6vw,6rem)]"
+          className="pr-[0.08em] font-serif text-[clamp(2.6rem,12vw,3.5rem)] font-medium italic leading-[1.02] md:text-[clamp(2.75rem,6vw,6rem)]"
           style={TITLE_STYLE}
         >
           {s.title}
         </h2>
       </div>
-      <p className="mt-5 max-w-[30ch] font-[family-name:var(--font-mono)] text-[15px] font-light leading-relaxed text-white/60 md:max-w-[34ch] md:text-base lg:text-lg">
+      <p className="mt-5 max-w-[30ch] font-sans text-[15px] font-light leading-relaxed text-white/60 md:max-w-[34ch] md:text-base lg:text-lg">
         {s.lead} <span className="font-normal text-white/90">{s.body}</span>
       </p>
       <Meter s={s} />
@@ -353,7 +337,7 @@ function FinalStatement({ innerRef, animated }) {
   return (
     <div
       ref={innerRef}
-      className={`flex items-center gap-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.4em] text-white/50 ${animated ? "opacity-0" : ""}`}
+      className={`flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.4em] text-white/50 ${animated ? "opacity-0" : ""}`}
     >
       <span className="h-px w-8 bg-white/30" />
       AI Skin Intelligence
@@ -580,7 +564,7 @@ export default function Technology() {
         id="technology"
         ref={ref("section")}
         aria-label="AI skin analysis technology"
-        className={`${display.variable} ${mono.variable} relative w-full bg-black`}
+        className={`relative w-full bg-black`}
         style={{ background: REDUCED_BG }}
       >
         <div className="relative h-[70svh] w-full overflow-hidden bg-black">
@@ -619,7 +603,7 @@ export default function Technology() {
       id="technology"
       ref={ref("section")}
       aria-label="AI skin analysis technology"
-      className={`${display.variable} ${mono.variable} relative w-full bg-black`}
+      className={`relative w-full bg-black`}
     >
       <div ref={ref("pin")} className="relative h-screen w-full overflow-hidden bg-black supports-[height:100svh]:h-[100svh]">
         {/* Atmosphere */}
@@ -702,7 +686,7 @@ export default function Technology() {
             style={{ background: "linear-gradient(to bottom, transparent, rgba(226,232,240,0.16) 70%, rgba(255,255,255,0.55) 99%, transparent 100%)" }}
           />
           <div ref={ref("veil")} className="absolute inset-0 bg-black" />
-          <div className="pointer-events-none absolute bottom-[7%] left-[6%] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.4em] text-white/60">
+          <div className="pointer-events-none absolute bottom-[7%] left-[6%] font-sans text-[10px] uppercase tracking-[0.4em] text-white/60">
             <span ref={ref("tagA")} className="block opacity-0">01 — Discover</span>
             <span ref={ref("tagB")} className="absolute left-0 top-0 block whitespace-nowrap opacity-0">02 — Scan</span>
           </div>

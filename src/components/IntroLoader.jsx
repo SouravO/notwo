@@ -58,7 +58,7 @@ export default function IntroLoader({ onComplete }) {
       <div className="relative z-10 flex flex-col items-center">
         <h1
           ref={textRef}
-          className="font-sans text-5xl sm:text-7xl md:text-8xl font-black tracking-[0.35em] text-[#090a0c] uppercase pl-[0.35em] drop-shadow-sm"
+          className="font-serif text-5xl sm:text-7xl md:text-8xl font-black tracking-[0.35em] text-[#090a0c] uppercase pl-[0.35em] drop-shadow-sm"
         >
           NOTWO
         </h1>

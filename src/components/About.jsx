@@ -1,28 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useId } from "react";
-import { Bodoni_Moda, Space_Grotesk } from "next/font/google";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
-
-const display = Bodoni_Moda({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
-
-const mono = Space_Grotesk({
-  subsets: ["latin"],
-  preload: false,
-  weight: ["400", "500", "600"],
-  variable: "--font-mono",
-});
 
 export default function MissionVision() {
   const containerRef = useRef(null);
@@ -195,13 +179,13 @@ export default function MissionVision() {
     <section
       id="about"
       ref={containerRef}
-      className={`${display.variable} ${mono.variable} relative left-1/2 min-h-screen w-screen -translate-x-1/2 scroll-mt-24 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#17191c] sm:px-8 lg:px-16 lg:pb-16`}
+      className={`relative left-1/2 min-h-screen w-screen -translate-x-1/2 scroll-mt-24 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#17191c] sm:px-8 lg:px-16 lg:pb-16`}
     >
       <div className="max-w-7xl mx-auto relative z-10 mb-1 lg:mb-2 pt-14 sm:pt-16 lg:pt-24">
         <div className="relative flex flex-col items-center text-center">
           <h1
             ref={titleRef}
-            className="font-[family-name:var(--font-display)] text-4xl font-semibold italic leading-[1.08] tracking-[-0.05em] sm:text-6xl lg:text-7xl"
+            className="font-serif text-4xl font-semibold italic leading-[1.08] tracking-[-0.05em] sm:text-6xl lg:text-7xl"
           >
             {/* 
               CRITICAL STRUCTURAL FIX: 
@@ -226,12 +210,12 @@ export default function MissionVision() {
               </span>
             </span>
             <br />
-            <span className="mt-2 block font-[family-name:var(--font-display)] text-3xl font-semibold italic leading-[1.12] text-[#17191c]/90 sm:text-5xl lg:text-6xl">
+            <span className="mt-2 block font-serif text-3xl font-semibold italic leading-[1.12] text-[#17191c]/90 sm:text-5xl lg:text-6xl">
               before you treat it.
             </span>
           </h1>
 
-          <p className="mt-6 max-w-lg mx-auto font-[family-name:var(--font-mono)] text-sm leading-relaxed text-[#17191c]/75 sm:text-base">
+          <p className="mt-6 max-w-lg mx-auto font-sans text-sm leading-relaxed text-[#17191c]/75 sm:text-base">
             Modern skincare has become confusing. Thousands of products, thousands of ingredients, and thousands of opinions. But only one thing truly matters: understanding your skin.
           </p>
         </div>
@@ -264,13 +248,13 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:left-[8%] lg:left-[10%] md:top-[4%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
+            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
               Our Mission
             </span>
-            <h2 className="mb-2 font-[family-name:var(--font-display)] text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
+            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               Informed Skincare Decisions
             </h2>
-            <p className="font-[family-name:var(--font-mono)] text-[12.5px] leading-relaxed text-[#222220]/70">
+            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
               KYS exists to help people make informed skincare decisions through advanced skin diagnostics and personalized product recommendations.
             </p>
           </div>
@@ -279,13 +263,13 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:right-0 lg:right-2 md:top-[15%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
+            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
               Our Vision
             </span>
-            <h2 className="mb-2 font-[family-name:var(--font-display)] text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
+            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               Trusted Personalization
             </h2>
-            <p className="font-[family-name:var(--font-mono)] text-[12.5px] leading-relaxed text-[#222220]/70">
+            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
               To become India's most trusted personalized skincare company by combining technology, science, and skincare into one seamless experience.
             </p>
           </div>
@@ -294,13 +278,13 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:left-0 lg:left-2 md:bottom-[15%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
+            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
               Advanced Diagnostics
             </span>
-            <h2 className="mb-2 font-[family-name:var(--font-display)] text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
+            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               Advanced Skin Analysis
             </h2>
-            <p className="font-[family-name:var(--font-mono)] text-[12.5px] leading-relaxed text-[#222220]/70">
+            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
               Our advanced skin analysis machine provides detailed insights about your skin health before any product recommendation.
             </p>
           </div>
@@ -309,13 +293,13 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:right-[8%] lg:right-[10%] md:bottom-[7%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
+            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
               Our Science
             </span>
-            <h2 className="mb-2 font-[family-name:var(--font-display)] text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
+            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               No Assumptions. Only Science.
             </h2>
-            <p className="font-[family-name:var(--font-mono)] text-[12.5px] leading-relaxed text-[#222220]/70">
+            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
               Don't Guess. Know. Every skincare journey starts with one question. What does your skin actually need?
             </p>
           </div>

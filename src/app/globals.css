@@ -16,17 +16,41 @@
 
   --background: var(--beige);
   --foreground: var(--fake-black);
+  --font-editorial: var(--font-gfs-didot), "GFS Didot", Georgia, serif;
+  --font-utility: var(--font-space-grotesk), "Space Grotesk", Arial, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --font-serif: var(--font-editorial);
+  --font-sans: var(--font-utility);
+  --font-mono: var(--font-utility);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-utility);
+}
+
+:is(h1, h2, h3, h4, h5, h6):not(.font-sans):not(.font-mono) {
+  font-family: var(--font-editorial);
+  font-weight: 400;
+  font-style: normal;
+  text-wrap: balance;
+}
+
+.font-serif {
+  font-family: var(--font-editorial);
+  font-style: normal;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-utility);
 }
 
 * {

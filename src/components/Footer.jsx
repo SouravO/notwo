@@ -64,7 +64,7 @@ export default function Footer() {
               <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_9px_rgba(103,232,249,0.8)]" />
               Personalized care
             </span>
-            <h2 className="mt-5 max-w-xs text-2xl font-light leading-snug tracking-[-0.03em] text-white/90 lg:ml-auto">
+            <h2 className="mt-5 max-w-xs text-xl font-light leading-snug tracking-[-0.03em] text-white/90 lg:ml-auto">
               Your skin has its own logic. Your routine should, too.
             </h2>
             <Link

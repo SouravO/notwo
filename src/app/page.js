@@ -2,8 +2,8 @@
 import Navbar from "@/components/Navbar";
 import HeroIntro from "@/components/HeroIntro";
 import About from "@/components/About";
+import VideoFeedback from "@/components/video";
 import SkinType from "@/components/SkinType";
-import Services from "@/components/Services";
 import ProductShowcase from "@/components/ProductShowcase";
 import Cards from "@/components/Cards";
 import Contact from "@/components/Contact";
@@ -16,7 +16,7 @@ export default function Home() {
       <HeroIntro />
       <SkinType />
       <About />
-      <Services />
+      <VideoFeedback />
       <ProductShowcase />
       <Cards />
       <Contact />
