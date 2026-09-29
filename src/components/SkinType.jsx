@@ -24,8 +24,6 @@ const mono = Space_Grotesk({
   variable: "--font-mono",
 });
 
-const TITLE_GRADIENT =
-  "linear-gradient(115deg, #F4FBFD 0%, #B9E4F2 30%, #62B6D7 55%, #247CA5 75%, #0B3B59 100%)";
 const BUTTON_GRADIENT =
   "linear-gradient(115deg, #06131D 0%, #0B3650 38%, #176D94 72%, #4DA6C8 100%)";
 
@@ -268,19 +266,13 @@ export default function SkinType() {
     <div
       ref={stageRef}
       data-stage
-      className={`${display.variable} ${mono.variable} overflow-hidden border-b border-[#78BBD3]/20 bg-[radial-gradient(ellipse_at_50%_45%,#000000_0%,#020A10_31%,#0A3048_68%,#357C9D_100%)] px-4 py-14 text-[#EAF6FA] first:pt-0 sm:px-6 md:-mx-8 md:w-[calc(100%+4rem)] md:px-0 md:py-24 lg:-mx-12 lg:w-[calc(100%+6rem)] xl:-mx-20 xl:w-[calc(100%+10rem)] 2xl:-mx-32 2xl:w-[calc(100%+16rem)]`}
+      className={`${display.variable} ${mono.variable} overflow-hidden border-b border-[#78a9c2]/20 bg-[linear-gradient(125deg,#05080d_0%,#081522_46%,#102b43_100%)] px-4 py-14 text-white first:pt-0 sm:px-6 md:-mx-8 md:w-[calc(100%+4rem)] md:px-0 md:py-24 lg:-mx-12 lg:w-[calc(100%+6rem)] xl:-mx-20 xl:w-[calc(100%+10rem)] 2xl:-mx-32 2xl:px-32`}
     >
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-10 md:grid-cols-[1.15fr_0.85fr] md:gap-16 md:px-8 lg:px-12 xl:px-20 2xl:px-32">
         <div ref={parallaxTextRef} className="flex h-full flex-col justify-center">
           <h2
             data-reveal
-            className="mb-8 max-w-[11ch] font-[family-name:var(--font-display)] text-[clamp(2.1rem,10vw,3rem)] font-semibold italic leading-[1.05] sm:mb-10 sm:max-w-none sm:text-4xl md:text-5xl"
-            style={{
-              backgroundImage: TITLE_GRADIENT,
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
+            className="mb-8 max-w-[11ch] font-[family-name:var(--font-display)] text-[clamp(2.1rem,10vw,3rem)] font-semibold italic leading-[1.05] text-white sm:mb-10 sm:max-w-none sm:text-4xl md:text-5xl"
           >
             We Don&rsquo;t Sell Products.
             <br />
@@ -289,7 +281,7 @@ export default function SkinType() {
             Skin Journeys.
           </h2>
 
-          <div className="max-w-[38rem] space-y-5 font-[family-name:var(--font-mono)] text-[clamp(1rem,4.7vw,1.125rem)] leading-relaxed text-white/75 md:text-xl">
+          <div className="max-w-[38rem] space-y-5 font-[family-name:var(--font-mono)] text-[clamp(1rem,4.7vw,1.125rem)] leading-relaxed text-white md:text-xl">
             <p data-reveal>Walk into most skincare stores.</p>
             <p data-reveal>
               Someone asks,
@@ -393,7 +385,7 @@ export default function SkinType() {
                     <span
                       key={w.text}
                       data-guess-word
-                      className="absolute font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.15em] text-[#C5EAF7]/80 sm:text-xs"
+                      className="absolute font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.15em] text-white/80 sm:text-xs"
                       style={{ top: w.top, left: w.left }}
                     >
                       {w.text}

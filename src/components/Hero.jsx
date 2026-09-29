@@ -16,12 +16,17 @@ const PRODUCTS = [
   { id: "04", name: "HYDRA CREAM", img: HydraCreamImg, size: "lg" },
 ];
 
+// Bigger display products (desktop height adapts to the screen height, capped at 460px)
 const SIZE_CLASSES = {
-  lg: "h-[110px] sm:h-[160px] lg:h-[270px]",
+  lg: "h-[150px] sm:h-[230px] lg:h-[min(54svh,460px)]",
   md: "h-[90px] sm:h-[130px] lg:h-[216px]",
 };
 
-// HEADLINE LINES (each one is revealed separately)
+// Product height (px) during the initial spotlight reveal, per breakpoint.
+// After the silver reveal the products grow to the big size defined in SIZE_CLASSES.
+const INTRO_PRODUCT_HEIGHTS = { lg: 270, md: 160, sm: 110 };
+
+// HEADLINE LINES
 const HEADLINE_LINES = [
   { text: "No two skins", strong: false },
   { text: "read the same.", strong: false },
@@ -29,39 +34,77 @@ const HEADLINE_LINES = [
   { text: "your routine.", strong: true },
 ];
 
-// STORY TIMING (seconds) — tweak these to adjust the pacing
-const DARK_HOLD = 0.04; // brief handoff from the intro loader to the spotlight
-const PRODUCT_GAP = 0.5; // beat between the spotlight being on and the first product appearing
-const CENTER_SPIN_TIME = 2.2; // how long products spin in the center before moving right
+// HERO COPY (edit freely)
+const SUBCOPY =
+  "Our AI reads what your skin actually needs, then matches formulas built around it. One routine. Yours alone.";
+const CTA_PRIMARY = { label: "Discover your routine", href: "#products" };
+const CTA_SECONDARY = { label: "How it works", href: "#technology" };
+
+// STORY TIMING
+const DARK_HOLD = 0.04;
+const PRODUCT_GAP = 0.5;
+const CENTER_SPIN_TIME = 2.2;
+
+// PRODUCT SPIN SPEED (lower = faster)
+const ORBIT_STEP = 0.8; // seconds a bottle takes to rotate to the next position
+const ORBIT_HOLD = 0.5; // short pause with a bottle in front
+
+// PRODUCT EMPHASIS (front bottle big, back bottles small)
+const SCALE_BACK = 0.62;
+const SCALE_FRONT = 1.25;
+
+// SPOTLIGHT / PODIUM ALIGNMENT (intro only)
+// Where the podium's top-surface center sits inside light.png, as a fraction of the image height (0 = top, 1 = bottom).
+const PODIUM_Y_FRAC = 0.85;
+// Fallback width/height ratio of light.png (real ratio is read from the image once it loads)
+const LIGHT_ASPECT_FALLBACK = 1.6;
+
+// FULL BACKGROUND SILVER (solid, no gradient)
+const SILVER = "#b6bbc0";
+
+// Subtle film grain for the silver surface (texture only, not a gradient)
+const GRAIN =
+  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
 export default function Hero({ isActive = true }) {
   const sectionRef = useRef(null);
-  const stageRef = useRef(null); // spotlight + orbit column (moves center -> right)
+  const stageRef = useRef(null);
+  const stageInnerRef = useRef(null);
+  const anchorRef = useRef(null);
   const lineRefs = useRef([]);
   const fadeRefs = useRef([]);
   const copyGlowRef = useRef(null);
   const productRefs = useRef([]);
   const spotlightRef = useRef(null);
+  const lightImgRef = useRef(null);
   const bgRef = useRef(null);
 
-  // Animation timelines
-  const orbitTlRef = useRef(null);
+  // Depth decor (appears with the silver reveal)
+  const watermarkRef = useRef(null);
+  const haloRef = useRef(null);
+  const groundRef = useRef(null);
+  const ringRef = useRef(null);
 
-  // Particles state
+  // Live product caption
+  const captionNumRef = useRef(null);
+  const captionNameRef = useRef(null);
+  const dotRefs = useRef([]);
+
+  const orbitTlRef = useRef(null);
+  const layoutLightRef = useRef(null);
   const [particles, setParticles] = useState([]);
 
   useEffect(() => {
-    // Generate prominent, realistic dust particles caught in the spotlight
     const generatedParticles = Array.from({ length: 60 }).map(() => ({
       id: Math.random(),
-      left: `${40 + Math.random() * 20}%`, // Focus tightly inside the beam's center width
-      top: `${10 + Math.random() * 85}%`, // Spread across the entire beam's height
-      tx: `${(Math.random() - 0.5) * 80}px`, // Gentle horizontal drift
-      ty: `${-50 - Math.random() * 120}px`, // Upward thermal drift (heat from light)
+      left: `${40 + Math.random() * 20}%`,
+      top: `${10 + Math.random() * 85}%`,
+      tx: `${(Math.random() - 0.5) * 80}px`,
+      ty: `${-50 - Math.random() * 120}px`,
       s: Math.random() * 0.45 + 0.35,
-      o: Math.random() * 0.6 + 0.4, // Higher peak opacity to catch the light (0.4 to 1.0)
-      dur: 4 + Math.random() * 7, // Loop duration (4s to 11s)
-      del: Math.random() * 5, // Staggered start times
+      o: Math.random() * 0.6 + 0.4,
+      dur: 4 + Math.random() * 7,
+      del: Math.random() * 5,
     }));
     setParticles(generatedParticles);
   }, []);
@@ -72,71 +115,181 @@ export default function Hero({ isActive = true }) {
     const mediaQueries = gsap.matchMedia(sectionRef);
     const stageRightShift = window.matchMedia("(min-width: 1024px)").matches ? 48 : 0;
 
-    // State proxies for mathematical rendering
-    const orbit = { rotation: 90 }; // Starts with Hydra Cream already at the front (in the light)
+    const orbit = { rotation: 90 };
     const orbitStep = 360 / PRODUCTS.length;
-    const global = { alpha: 1 }; // Master fade
-    const reveals = PRODUCTS.map(() => ({ v: 1 })); // Per-product reveal (Hydra Cream shows first)
-    let currentRadii = { x: 250, y: 58 }; // Default desktop orbit size
+    const global = { alpha: 1 };
+    const reveals = PRODUCTS.map(() => ({ v: 1 }));
+    let currentRadii = { x: 250, y: 58 };
+    let activeIdx = -1;
 
-    // Responsive adjustments
-    mediaQueries.add("(min-width: 1024px)", () => { currentRadii = { x: 250, y: 58 }; });
-    mediaQueries.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 160, y: 40 }; });
-    mediaQueries.add("(max-width: 639px)", () => { currentRadii = { x: 95, y: 25 }; }); // Compact mobile orbit
+    // Intro product size: products start smaller (intro height) and grow to full size after the silver reveal
+    const sizeFactor = { v: 1 };
+    let introH = INTRO_PRODUCT_HEIGHTS.lg;
+    let introRatio = 1;
+    let introGrown = false;
 
-    // The 3D Engine: Maps current rotation to physical screen coordinates
+    const getDecor = () =>
+      [watermarkRef, haloRef, groundRef, ringRef].map((r) => r.current).filter(Boolean);
+
+    // Sizes the spotlight so its top touches the very top of the screen (section)
+    // and its podium lands exactly under the front product of the orbit.
+    const layoutLight = () => {
+      const section = sectionRef.current;
+      const inner = stageInnerRef.current;
+      const anchor = anchorRef.current;
+      const light = spotlightRef.current;
+      const img = lightImgRef.current;
+      if (!section || !inner || !anchor || !light) return;
+
+      const s = section.getBoundingClientRect();
+      const i = inner.getBoundingClientRect();
+      const a = anchor.getBoundingClientRect();
+
+      const top = s.top - i.top; // negative: pulls the light up to the top edge of the screen
+      const podiumY = a.top - i.top + currentRadii.y; // front product's feet sit here
+      const height = (podiumY - top) / PODIUM_Y_FRAC;
+      const aspect =
+        img && img.naturalWidth && img.naturalHeight
+          ? img.naturalWidth / img.naturalHeight
+          : LIGHT_ASPECT_FALLBACK;
+
+      gsap.set(light, { top, height, width: height * aspect });
+    };
+
+    // Sizes the halo / floor shadow / orbit ring around the orbit anchor (all positions are relative to the anchor)
+    const layoutDecor = () => {
+      const rX = currentRadii.x;
+      const rY = currentRadii.y;
+      const productH = (productRefs.current[0] && productRefs.current[0].offsetHeight) || 300;
+      const frontH = productH * SCALE_FRONT;
+
+      if (ringRef.current) {
+        gsap.set(ringRef.current, { left: -rX, top: -rY, width: rX * 2, height: rY * 2 });
+      }
+      if (groundRef.current) {
+        const w = rX * 2.6;
+        const h = rY * 3;
+        gsap.set(groundRef.current, { left: -w / 2, top: -h / 2 + rY * 0.3, width: w, height: h });
+      }
+      if (haloRef.current) {
+        const w = productH * 2.1;
+        const h = productH * 1.5;
+        const centerY = rY - frontH * 0.5;
+        gsap.set(haloRef.current, { left: -w / 2, top: centerY - h / 2, width: w, height: h });
+      }
+    };
+
+    // Keeps the intro (smaller) product size in sync with the real product size at this breakpoint
+    const layoutIntroSize = () => {
+      const bigH = productRefs.current[0] && productRefs.current[0].offsetHeight;
+      if (bigH) introRatio = Math.min(1, introH / bigH);
+      if (!introGrown) sizeFactor.v = introRatio;
+    };
+
+    const layoutAll = () => {
+      layoutLight();
+      layoutDecor();
+      layoutIntroSize();
+    };
+    layoutLightRef.current = layoutAll;
+
+    mediaQueries.add("(min-width: 1024px)", () => { currentRadii = { x: 250, y: 58 }; introH = INTRO_PRODUCT_HEIGHTS.lg; layoutAll(); });
+    mediaQueries.add("(min-width: 640px) and (max-width: 1023px)", () => { currentRadii = { x: 160, y: 40 }; introH = INTRO_PRODUCT_HEIGHTS.md; layoutAll(); });
+    mediaQueries.add("(max-width: 639px)", () => { currentRadii = { x: 95, y: 25 }; introH = INTRO_PRODUCT_HEIGHTS.sm; layoutAll(); });
+
+    layoutAll();
+    window.addEventListener("resize", layoutAll);
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined" ? new ResizeObserver(layoutAll) : null;
+    if (resizeObserver && sectionRef.current) resizeObserver.observe(sectionRef.current);
+
+    // Updates the caption + dots to the bottle currently in front
+    const updateCaption = (idx, animate) => {
+      if (captionNumRef.current) captionNumRef.current.textContent = PRODUCTS[idx].id;
+      if (captionNameRef.current) {
+        captionNameRef.current.textContent = PRODUCTS[idx].name;
+        if (animate) {
+          gsap.fromTo(
+            captionNameRef.current,
+            { opacity: 0, y: 6 },
+            { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", overwrite: true }
+          );
+        }
+      }
+      dotRefs.current.forEach((d, k) => {
+        if (!d) return;
+        d.style.width = k === idx ? "28px" : "10px";
+        d.style.opacity = k === idx ? "1" : "0.35";
+      });
+    };
+
     const renderOrbit = () => {
       const rX = currentRadii.x;
       const rY = currentRadii.y;
+      let frontIdx = 0;
+      let frontSin = -2;
 
       productRefs.current.forEach((ref, i) => {
         if (!ref) return;
 
-        // Keep the products evenly spaced around the orbit.
         const angleDeg = orbit.rotation - i * orbitStep;
         const angleRad = angleDeg * (Math.PI / 180);
 
-        const sin = Math.sin(angleRad); // 1 = Front, -1 = Back
-        const cos = Math.cos(angleRad); // 1 = Right, -1 = Left
+        const sin = Math.sin(angleRad);
+        const cos = Math.cos(angleRad);
+
+        if (sin > frontSin) {
+          frontSin = sin;
+          frontIdx = i;
+        }
 
         const x = cos * rX;
         const y = sin * rY;
 
-        // Depth progression (0 to 1). 1 means it is exactly in the front spotlight.
         const depthProgress = (sin + 1) / 2;
-
-        // Non-linear "spotlight peak" - rapidly increases only when dead center
         const frontProgress = Math.max(0, sin);
         const activeStrength = Math.pow(frontProgress, 4);
 
-        // Physical attributes
-        const scale = 0.82 + activeStrength * 0.33; // ~0.8 resting -> 1.15 active
-        const targetOpacity = 0.15 + depthProgress * 0.2 + activeStrength * 0.65;
-        const finalOpacity = targetOpacity * global.alpha * reveals[i].v; // Multiplied by reveal state
-        const brightness = 0.25 + depthProgress * 0.25 + activeStrength * 0.6; // 0.25 -> 1.1
+        // Front bottle big, bottles going to the back get small
+        // (sizeFactor.v shrinks everything during the intro, then grows to 1 after the silver reveal)
+        const scale =
+          (SCALE_BACK + Math.pow(depthProgress, 2.2) * (SCALE_FRONT - SCALE_BACK)) * sizeFactor.v;
+        const targetOpacity = 0.4 + depthProgress * 0.2 + activeStrength * 0.4;
+        const finalOpacity = targetOpacity * global.alpha * reveals[i].v;
+        const brightness = 0.58 + depthProgress * 0.17 + activeStrength * 0.3;
+        const blur = (1 - depthProgress) * 1.8; // depth of field: back bottles softer
 
-        // Apply to bottle wrapper
         gsap.set(ref, {
           xPercent: -50,
           x,
           y,
           scale,
           opacity: finalOpacity,
-          filter: `brightness(${brightness})`,
+          filter: `brightness(${brightness}) blur(${blur}px)`,
           zIndex: Math.round(depthProgress * 100),
-          transformOrigin: "center bottom", // Anchors all products to one shared floor point
+          transformOrigin: "center bottom",
         });
       });
+
+      if (frontIdx !== activeIdx) {
+        const isFirst = activeIdx === -1;
+        activeIdx = frontIdx;
+        updateCaption(frontIdx, !isFirst);
+      }
     };
 
     // --- REDUCED MOTION ---
     mediaQueries.add("(prefers-reduced-motion: reduce)", () => {
       global.alpha = 1;
-      orbit.rotation = 90; // Lock Hydra Cream to front
+      orbit.rotation = 90;
+      introGrown = true; // no intro: show the final (big) product size
+      sizeFactor.v = 1;
       renderOrbit();
       gsap.set(stageRef.current, { x: stageRightShift });
-      gsap.set([bgRef.current, spotlightRef.current], { opacity: 1 });
-      gsap.set(copyGlowRef.current, { opacity: 1 });
+      gsap.set(bgRef.current, { opacity: 1 });
+      gsap.set(spotlightRef.current, { opacity: 0 }); // final state: spotlight is gone, only products remain
+      gsap.set(getDecor(), { opacity: 1 });
+      gsap.set(copyGlowRef.current, { opacity: 1, clipPath: "circle(150% at 30% 50%)" });
       gsap.set(lineRefs.current, { yPercent: 0, opacity: 1 });
       gsap.set(fadeRefs.current, { opacity: 1, y: 0 });
     });
@@ -145,54 +298,50 @@ export default function Hero({ isActive = true }) {
     mediaQueries.add("(prefers-reduced-motion: no-preference)", () => {
       const stage = stageRef.current;
       const section = sectionRef.current;
+      const decor = getDecor();
 
-      // How far left the stage must sit so the spotlight is centered on the screen
       gsap.set(stage, { x: 0 });
       const stageBox = stage.getBoundingClientRect();
       const sectionBox = section.getBoundingClientRect();
       const centerOffset =
         sectionBox.left + sectionBox.width / 2 - (stageBox.left + stageBox.width / 2);
 
-      // Initial hidden states (total darkness)
+      // Intro: products start at the smaller (previous) size
+      introGrown = false;
+      sizeFactor.v = introRatio;
+
       gsap.set(stage, { x: centerOffset });
       gsap.set(bgRef.current, { opacity: 0 });
       gsap.set(spotlightRef.current, { opacity: 0, clipPath: "inset(0% 0% 100% 0%)" });
-      gsap.set(copyGlowRef.current, { opacity: 0 });
+      gsap.set(copyGlowRef.current, { opacity: 0, clipPath: "circle(0% at 30% 50%)" });
+      gsap.set(decor, { opacity: 0 });
       gsap.set(lineRefs.current, { yPercent: 110, opacity: 0 });
       gsap.set(fadeRefs.current, { opacity: 0, y: 16 });
-      gsap.set(reveals, { v: 0 }); // products fully hidden until their reveal
+      gsap.set(reveals, { v: 0 });
 
-      const stepDur = 1.2;
-      const holdDur = 1.0;
-
-      // 1. The Seamless Looping Engine (paused until the reveal finishes)
-      // immediateRender: false -> building the loop must NOT change the orbit position
+      // Continuous fast spin: short hold with a bottle in front, then a quick step to the next one
       orbitTlRef.current = gsap.timeline({ paused: true, repeat: -1, onUpdate: renderOrbit });
       for (let i = 0; i < PRODUCTS.length; i += 1) {
         const fromRotation = 90 + orbitStep * i;
         const toRotation = fromRotation + orbitStep;
 
         orbitTlRef.current
-          .to({}, { duration: holdDur })
+          .to({}, { duration: ORBIT_HOLD })
           .fromTo(
             orbit,
             { rotation: fromRotation },
-            { rotation: toRotation, duration: stepDur, ease: "power2.inOut", immediateRender: false }
+            { rotation: toRotation, duration: ORBIT_STEP, ease: "power2.inOut", immediateRender: false }
           );
       }
 
-      // Lock the formation: Hydra Cream in the front of the light, everything still hidden
       orbit.rotation = 90;
       renderOrbit();
 
-      // 2. The Master Story Timeline
       const story = gsap.timeline();
 
       story
-        // Beat 1 — Hold on full darkness
         .to({}, { duration: DARK_HOLD })
-
-        // Beat 2 — Spotlight snaps ON quickly (top-to-bottom reveal + flicker)
+        // Spotlight snaps ON quickly
         .to(spotlightRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power3.out" })
         .to(spotlightRef.current, {
           keyframes: [
@@ -205,34 +354,48 @@ export default function Hero({ isActive = true }) {
           onComplete: () => gsap.set(spotlightRef.current, { clearProps: "clipPath" }),
         }, "<")
         .to(bgRef.current, { opacity: 1, duration: 0.4, ease: "power1.out" }, "<")
-
-        // Beat 3 — Short beat: only the light is on the empty stage
         .to({}, { duration: PRODUCT_GAP })
-
-        // Beat 4 — Hydra Cream fades in first, right on the light (no movement)
         .to(reveals[0], { v: 1, duration: 0.7, ease: "power2.out", onUpdate: renderOrbit })
-
-        // Beat 5 — the remaining products fade in around it (still no movement)
         .to(reveals.slice(1), { v: 1, duration: 0.6, stagger: 0.12, ease: "power2.out", onUpdate: renderOrbit }, "-=0.25")
-
-        // Beat 6 — reveal is complete, THEN the spin starts from Hydra Cream (skips part of the first hold so it starts promptly)
-        .add(() => orbitTlRef.current && orbitTlRef.current.play(0.4))
-
-        // Let the products spin in the center for a moment
+        .add(() => orbitTlRef.current && orbitTlRef.current.play(0))
         .to({}, { duration: CENTER_SPIN_TIME })
-
-        // Beat 7 — Spotlight + Products travel from center to the right corner
-        // AND the left text starts revealing at that exact same moment (everything is anchored to the "travel" label)
         .addLabel("travel")
+        .add(() => { introGrown = true; }, "travel")
         .to(stage, { x: stageRightShift, duration: 1.6, ease: "power3.inOut" }, "travel")
-
-        // Beat 8 — Text reveals line by line on the left, starting together with the stage movement
+        // Products GROW from the intro size to the big display size with the silver reveal
+        .to(sizeFactor, { v: 1, duration: 1.6, ease: "power3.inOut", onUpdate: renderOrbit }, "travel")
+        // Spotlight DISAPPEARS: flickers off, then retracts upward and fades out
+        .to(spotlightRef.current, {
+          keyframes: [
+            { opacity: 0.55, duration: 0.05 },
+            { opacity: 0.85, duration: 0.05 },
+            { opacity: 0.3, duration: 0.07 },
+            { opacity: 0, duration: 0.6, ease: "power2.in" },
+          ],
+        }, "travel")
+        .fromTo(
+          spotlightRef.current,
+          { clipPath: "inset(0% 0% 0% 0%)" },
+          { clipPath: "inset(0% 0% 100% 0%)", duration: 0.7, ease: "power3.in", immediateRender: false },
+          "travel+=0.1"
+        )
+        // Full screen solid silver reveal
+        .to(copyGlowRef.current, { 
+            opacity: 1, 
+            clipPath: "circle(150% at 30% 50%)", 
+            duration: 1.6, 
+            ease: "power2.inOut" 
+        }, "travel")
+        // Depth decor (watermark, halo, floor shadow, orbit ring) fades in with the silver
+        .to(decor, { opacity: 1, duration: 1.4, stagger: 0.12, ease: "power2.out" }, "travel+=0.2")
         .to(lineRefs.current, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.14, ease: "power3.out" }, "travel")
-        .to(copyGlowRef.current, { opacity: 1, duration: 1.2, ease: "power2.out" }, "travel")
         .to(fadeRefs.current, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "travel+=0.5");
     });
 
     return () => {
+      window.removeEventListener("resize", layoutAll);
+      if (resizeObserver) resizeObserver.disconnect();
+      layoutLightRef.current = null;
       mediaQueries.revert();
       orbitTlRef.current = null;
     };
@@ -244,31 +407,37 @@ export default function Hero({ isActive = true }) {
       aria-labelledby="hero-title"
       className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#030304] px-4 py-16 sm:py-20 sm:px-10 lg:py-0"
     >
+      <style>{`
+        @keyframes scrollCue {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(200%); }
+        }
+      `}</style>
+
       {/* Ambient background depth */}
-      <div ref={bgRef} className="absolute inset-0 pointer-events-none opacity-0">
+      <div ref={bgRef} className="absolute inset-0 pointer-events-none opacity-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.02)_0%,transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,255,255,0.015)_0%,transparent_40%)]" />
       </div>
 
+      {/* FULL SCREEN SOLID SILVER BACKGROUND (+ subtle film grain) */}
+      <div
+        ref={copyGlowRef}
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none z-0 opacity-0"
+        style={{ background: SILVER }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.06] mix-blend-multiply"
+          style={{ backgroundImage: GRAIN }}
+        />
+      </div>
+
       <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-8 sm:gap-10 lg:gap-8 min-h-[60vh]">
-        {/* LEFT: HERO TEXT (order-2 on mobile so it sits below the image, order-1 on lg to keep desktop layout) */}
+        {/* LEFT: HERO TEXT */}
         <div className="relative w-full lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
-          {/* SILVER TEXT BACKDROP — stays solid silver behind all the text, then fades into black with a soft curved edge.
-              The elliptical mask fades every side of the box to transparent, so no rectangle is ever visible. */}
-          <div
-            ref={copyGlowRef}
-            aria-hidden="true"
-            className="pointer-events-none absolute -left-[28%] -right-[30%] -top-[20%] -bottom-[20%] z-0 opacity-0"
-            style={{
-              background:
-                "radial-gradient(ellipse 60% 42% at 30% 45%, rgba(222,226,230,0.5) 0%, rgba(222,226,230,0) 100%), linear-gradient(100deg, rgba(196,201,206,0.97) 0%, rgba(184,189,195,0.95) 55%, rgba(150,155,161,0.8) 80%, rgba(3,3,4,0) 100%)",
-              WebkitMaskImage:
-                "radial-gradient(ellipse 100% 50% at 6% 50%, #000 0%, #000 62%, rgba(0,0,0,0.75) 76%, rgba(0,0,0,0.3) 90%, rgba(0,0,0,0) 100%)",
-              maskImage:
-                "radial-gradient(ellipse 100% 50% at 6% 50%, #000 0%, #000 62%, rgba(0,0,0,0.75) 76%, rgba(0,0,0,0.3) 90%, rgba(0,0,0,0) 100%)",
-            }}
-          />
           <div className="relative z-10">
+           
             <h1
               id="hero-title"
               className="font-serif text-4xl font-light italic tracking-[-0.045em] text-[#090a0c] sm:text-5xl lg:text-6xl xl:text-7xl uppercase leading-[1.02]"
@@ -286,42 +455,85 @@ export default function Hero({ isActive = true }) {
               ))}
             </h1>
 
-
-
+            {/* Subcopy + actions */}
             <div
               ref={(el) => { fadeRefs.current[1] = el; }}
-              className="mt-8"
+              className="mt-8 sm:mt-10 flex max-w-[30rem] flex-col gap-7"
               style={{ opacity: 0 }}
             >
-
+              <p className="font-sans text-sm leading-relaxed text-[#090a0c]/70 sm:text-base">
+                {SUBCOPY}
+              </p>
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                <a
+                  href={CTA_PRIMARY.href}
+                  className="group inline-flex items-center gap-3 rounded-full bg-[#090a0c] px-7 py-3.5 font-sans text-sm font-medium tracking-wide text-[#e6e9ec] transition-transform duration-300 hover:scale-[1.03]"
+                >
+                  {CTA_PRIMARY.label}
+                  <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </a>
+                <a
+                  href={CTA_SECONDARY.href}
+                  className="font-sans text-sm font-medium tracking-wide text-[#090a0c] underline decoration-[#090a0c]/30 underline-offset-[6px] transition-colors duration-300 hover:decoration-[#090a0c]"
+                >
+                  {CTA_SECONDARY.label}
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT: CINEMATIC PRODUCT ORBIT (order-1 on mobile so it renders first/on top, order-2 on lg to keep desktop layout) */}
+        {/* RIGHT: CINEMATIC PRODUCT ORBIT */}
         <div
           ref={stageRef}
           className="relative w-full lg:w-[58%] flex flex-col justify-end order-1 lg:order-2 z-10"
         >
-          <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-[#030304] to-transparent z-20 pointer-events-none" />
+          <div
+            ref={stageInnerRef}
+            className="relative w-full min-h-[360px] sm:min-h-[460px] lg:min-h-[min(84svh,700px)]"
+          >
+            {/* WATERMARK: large soft "NO TWO" sitting behind the products */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-[12%] lg:top-[16%] z-0 flex select-none justify-center"
+            >
+              <span
+                ref={watermarkRef}
+                className="whitespace-nowrap font-sans font-semibold uppercase leading-none tracking-[-0.06em] text-[22vw] sm:text-[16vw] lg:text-[clamp(120px,11.5vw,190px)]"
+                style={{
+                  opacity: 0,
+                  backgroundImage: "linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 85%)",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                NO TWO
+              </span>
+            </div>
 
-          <div className="relative w-full min-h-[320px] sm:min-h-[420px] lg:min-h-[560px]">
-            {/* FIXED SPOTLIGHT WITH PARTICLES */}
+            {/* SPOTLIGHT WITH PARTICLES (intro only) — top/height/width are set in JS */}
             <div
               ref={spotlightRef}
-              className="absolute left-1/2 -translate-x-1/2 top-[-16%] sm:top-[-24%] lg:top-[-34%] w-[100%] sm:w-[108%] lg:w-[118%] h-[110%] sm:h-[128%] lg:h-[152%] pointer-events-none z-0"
+              className="absolute left-1/2 -translate-x-1/2 pointer-events-none z-0"
               style={{ opacity: 0 }}
               aria-hidden="true"
             >
               <img
+                ref={lightImgRef}
                 src="/light.png"
                 alt="Overhead spotlight beam"
                 loading="lazy"
+                onLoad={() => layoutLightRef.current && layoutLightRef.current()}
                 className="absolute inset-0 w-full h-full object-contain pointer-events-none"
-                style={{ mixBlendMode: "screen" }}
+                style={{ 
+                  mixBlendMode: "screen",
+                  WebkitMaskImage: "radial-gradient(ellipse 80% 100% at 50% 50%, black 40%, transparent 95%)",
+                  maskImage: "radial-gradient(ellipse 80% 100% at 50% 50%, black 40%, transparent 95%)"
+                }}
               />
 
-              {/* CSS Keyframes for the specific dust drift */}
               <style>{`
                 @keyframes floatDust {
                   0% { transform: translate(0, 0) scale(var(--s)); opacity: 0; }
@@ -331,7 +543,6 @@ export default function Hero({ isActive = true }) {
                 }
               `}</style>
 
-              {/* Particle Container mapping radial depth mask so they don't bleed out */}
               <div
                 className="absolute inset-0 z-10 overflow-hidden"
                 style={{
@@ -360,16 +571,47 @@ export default function Hero({ isActive = true }) {
 
             {/* ORBIT STAGE */}
             <div className="absolute inset-0 z-10 cursor-default">
-              {/* Shared floor anchor aligns the front product base with the podium surface */}
-              <div className="absolute top-[76%] sm:top-[82%] lg:top-[88%] left-1/2 w-0 h-0">
+              <div
+                ref={anchorRef}
+                className="absolute top-[76%] sm:top-[82%] lg:top-[84%] left-1/2 w-0 h-0"
+              >
+                {/* Soft backlight halo behind the front bottle */}
+                <div
+                  ref={haloRef}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute rounded-[50%]"
+                  style={{
+                    opacity: 0,
+                    background:
+                      "radial-gradient(closest-side, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.35) 45%, rgba(255,255,255,0) 100%)",
+                  }}
+                />
+                {/* Floor shadow grounding the orbit */}
+                <div
+                  ref={groundRef}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute rounded-[50%]"
+                  style={{
+                    opacity: 0,
+                    background:
+                      "radial-gradient(closest-side, rgba(9,10,12,0.22) 0%, rgba(9,10,12,0) 100%)",
+                  }}
+                />
+                {/* Hairline orbit ring */}
+                <div
+                  ref={ringRef}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute rounded-[50%] border border-[#090a0c]/[0.14]"
+                  style={{ opacity: 0 }}
+                />
+
                 {PRODUCTS.map((product, idx) => (
                   <div
                     key={product.id}
                     ref={(el) => { productRefs.current[idx] = el; }}
-                    className="absolute bottom-0 flex flex-col items-center w-[130px] sm:w-[200px] lg:w-[260px] pointer-events-none"
+                    className="absolute bottom-0 flex flex-col items-center w-[170px] sm:w-[260px] lg:w-[340px] pointer-events-none"
                     style={{ opacity: 0 }}
                   >
-                    {/* Bottle Wrapper */}
                     <div className={`${SIZE_CLASSES[product.size]} w-full flex items-end justify-center relative`}>
                       <Image
                         src={product.img}
@@ -378,16 +620,41 @@ export default function Hero({ isActive = true }) {
                         className="relative z-10 max-h-full w-auto object-contain select-none"
                         draggable={false}
                       />
-                      {/* Dynamic Contact Shadow */}
                       <div className="absolute bottom-[1px] left-1/2 -translate-x-1/2 w-[45%] h-[3px] bg-black/90 blur-[2px] rounded-[100%] z-0 pointer-events-none" />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* LIVE PRODUCT CAPTION */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-1 sm:pb-2">
+              <div
+                ref={(el) => { fadeRefs.current[2] = el; }}
+                className="flex flex-col items-center gap-3"
+                style={{ opacity: 0 }}
+              >
+                <div className="flex items-center gap-3 font-sans text-[11px] font-medium uppercase tracking-[0.3em] text-[#090a0c] sm:text-xs">
+                  <span ref={captionNumRef} className="tabular-nums text-[#090a0c]/50">01</span>
+                  <span className="h-px w-6 bg-[#090a0c]/30" />
+                  <span ref={captionNameRef} className="block">HYDRA CREAM</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {PRODUCTS.map((product, idx) => (
+                    <span
+                      key={product.id}
+                      ref={(el) => { dotRefs.current[idx] = el; }}
+                      className="h-[2px] w-[10px] rounded-full bg-[#090a0c] opacity-35 transition-all duration-500"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+     
     </section>
   );
 }

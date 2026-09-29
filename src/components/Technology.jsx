@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useMemo, Suspense } from "react";
+import { useEffect, useRef, useMemo, useState, Suspense } from "react";
 import { Bodoni_Moda, Space_Grotesk } from "next/font/google";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, ContactShadows, Html, useGLTF } from "@react-three/drei";
+import { Environment, ContactShadows, Html, Line, useGLTF } from "@react-three/drei";
+import { AdditiveBlending, Box3, CanvasTexture, Vector3 } from "three";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -26,83 +27,266 @@ const mono = Space_Grotesk({
   variable: "--font-mono",
 });
 
-/**
- * 3D Model Component
- */
-function SkinAnalyzerScene({ proxyRef, calloutOpacityRef }) {
-  const modelRef = useRef(null);
-  const calloutRef = useRef(null);
-  const { scene } = useGLTF("/model.glb");
+/* ------------------------------------------------------------------ */
+/* Constants                                                           */
+/* ------------------------------------------------------------------ */
 
-  const clonedScene = useMemo(() => {
-    const cloned = scene.clone(true);
-    cloned.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
+const CAM_Z = 5;
+const HALF_TAN = Math.tan((45 * Math.PI) / 360);
+const NORM_SIZE = 2.2;
+const clamp01 = (v) => Math.min(1, Math.max(0, v));
+
+const STAGES = [
+  { n: "01", title: "Analyze", side: "r", lead: "Your skin scanned using", body: "professional skin analysis technology.", meta: "Multi-spectral scan", bar: "w-28" },
+  { n: "02", title: "Understand", side: "l", lead: "Receive a complete report explaining", body: "your skin condition.", meta: "04 metrics mapped", bar: "w-28", segments: 4 },
+  { n: "03", title: "Personalize", side: "r", lead: "Experts recommend a skincare routine", body: "based on your unique skin profile.", meta: "Profile → routine", bar: "w-16" },
+  { n: "04", title: "Transform", side: "l", lead: "Follow routine. Track improvements. Re-analyze periodically.", body: "Healthy skin becomes measurable.", meta: "Progress signal", bar: "w-40" },
+];
+
+const CALLOUTS = [
+  { k: "sensor", pos: [1.0, 0.75, 0.5], side: "r", label: "Sensor array", value: "Multi-spectral lens" },
+  { k: "scanTag", pos: [1.0, -0.4, 0.5], side: "r", label: "Scan active", value: "Surface mapping" },
+  { k: "surface", pos: [-1.05, 0.3, 0.5], side: "l", label: "Surface mapping", value: "Texture / tone" },
+  { k: "ai", pos: [1.1, -0.62, 0.5], side: "r", label: "AI profile", value: "Routine engine" },
+  { k: "progress", pos: [-1.05, 0.45, 0.5], side: "l", label: "Progress signal", value: "Re-analysis" },
+];
+
+const POINTS = [
+  { pos: [-0.85, 0.95, 0.4], side: "l", label: "Hydration" },
+  { pos: [1.0, 0.7, 0.4], side: "r", label: "Barrier" },
+  { pos: [-0.9, -0.35, 0.4], side: "l", label: "Tone" },
+  { pos: [0.95, -0.5, 0.4], side: "r", label: "Texture" },
+];
+
+const AI_NODES = [
+  [-0.9, 0.7, 0.3],
+  [0.0, 1.0, 0.3],
+  [0.95, 0.55, 0.3],
+  [1.0, -0.2, 0.3],
+  [0.2, -0.85, 0.3],
+  [-0.95, -0.3, 0.3],
+];
+const AI_EDGES = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]];
+const AI_VALUES = [
+  { pos: [-0.9, 0.7, 0.3], side: "l", label: "M·01  0.74" },
+  { pos: [0.95, 0.55, 0.3], side: "r", label: "M·02  0.82" },
+];
+
+const makeProxy = () => ({
+  x: 0, y: 0.02, z: -1.6, rotX: 0.05, rotY: -0.9, rotZ: 0, scale: 0.72,
+  light: 0, rim: 0.6, lx: 0,
+  zone: 0.5, calloutK: 1, overlays: 1, float: 1,
+  scanY: 0, scanA: 0,
+  sensor: 0, scanTag: 0, surface: 0, points: 0, ai: 0, progress: 0,
+});
+
+const REDUCED_POSE = {
+  x: 0, y: 0, z: 0, scale: 1, rotX: 0.05, rotY: 0.4, rotZ: 0,
+  light: 0.95, rim: 1, lx: 0.4, zone: 0.8, overlays: 0, float: 0, scanA: 0, ai: 0,
+};
+
+const SILVER = "radial-gradient(ellipse 48% 58% at 50% 46%, rgba(226,232,240,0.34) 0%, rgba(148,163,184,0.16) 34%, rgba(10,11,13,0) 70%)";
+const COOL = "radial-gradient(ellipse 40% 50% at 50% 52%, rgba(147,170,205,0.22) 0%, rgba(147,170,205,0) 70%)";
+const GRAPHITE = "linear-gradient(180deg, #050506 0%, #14161a 55%, #08090b 100%), linear-gradient(0deg, rgba(203,213,225,0.08), transparent 35%)";
+const VIGNETTE = "radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.75) 100%)";
+const IMG_MASK = "radial-gradient(ellipse 78% 72% at 50% 50%, #000 42%, transparent 100%)";
+const STREAK_MASK = "linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent)";
+const STREAK_BG = "linear-gradient(100deg, transparent 0%, rgba(226,232,240,0.05) 30%, rgba(241,245,249,0.22) 48%, rgba(203,213,225,0.08) 62%, transparent 100%)";
+const REDUCED_BG = "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(203,213,225,0.10), transparent 70%), linear-gradient(180deg, #000 0%, #0d0e11 50%, #000 100%)";
+const TITLE_STYLE = {
+  backgroundImage: "linear-gradient(180deg,#ffffff 8%,#e2e8f0 52%,#94a3b8 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
+};
+
+/* ------------------------------------------------------------------ */
+/* 3D                                                                  */
+/* ------------------------------------------------------------------ */
+
+function makeScanTexture() {
+  const size = 128;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const g = canvas.getContext("2d");
+  const img = g.createImageData(size, size);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const v = (y / (size - 1) - 0.5) * 2;
+      const u = (x / (size - 1) - 0.5) * 2;
+      const a = Math.exp(-v * v * 14) * Math.min(1, (1 - Math.abs(u)) * 3.2);
+      const i = (y * size + x) * 4;
+      img.data[i] = 226;
+      img.data[i + 1] = 232;
+      img.data[i + 2] = 240;
+      img.data[i + 3] = Math.round(255 * a);
+    }
+  }
+  g.putImageData(img, 0, 0);
+  return new CanvasTexture(canvas);
+}
+
+function Tag({ proxyRef, k, pos, side = "r", label, value, index = 0, micro = false }) {
+  const group = useRef(null);
+  const el = useRef(null);
+
+  useFrame(() => {
+    const p = proxyRef.current;
+    if (!group.current || !el.current) return;
+    group.current.position.set(pos[0] * p.calloutK, pos[1], pos[2]);
+    el.current.style.opacity = (clamp01((p[k] - index * 0.15) / 0.55) * p.overlays).toFixed(3);
+  });
+
+  const left = side === "l";
+  return (
+    <group ref={group}>
+      <Html zIndexRange={[10, 0]} pointerEvents="none">
+        <div
+          ref={el}
+          style={{ opacity: 0 }}
+          className={`flex w-max -translate-y-1/2 items-center gap-2 max-md:hidden ${left ? "-translate-x-full flex-row-reverse text-right" : ""}`}
+        >
+          <span className="h-1 w-1 shrink-0 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
+          <span className={`h-px ${micro ? "w-3" : "w-6"} bg-white/40`} />
+          <span className="flex flex-col font-[family-name:var(--font-mono)] uppercase leading-tight">
+            <span className="text-[8px] tracking-[0.28em] text-white/50 md:text-[9px]">{label}</span>
+            {value && <span className="text-[10px] tracking-[0.12em] text-white/85 max-lg:hidden">{value}</span>}
+          </span>
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+function AnalyzerScene({ proxyRef, showOverlays }) {
+  const { scene } = useGLTF("/model.glb");
+  const outer = useRef(null);
+  const inner = useRef(null);
+  const key = useRef(null);
+  const fill = useRef(null);
+  const rim = useRef(null);
+  const ambient = useRef(null);
+  const scan = useRef(null);
+  const ai = useRef(null);
+  const scanTex = useMemo(makeScanTexture, []);
+
+  const model = useMemo(() => {
+    const object = scene.clone(true);
+    object.updateMatrixWorld(true);
+    const box = new Box3().setFromObject(object);
+    const size = box.getSize(new Vector3());
+    const center = box.getCenter(new Vector3());
+    const norm = NORM_SIZE / Math.max(size.x, size.y, size.z);
+    const set = new Set();
+    object.traverse((c) => {
+      if (c.isMesh) [].concat(c.material).forEach((m) => set.add(m));
     });
-    return cloned;
+    return {
+      object,
+      norm,
+      center,
+      w: Math.max(size.x, size.z) * norm,
+      h: size.y * norm,
+      mats: [...set].map((m) => ({ m, base: m.envMapIntensity ?? 1 })),
+    };
   }, [scene]);
 
   useFrame((state) => {
-    if (!modelRef.current) return;
-    const proxy = proxyRef.current;
+    const p = proxyRef.current;
+    const o = outer.current;
+    if (!o) return;
+    const t = state.clock.elapsedTime;
 
-    modelRef.current.position.set(proxy.x, proxy.y, proxy.z);
-    modelRef.current.rotation.set(proxy.rotX, proxy.rotY, proxy.rotZ);
-    modelRef.current.scale.setScalar(proxy.scale);
+    const viewH = 2 * HALF_TAN * CAM_Z;
+    const viewW = viewH * (state.size.width / state.size.height);
+    const depth = (CAM_Z - p.z) / CAM_Z;
+    o.position.set(p.x * viewW * depth, p.y * viewH * depth, p.z);
+    o.scale.setScalar(Math.min(p.scale, (viewW * p.zone) / model.w));
 
-    const time = state.clock.getElapsedTime();
-    // Subtle cinematic floating movement
-    modelRef.current.position.y += Math.sin(time * 1.5) * 0.012;
-    modelRef.current.rotation.x += Math.cos(time * 1.2) * 0.002;
+    const f = p.float;
+    inner.current.position.y = Math.sin(t * 1.2) * 0.012 * f;
+    inner.current.rotation.set(
+      p.rotX + Math.cos(t * 0.9) * 0.004 * f,
+      p.rotY + Math.sin(t * 0.6) * 0.01 * f,
+      p.rotZ
+    );
 
-    if (calloutRef.current) {
-      calloutRef.current.style.opacity = calloutOpacityRef.current.value;
+    const L = p.light;
+    key.current.intensity = 2.4 * L;
+    key.current.position.set(p.lx * 5, 7, 6);
+    fill.current.intensity = 0.9 * L;
+    rim.current.intensity = 1.4 * p.rim * L;
+    ambient.current.intensity = 0.25 * L;
+
+    const env = 0.15 + 0.85 * L;
+    state.scene.environmentIntensity = env;
+    for (const e of model.mats) e.m.envMapIntensity = e.base * env;
+
+    scan.current.position.y = (p.scanY - 0.5) * model.h * 1.2;
+    scan.current.material.opacity = p.scanA * 0.6;
+    scan.current.visible = p.scanA > 0.01;
+
+    const a = p.ai * p.overlays;
+    ai.current.visible = a > 0.01;
+    if (ai.current.visible) {
+      ai.current.traverse((n) => {
+        if (n.material) n.material.opacity = (n.userData.a ?? 1) * a;
+      });
     }
   });
 
+  const c = model.center;
+  const n = model.norm;
+
   return (
     <>
-      <Environment preset="city" />
-      <ambientLight intensity={0.5} />
-      {/* Neutral white key light, soft cool-silver fill for metallic clinical feel */}
-      <directionalLight position={[5, 10, 5]} intensity={2.0} color="#ffffff" castShadow />
-      <directionalLight position={[-5, 5, -5]} intensity={0.9} color="#f1f5f9" />
-      <spotLight position={[0, 2, 10]} intensity={0.6} color="#ffffff" penumbra={1} />
+      <Environment preset="studio" />
+      <ambientLight ref={ambient} intensity={0} />
+      <directionalLight ref={key} color="#ffffff" intensity={0} />
+      <directionalLight ref={fill} position={[-5, 3, 4]} color="#dfe5ec" intensity={0} />
+      <directionalLight ref={rim} position={[-2, 4, -6]} color="#b8ccf0" intensity={0} />
 
-      <group ref={modelRef} dispose={null}>
-        <primitive object={clonedScene} />
+      <group ref={outer}>
+        <group ref={inner}>
+          <group scale={n} position={[-c.x * n, -c.y * n, -c.z * n]}>
+            <primitive object={model.object} />
+          </group>
+        </group>
 
-        <ContactShadows
-          position={[0, -0.4, 0]}
-          opacity={0.7}
-          scale={12}
-          blur={3}
-          far={5}
-          color="#000000"
-        />
+        <ContactShadows position={[0, -model.h / 2 - 0.03, 0]} opacity={0.5} scale={8} blur={2.8} far={3} color="#000000" />
 
-        {/* Cleaner Restrained Callout */}
-        <Html
-          position={[0.6, 1.2, 0.4]}
-          center
-          className="pointer-events-none"
-        >
-          <div ref={calloutRef} className="relative flex w-[160px] flex-row items-center gap-3 opacity-0 transition-opacity duration-300">
-            <div className="z-10 h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,1)]" />
-            <div className="h-px w-5 bg-white/50" />
-            <div className="flex flex-col">
-              <p className="font-[family-name:var(--font-mono)] text-[9px] font-bold uppercase tracking-[0.25em] text-white/70">
-                Sensor Array
-              </p>
-              <p className="font-[family-name:var(--font-mono)] text-xs font-medium text-white">
-                Multi-spectral lens
-              </p>
-            </div>
-          </div>
-        </Html>
+        <mesh ref={scan} position={[0, 0, 0.8]} renderOrder={5} visible={false}>
+          <planeGeometry args={[model.w * 1.25, 0.9]} />
+          <meshBasicMaterial map={scanTex} transparent opacity={0} depthWrite={false} depthTest={false} blending={AdditiveBlending} toneMapped={false} />
+        </mesh>
+
+        <group ref={ai} visible={false}>
+          {AI_NODES.map((pos, i) => (
+            <mesh key={i} position={pos} userData={{ a: 0.9 }}>
+              <sphereGeometry args={[0.02, 10, 10]} />
+              <meshBasicMaterial color="#e2e8f0" transparent opacity={0} toneMapped={false} />
+            </mesh>
+          ))}
+          {AI_EDGES.map(([a, b], i) => (
+            <Line key={i} points={[AI_NODES[a], AI_NODES[b]]} color="#cbd5e1" lineWidth={0.7} transparent opacity={0} userData={{ a: 0.35 }} />
+          ))}
+        </group>
+
+        {showOverlays && (
+          <>
+            {CALLOUTS.map((cfg) => (
+              <Tag key={cfg.k} proxyRef={proxyRef} {...cfg} />
+            ))}
+            {POINTS.map((cfg, i) => (
+              <Tag key={cfg.label} proxyRef={proxyRef} k="points" index={i} micro {...cfg} />
+            ))}
+            {AI_VALUES.map((cfg, i) => (
+              <Tag key={cfg.label} proxyRef={proxyRef} k="ai" index={i + 1} micro {...cfg} />
+            ))}
+          </>
+        )}
       </group>
     </>
   );
@@ -110,306 +294,418 @@ function SkinAnalyzerScene({ proxyRef, calloutOpacityRef }) {
 
 useGLTF.preload("/model.glb");
 
-/**
- * Main Section Component
- */
+/* ------------------------------------------------------------------ */
+/* Copy blocks                                                         */
+/* ------------------------------------------------------------------ */
+
+function StepMark({ n }) {
+  const label = <span>Step {n}</span>;
+  const rule = (cls) => <span className={`h-px ${cls}`} />;
+  const variants = {
+    "01": <>{rule("w-8 bg-white/45")}{label}</>,
+    "02": <>{label}{rule("w-14 bg-gradient-to-r from-white/45 to-transparent")}</>,
+    "03": <>{label}<span className="text-white/35">/ 04</span>{rule("w-10 bg-white/25")}</>,
+    "04": <>{rule("w-3 bg-white/60")}{label}{rule("w-3 bg-white/60")}</>,
+  };
+  return (
+    <div className="mb-5 flex items-center gap-3 font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-[0.3em] text-white/65">
+      {variants[n]}
+    </div>
+  );
+}
+
+function Meter({ s }) {
+  return (
+    <div className="mt-7 flex items-center gap-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.28em] text-white/40">
+      <span className={`flex gap-1 ${s.bar}`}>
+        {Array.from({ length: s.segments ?? 1 }, (_, i) => (
+          <span key={i} className="relative h-px flex-1 overflow-hidden bg-white/15">
+            <span data-fill className="absolute inset-0 origin-left bg-white/75" />
+          </span>
+        ))}
+      </span>
+      <span>{s.meta}</span>
+    </div>
+  );
+}
+
+function StageCopy({ s, animated }) {
+  return (
+    <div data-stage className={`w-full ${animated ? "opacity-0" : ""}`}>
+      <StepMark n={s.n} />
+      <div style={{ filter: "drop-shadow(0 0 18px rgba(226,232,240,0.2))" }}>
+        <h2
+          className="pr-[0.08em] font-[family-name:var(--font-display)] text-[clamp(2.6rem,12vw,3.5rem)] font-medium italic leading-[1.02] md:text-[clamp(2.75rem,6vw,6rem)]"
+          style={TITLE_STYLE}
+        >
+          {s.title}
+        </h2>
+      </div>
+      <p className="mt-5 max-w-[30ch] font-[family-name:var(--font-mono)] text-[15px] font-light leading-relaxed text-white/60 md:max-w-[34ch] md:text-base lg:text-lg">
+        {s.lead} <span className="font-normal text-white/90">{s.body}</span>
+      </p>
+      <Meter s={s} />
+    </div>
+  );
+}
+
+function FinalStatement({ innerRef, animated }) {
+  return (
+    <div
+      ref={innerRef}
+      className={`flex items-center gap-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.4em] text-white/50 ${animated ? "opacity-0" : ""}`}
+    >
+      <span className="h-px w-8 bg-white/30" />
+      AI Skin Intelligence
+      <span className="h-px w-8 bg-white/30" />
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Section                                                             */
+/* ------------------------------------------------------------------ */
+
 export default function Technology() {
-  const sectionRef = useRef(null);
-  const pinRef = useRef(null);
-
-  // Presentation Refs
-  const bannerRef = useRef(null);
-  const bgGlowRef = useRef(null);
-  const bgSweepRef = useRef(null);
-
-  // 4 Story Points Refs
-  const r1Ref = useRef(null); // Stage 01 - Analyze
-  const r2Ref = useRef(null); // Stage 02 - Understand
-  const r3Ref = useRef(null); // Stage 03 - Personalize
-  const r4Ref = useRef(null); // Stage 04 - Transform
-  const calloutOpacityRef = useRef({ value: 0 });
-
-  const proxyRef = useRef({
-    x: 0,
-    y: 0,
-    z: 0,
-    rotX: 0,
-    rotY: 0,
-    rotZ: 0,
-    scale: 1,
-  });
+  const [reduced, setReduced] = useState(false);
+  const R = useRef({});
+  const ref = useMemo(() => {
+    const cache = {};
+    return (k) => (cache[k] ||= (n) => { R.current[k] = n; });
+  }, []);
+  const proxyRef = useRef(makeProxy());
 
   useEffect(() => {
-    let ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
-      mm.add({
-        isDesktop: "(min-width: 768px)",
-        isMobile: "(max-width: 767px)",
-        reduceMotion: "(prefers-reduced-motion: reduce)"
-      }, (context) => {
-        let { isDesktop, isMobile, reduceMotion } = context.conditions;
+  useEffect(() => {
+    const P = proxyRef.current;
+    if (reduced) {
+      Object.assign(P, REDUCED_POSE);
+      return;
+    }
 
-        if (reduceMotion) {
-          gsap.set(bannerRef.current, { position: "relative", opacity: 1, filter: "none", height: "60vh" });
-          gsap.set([r1Ref.current, r2Ref.current, r3Ref.current, r4Ref.current], {
-            opacity: 1, position: "relative", transform: "none", display: "block", width: "100%", padding: "3rem 1.5rem", marginTop: "2rem"
-          });
-          gsap.set(pinRef.current, { height: "auto", overflow: "visible" });
-          return;
-        }
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        desktop: "(min-width: 1024px)",
+        tablet: "(min-width: 768px) and (max-width: 1023px)",
+        mobile: "(max-width: 767px)",
+      },
+      (ctx) => {
+        const { desktop, tablet, mobile } = ctx.conditions;
+        const { section, pin, root, par, img, veil, sheen, scan, tagA, tagB, atmo, silver, cool, graphite, sweep, final } = R.current;
+        const stages = gsap.utils.toArray("[data-stage]", section);
+        const K = desktop ? 1 : 0.85;
 
-        // Initial setup
-        gsap.set(bannerRef.current, { opacity: 1, scale: 1, filter: "blur(0px)", display: "flex" });
-        gsap.set([r1Ref.current, r2Ref.current, r3Ref.current, r4Ref.current], { opacity: 0, display: "none" });
-        gsap.set(bgGlowRef.current, { opacity: 0 });
-        gsap.set(bgSweepRef.current, { xPercent: -100 });
+        Object.assign(P, makeProxy(), {
+          zone: mobile ? 0.9 : 0.5,
+          calloutK: desktop ? 1 : 0.5,
+          overlays: mobile ? 0 : 1,
+          y: mobile ? 0.16 : 0.02,
+        });
 
-        if (isDesktop) {
-          gsap.set(r1Ref.current, { x: 40 });
-          gsap.set(r2Ref.current, { x: -40 });
-          gsap.set(r3Ref.current, { x: 40 });
-          gsap.set(r4Ref.current, { x: -40 });
-          // Model hidden slightly behind and scaled down during banner intro
-          gsap.set(proxyRef.current, { x: 0, y: 0, rotX: 0, rotY: 0, rotZ: 0, scale: 0.7 });
-        } else {
-          gsap.set([r1Ref.current, r2Ref.current, r3Ref.current, r4Ref.current], { y: 30 });
-          gsap.set(proxyRef.current, { x: 0, y: 0.2, rotX: 0, rotY: 0, rotZ: 0, scale: 0.6 });
-        }
+        const pose = (i) => ({
+          x: mobile ? 0 : [-1, 1, -1, 1][i] * 0.235,
+          y: mobile ? 0.155 : [-0.01, -0.02, -0.005, 0][i],
+          z: [0, 0.25, 0.35, 0.55][i] * (mobile ? 0.6 : K),
+          scale: [1, 1.06, 1.14, 1.22][i] * (mobile ? 0.8 : K),
+          rotX: [0.06, 0.12, -0.06, 0.1][i] * (mobile ? 0.5 : 1),
+          rotY: [0.12, -0.75, 0.85, -0.32][i] * (mobile ? 0.6 : K),
+          rotZ: [0, 0.02, -0.015, 0][i],
+        });
+        const LIGHT = [
+          { light: 0.85, rim: 0.6, lx: -0.5 },
+          { light: 0.95, rim: 0.9, lx: 0.6 },
+          { light: 1.0, rim: 1.1, lx: -0.7 },
+          { light: 1.15, rim: 1.5, lx: 0.5 },
+        ];
+
+        const W = [[15, 20], [35, 22], [57, 22], [79, 16]];
+        const T = W.map(([s, l]) => ({
+          in0: s + l * 0.16,
+          in1: s + l * 0.38,
+          ov: s + l * 0.42,
+          hold: s + l * 0.82,
+          out1: s + l * 0.94,
+          arrive: s + l * 0.3,
+        }));
+        const MV = [[11, T[0].arrive], [T[0].hold, T[1].arrive], [T[1].hold, T[2].arrive], [T[2].hold, T[3].arrive]];
+
+        gsap.set(root, { autoAlpha: 1 });
+        gsap.set(veil, { opacity: 0.65 });
+        gsap.set(img, { scale: 1.03 });
+        gsap.set(par, { yPercent: 2 });
+        gsap.set(sheen, { xPercent: -110, opacity: 0 });
+        gsap.set(scan, { yPercent: -110, opacity: 0 });
+        gsap.set([tagA, tagB], { opacity: 0 });
+        gsap.set([silver, cool, graphite], { opacity: 0 });
+        gsap.set(atmo, { xPercent: 0, yPercent: mobile ? -14 : 0 });
+        gsap.set(sweep, { xPercent: -110, opacity: 0 });
+        gsap.set(final, { autoAlpha: 0, y: 8, filter: "blur(4px)" });
+        stages.forEach((el, i) => {
+          const dir = mobile ? 0 : STAGES[i].side === "r" ? 1 : -1;
+          gsap.set(el, { autoAlpha: 0, x: dir * 56, y: mobile ? 26 : 16, filter: "blur(6px)" });
+          gsap.set(el.querySelectorAll("[data-fill]"), { scaleX: 0, transformOrigin: "left center" });
+        });
 
         const tl = gsap.timeline({
           scrollTrigger: {
-            trigger: sectionRef.current,
+            trigger: section,
             start: "top top",
-            end: () => `+=${Math.round(window.innerHeight * 5)}`,
-            scrub: 0.8,
-            pin: pinRef.current,
+            end: () => `+=${Math.round(window.innerHeight * (desktop ? 8 : tablet ? 7.5 : 7))}`,
+            scrub: 1,
+            pin,
+            anticipatePin: 1,
             invalidateOnRefresh: true,
           },
         });
 
-        // ============================================
-        // INTRO (Banner fade out, Model moves to Stage 1)
-        // ============================================
-        tl.addLabel("intro")
-          .to(bannerRef.current, { opacity: 0, scale: 1.05, filter: "blur(12px)", duration: 1.5, ease: "power3.inOut" }, "intro")
-          .to(bgGlowRef.current, { opacity: 0.15, duration: 1.5 }, "intro")
-          .to(proxyRef.current, {
-            x: isDesktop ? -2.2 : 0,
-            y: isDesktop ? -0.2 : 0.8,
-            rotX: 0.05,
-            rotY: 0.25,
-            scale: isDesktop ? 1.05 : 0.85,
-            duration: 1.5,
-            ease: "power3.inOut"
-          }, "intro")
-          .set(bannerRef.current, { display: "none" }, "intro+=1.5")
-          .set(r1Ref.current, { display: "block" }, "intro+=1.0")
-          .to(r1Ref.current, { opacity: 1, x: 0, y: 0, duration: 0.8, ease: "power3.out" }, "intro+=1.0")
-          .to(calloutOpacityRef.current, { value: 1, duration: 0.5 }, "intro+=1.2")
-          // HOLD STAGE 1
-          .to({}, { duration: 1.0 });
+        // Banner: emerge, metallic pass, zoom, scan line, dissolve
+        tl.to(veil, { opacity: 0, duration: 6.5, ease: "power2.out" }, 0)
+          .to(img, { scale: 1, duration: 6.5, ease: "power2.out" }, 0)
+          .to(par, { yPercent: -2, duration: 15, ease: "none" }, 0)
+          .to(img, { scale: 1.08, duration: 6, ease: "power2.in" }, 9)
+          .to(sheen, { xPercent: 150, duration: 6, ease: "power2.inOut" }, 2)
+          .to(sheen, { opacity: 0.9, duration: 2.4, ease: "sine.out" }, 2)
+          .to(sheen, { opacity: 0, duration: 3.6, ease: "sine.in" }, 4.4)
+          .set(sheen, { xPercent: -110 }, 8.9)
+          .to(sheen, { xPercent: 150, duration: 4.2, ease: "power2.inOut" }, 9)
+          .to(sheen, { opacity: 0.7, duration: 1.6, ease: "sine.out" }, 9)
+          .to(sheen, { opacity: 0, duration: 2.6, ease: "sine.in" }, 10.6)
+          .to(scan, { yPercent: 480, duration: 4, ease: "power2.inOut" }, 9.6)
+          .to(scan, { opacity: 1, duration: 1.2, ease: "sine.out" }, 9.6)
+          .to(scan, { opacity: 0, duration: 2.2, ease: "sine.in" }, 11.6)
+          .to(veil, { opacity: 1, duration: 3.6, ease: "power2.in" }, 11)
+          .to(root, { autoAlpha: 0, duration: 2.6, ease: "power2.inOut" }, 13.4)
+          .to(tagA, { opacity: 1, duration: 2 }, 0.5)
+          .to(tagA, { opacity: 0, duration: 1 }, 8.6)
+          .to(tagB, { opacity: 1, duration: 1 }, 9.6)
+          .to(tagB, { opacity: 0, duration: 1.6 }, 12.4);
 
-        // ============================================
-        // STAGE 2 (UNDERSTAND)
-        // ============================================
-        tl.addLabel("stage2")
-          .to(r1Ref.current, { opacity: 0, x: isDesktop ? 40 : 0, y: isDesktop ? 0 : -20, duration: 0.6, ease: "power3.inOut" }, "stage2")
-          .set(r1Ref.current, { display: "none" }, "stage2+=0.6")
-          .to(calloutOpacityRef.current, { value: 0, duration: 0.3 }, "stage2")
-          .to(bgGlowRef.current, { opacity: 0.3, duration: 1.2 }, "stage2")
-          .fromTo(bgSweepRef.current, { xPercent: -100 }, { xPercent: 100, duration: 1.2, ease: "power3.inOut" }, "stage2")
-          .to(proxyRef.current, {
-            x: isDesktop ? 2.2 : 0,
-            y: isDesktop ? -0.3 : 0.8,
-            rotY: isDesktop ? -0.6 : -0.7,
-            rotX: 0.1,
-            scale: isDesktop ? 1.1 : 0.85,
-            duration: 1.2,
-            ease: "power3.inOut"
-          }, "stage2")
-          .set(r2Ref.current, { display: "block" }, "stage2+=0.8")
-          .to(r2Ref.current, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: "power3.out" }, "stage2+=0.8")
-          // HOLD STAGE 2
-          .to({}, { duration: 1.0 });
+        // Model: one path per stage, position + rotation + scale + depth + light
+        const moveTo = (i, [t0, t1], withLight = true) => {
+          const d = t1 - t0;
+          const { x, y, z, scale, rotX, rotY, rotZ } = pose(i);
+          tl.to(P, { x, y, z, scale, duration: d, ease: "power3.inOut" }, t0)
+            .to(P, { rotX, rotY, rotZ, duration: d, ease: "power4.inOut" }, t0);
+          if (withLight) tl.to(P, { ...LIGHT[i], duration: d, ease: "sine.inOut" }, t0);
+        };
+        tl.to(P, { ...LIGHT[0], duration: 4.7, ease: "sine.inOut" }, 10.8);
+        moveTo(0, MV[0], false);
+        moveTo(1, MV[1]);
+        moveTo(2, MV[2]);
+        moveTo(3, MV[3]);
+        const f = pose(3);
+        tl.to(P, { light: 0.7, rim: 0.8, lx: 0, z: f.z - 0.2 * K, scale: f.scale * 0.95, rotY: f.rotY * 0.6, duration: 8, ease: "power2.inOut" }, 92);
 
-        // ============================================
-        // STAGE 3 (PERSONALIZE)
-        // ============================================
-        tl.addLabel("stage3")
-          .to(r2Ref.current, { opacity: 0, x: isDesktop ? -40 : 0, y: isDesktop ? 0 : -20, duration: 0.6, ease: "power3.inOut" }, "stage3")
-          .set(r2Ref.current, { display: "none" }, "stage3+=0.6")
-          .to(bgGlowRef.current, { opacity: 0.5, duration: 1.2 }, "stage3")
-          .fromTo(bgSweepRef.current, { xPercent: -100 }, { xPercent: 100, duration: 1.2, ease: "power3.inOut" }, "stage3")
-          .to(proxyRef.current, {
-            x: isDesktop ? -2.2 : 0,
-            y: isDesktop ? -0.1 : 0.8,
-            rotY: 0.7,
-            rotX: -0.05,
-            scale: isDesktop ? 1.2 : 0.9,
-            duration: 1.2,
-            ease: "power3.inOut"
-          }, "stage3")
-          .set(r3Ref.current, { display: "block" }, "stage3+=0.8")
-          .to(r3Ref.current, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: "power3.out" }, "stage3+=0.8")
-          .to(calloutOpacityRef.current, { value: 1, duration: 0.5 }, "stage3+=1.0")
-          // HOLD STAGE 3
-          .to({}, { duration: 1.0 });
+        // Copy
+        stages.forEach((el, i) => {
+          const dir = mobile ? 0 : STAGES[i].side === "r" ? 1 : -1;
+          const t = T[i];
+          tl.to(el, { autoAlpha: 1, x: 0, y: 0, filter: "blur(0px)", duration: t.in1 - t.in0, ease: "power3.out" }, t.in0);
+          if (i < 3) {
+            tl.to(el, { autoAlpha: 0, x: dir * 56, y: mobile ? -18 : -10, filter: "blur(6px)", duration: t.out1 - t.hold, ease: "power3.in" }, t.hold);
+          }
+          tl.to(el.querySelectorAll("[data-fill]"), { scaleX: 1, duration: (t.hold - t.in1) * 0.6, stagger: 0.5, ease: "power2.inOut" }, t.in1);
+        });
 
-        // ============================================
-        // STAGE 4 (TRANSFORM)
-        // ============================================
-        tl.addLabel("stage4")
-          .to(r3Ref.current, { opacity: 0, x: isDesktop ? 40 : 0, y: isDesktop ? 0 : -20, duration: 0.6, ease: "power3.inOut" }, "stage4")
-          .set(r3Ref.current, { display: "none" }, "stage4+=0.6")
-          .to(calloutOpacityRef.current, { value: 0, duration: 0.3 }, "stage4")
-          .to(bgGlowRef.current, { opacity: 0.8, duration: 1.2 }, "stage4")
-          .fromTo(bgSweepRef.current, { xPercent: -100 }, { xPercent: 100, duration: 1.2, ease: "power3.inOut" }, "stage4")
-          .to(proxyRef.current, {
-            x: isDesktop ? 2.2 : 0,
-            y: isDesktop ? -0.2 : 0.8,
-            rotY: -0.3,
-            rotX: 0.15,
-            scale: isDesktop ? 1.15 : 0.95,
-            duration: 1.2,
-            ease: "power3.inOut"
-          }, "stage4")
-          .set(r4Ref.current, { display: "block" }, "stage4+=0.8")
-          .to(r4Ref.current, { opacity: 1, x: 0, y: 0, duration: 0.6, ease: "power3.out" }, "stage4+=0.8")
-          // HOLD STAGE 4
-          .to({}, { duration: 1.0 });
+        // Overlays
+        const fx = (key, t, d, to) => tl.to(P, { [key]: to, duration: d, ease: "sine.inOut" }, t);
+        fx("sensor", T[0].ov, 1.6, 1);
+        fx("scanTag", T[0].ov + 2.6, 1.6, 1);
+        fx("sensor", T[0].hold, 1.6, 0);
+        fx("scanTag", T[0].hold, 1.6, 0);
+        tl.to(P, { scanY: 1, duration: 6, ease: "power2.inOut" }, 24.5)
+          .to(P, { scanA: 1, duration: 0.9 }, 24.5)
+          .to(P, { scanA: 0, duration: 1 }, 29.6);
+        fx("surface", T[1].ov, 1.6, 1);
+        fx("points", T[1].ov + 1.4, 2.2, 1);
+        fx("surface", T[1].hold, 1.6, 0);
+        fx("points", T[1].hold, 1.6, 0);
+        fx("ai", T[2].ov, 2.4, 1);
+        fx("ai", T[2].hold, 1.6, 0);
+        fx("progress", T[3].ov, 1.6, 1);
+        fx("progress", T[3].hold, 2, 0);
 
-        // ============================================
-        // FINAL OUTRO
-        // ============================================
-        tl.addLabel("final")
-          .to(bgGlowRef.current, { opacity: 0.1, duration: 1.5, ease: "power3.inOut" }, "final");
+        // Atmosphere
+        const bg = (target, vars, [t0, t1]) => tl.to(target, { ...vars, duration: t1 - t0, ease: "sine.inOut" }, t0);
+        const hx = mobile ? 0 : 17;
+        [-hx, hx, -hx, hx].forEach((xPercent, i) => bg(atmo, { xPercent }, MV[i]));
+        bg(atmo, { xPercent: hx * 0.6 }, [92, 100]);
+        bg(silver, { opacity: 0.15 }, [10, 15]);
+        bg(silver, { opacity: 0.38 }, [15, 24]);
+        bg(silver, { opacity: 0.6 }, MV[1]);
+        bg(silver, { opacity: 0.85 }, MV[2]);
+        bg(silver, { opacity: 1 }, MV[3]);
+        bg(silver, { opacity: 0.3 }, [92, 100]);
+        bg(graphite, { opacity: 0.55 }, MV[1]);
+        bg(graphite, { opacity: 0.8 }, MV[2]);
+        bg(graphite, { opacity: 0.35 }, [92, 100]);
+        bg(cool, { opacity: 0.9 }, MV[3]);
+        bg(cool, { opacity: 0.25 }, [92, 100]);
 
-      });
-    }, sectionRef);
+        // Metallic sweep on transitions
+        const pass = (t, d, peak) => {
+          tl.to(sweep, { xPercent: 150, duration: d, ease: "power2.inOut" }, t)
+            .to(sweep, { opacity: peak, duration: d * 0.4, ease: "sine.out" }, t)
+            .to(sweep, { opacity: 0, duration: d * 0.6, ease: "sine.in" }, t + d * 0.4)
+            .set(sweep, { xPercent: -110 }, t + d + 0.01);
+        };
+        pass(13.5, 7, 0.5);
+        pass(33, 7, 0.75);
+        pass(55, 7, 0.9);
+        pass(76.5, 6.5, 1);
 
-    return () => ctx.revert();
-  }, []);
+        // Final statement
+        tl.to(final, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 2.4, ease: "power3.out" }, 95.4);
+        tl.set({}, {}, 100);
+      }
+    );
+
+    const refresh = () => ScrollTrigger.refresh();
+    document.fonts?.ready.then(refresh);
+
+    return () => mm.revert();
+  }, [reduced]);
+
+  if (reduced) {
+    return (
+      <section
+        id="technology"
+        ref={ref("section")}
+        aria-label="AI skin analysis technology"
+        className={`${display.variable} ${mono.variable} relative w-full bg-black`}
+        style={{ background: REDUCED_BG }}
+      >
+        <div className="relative h-[70svh] w-full overflow-hidden bg-black">
+          <img
+            src="/TechnologyBanner.png"
+            alt="Skin analysis technology"
+            decoding="async"
+            draggable={false}
+            className="h-full w-full object-cover"
+            style={{ maskImage: IMG_MASK, WebkitMaskImage: IMG_MASK }}
+          />
+        </div>
+        <div className="relative h-[75svh] w-full" aria-hidden="true">
+          <Canvas frameloop="demand" camera={{ position: [0, 0, CAM_Z], fov: 45 }} dpr={[1, 2]} gl={{ antialias: true }}>
+            <Suspense fallback={null}>
+              <AnalyzerScene proxyRef={proxyRef} showOverlays={false} />
+            </Suspense>
+          </Canvas>
+        </div>
+        <div className="mx-auto max-w-[1100px] px-6 pb-8 md:px-12">
+          {STAGES.map((s) => (
+            <div key={s.n} className={`border-t border-white/10 py-16 md:w-[60%] md:py-24 ${s.side === "r" ? "md:ml-auto" : ""}`}>
+              <StageCopy s={s} />
+            </div>
+          ))}
+          <div className="flex justify-center py-12">
+            <FinalStatement />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
       id="technology"
-      ref={sectionRef}
+      ref={ref("section")}
+      aria-label="AI skin analysis technology"
       className={`${display.variable} ${mono.variable} relative w-full bg-black`}
     >
-      <div ref={pinRef} className="relative h-screen w-full overflow-hidden bg-black">
-
-        {/* Intro Cinematic Banner */}
-        <div ref={bannerRef} className="absolute inset-0 z-30 flex items-center justify-center bg-black">
-          <img
-            src="/TechnologyBanner.png"
-            alt="Skin Analysis Technology"
-            className="w-full h-full object-cover opacity-90"
-            style={{
-              maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%)',
-              WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%)',
-            }}
-          />
+      <div ref={ref("pin")} className="relative h-screen w-full overflow-hidden bg-black supports-[height:100svh]:h-[100svh]">
+        {/* Atmosphere */}
+        <div ref={ref("graphite")} className="pointer-events-none absolute inset-0 z-0 opacity-0" style={{ background: GRAPHITE }} />
+        <div ref={ref("atmo")} className="pointer-events-none absolute -inset-[12%] z-0">
+          <div ref={ref("silver")} className="absolute inset-0 opacity-0" style={{ background: SILVER }} />
+          <div ref={ref("cool")} className="absolute inset-0 opacity-0" style={{ background: COOL }} />
         </div>
 
-        {/* Ambient Silver Glow Background */}
-        <div ref={bgGlowRef} className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[50rem] w-[50rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-slate-300/[0.04] blur-[100px] transition-opacity" />
-
-        {/* Subtle Metallic Light Sweep */}
-        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-          <div ref={bgSweepRef} className="absolute inset-0 flex items-center justify-center -translate-x-full">
-            <div className="h-[200%] w-[100px] md:w-[250px] rotate-[25deg] bg-gradient-to-r from-transparent via-white/10 to-transparent blur-2xl" />
+        {/* Brushed-metal light pass */}
+        <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden">
+          <div ref={ref("sweep")} className="absolute -top-[30%] left-0 h-[160%] w-[70vw] opacity-0 will-change-transform">
+            <div
+              className="absolute inset-0 -skew-x-[14deg]"
+              style={{ background: STREAK_BG, filter: "blur(28px)", maskImage: STREAK_MASK, WebkitMaskImage: STREAK_MASK }}
+            />
+            <div
+              className="absolute inset-y-0 left-[47%] w-[5%] -skew-x-[14deg] opacity-70"
+              style={{
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)",
+                filter: "blur(14px)",
+                maskImage: STREAK_MASK,
+                WebkitMaskImage: STREAK_MASK,
+              }}
+            />
           </div>
         </div>
+        <div className="pointer-events-none absolute inset-0 z-[2]" style={{ background: VIGNETTE }} />
 
-        {/* 3D Canvas */}
-        <div className="absolute inset-0 z-10">
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 45 }}
-            dpr={[1, 2]}
-            gl={{ antialias: true, powerPreference: "high-performance" }}
-          >
+        {/* 3D analyzer */}
+        <div className="absolute inset-0 z-10" aria-hidden="true">
+          <Canvas camera={{ position: [0, 0, CAM_Z], fov: 45 }} dpr={[1, 2]} gl={{ antialias: true, powerPreference: "high-performance" }}>
             <Suspense fallback={null}>
-              <SkinAnalyzerScene
-                proxyRef={proxyRef}
-                calloutOpacityRef={calloutOpacityRef}
-              />
+              <AnalyzerScene proxyRef={proxyRef} showOverlays />
             </Suspense>
           </Canvas>
         </div>
 
-        {/* LAYOUT ARCHITECTURE: Protected Desktop L/R Zones, Mobile bottom lock */}
-        <div className="relative z-20 h-full w-full mx-auto max-w-[1440px] pointer-events-none">
+        {/* Copy: protected opposite zones on ≥768px, bottom stack on mobile */}
+        <div className="pointer-events-none absolute inset-0 z-20 mx-auto max-w-[1440px]">
+          {STAGES.map((s) => (
+            <div
+              key={s.n}
+              className={`absolute inset-x-0 bottom-[5%] px-6 md:bottom-0 md:top-0 md:flex md:w-[40%] md:items-center md:px-0 ${
+                s.side === "r" ? "md:left-auto md:right-[5%]" : "md:left-[5%] md:right-auto"
+              }`}
+            >
+              <StageCopy s={s} animated />
+            </div>
+          ))}
+        </div>
 
-          {/* ROUND 1: Text Right */}
-          <div
-            ref={r1Ref}
-            className="absolute top-1/2 -translate-y-1/2 right-[5%] w-[42%] max-md:left-0 max-md:right-0 max-md:w-full max-md:top-auto max-md:bottom-[8%] max-md:translate-y-0 max-md:px-6 pointer-events-auto"
-          >
-            <div className="flex items-center gap-3 mb-6 opacity-80">
-               <div className="h-px w-8 bg-white/50"></div>
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 01</span>
-            </div>
-            <h2 className="mb-6 font-[family-name:var(--font-display)] text-5xl md:text-[4rem] font-medium italic leading-[1.05] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Analyze
-            </h2>
-            <div className="space-y-4 font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              <p>Your skin scanned using</p>
-              <p className="font-medium text-white/90">professional skin analysis technology.</p>
-            </div>
+        {/* Closing statement */}
+        <div className="pointer-events-none absolute inset-x-0 top-[5%] z-20 flex justify-center md:bottom-[5%] md:top-auto">
+          <FinalStatement innerRef={ref("final")} animated />
+        </div>
+
+        {/* Opening scene: TechnologyBanner */}
+        <div ref={ref("root")} className="absolute inset-0 z-30 overflow-hidden bg-black">
+          <div ref={ref("par")} className="absolute -inset-[4%] will-change-transform">
+            <img
+              ref={ref("img")}
+              src="/TechnologyBanner.png"
+              alt="Skin analysis technology"
+              decoding="async"
+              draggable={false}
+              className="h-full w-full object-cover will-change-transform"
+              style={{ maskImage: IMG_MASK, WebkitMaskImage: IMG_MASK }}
+            />
           </div>
-
-          {/* ROUND 2: Text Left */}
-          <div
-            ref={r2Ref}
-            className="absolute top-1/2 -translate-y-1/2 left-[5%] w-[42%] max-md:left-0 max-md:right-0 max-md:w-full max-md:top-auto max-md:bottom-[8%] max-md:translate-y-0 max-md:px-6 pointer-events-auto"
-          >
-            <div className="flex items-center gap-3 mb-6 opacity-80">
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 02</span>
-               <div className="h-px w-12 bg-gradient-to-r from-white/50 to-transparent"></div>
-            </div>
-            <h2 className="mb-6 font-[family-name:var(--font-display)] text-4xl md:text-5xl font-medium italic leading-[1.1] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Understand
-            </h2>
-            <p className="font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              Receive complete report explaining your skin condition.
-            </p>
+          <div ref={ref("sheen")} className="pointer-events-none absolute -top-[10%] left-0 h-[120%] w-[55vw] opacity-0 mix-blend-screen will-change-transform">
+            <div
+              className="absolute inset-0 -skew-x-[14deg]"
+              style={{ background: STREAK_BG, filter: "blur(24px)", maskImage: STREAK_MASK, WebkitMaskImage: STREAK_MASK }}
+            />
           </div>
-
-          {/* ROUND 3: Text Right */}
           <div
-            ref={r3Ref}
-            className="absolute top-1/2 -translate-y-1/2 right-[5%] w-[42%] max-md:left-0 max-md:right-0 max-md:w-full max-md:top-auto max-md:bottom-[8%] max-md:translate-y-0 max-md:px-6 pointer-events-auto text-left"
-          >
-            <div className="flex items-center justify-start gap-3 mb-6 opacity-80 md:flex-row-reverse">
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 03</span>
-               <div className="h-px w-12 bg-gradient-to-r from-white/50 to-transparent md:bg-gradient-to-l md:from-white/50 md:to-transparent"></div>
-            </div>
-            <h2 className="mb-6 font-[family-name:var(--font-display)] text-4xl md:text-5xl font-medium italic leading-[1.1] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Personalize
-            </h2>
-            <p className="font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              Experts recommend skincare routine based on your unique skin profile.
-            </p>
+            ref={ref("scan")}
+            className="pointer-events-none absolute inset-x-0 top-0 h-[22vh] opacity-0 will-change-transform"
+            style={{ background: "linear-gradient(to bottom, transparent, rgba(226,232,240,0.16) 70%, rgba(255,255,255,0.55) 99%, transparent 100%)" }}
+          />
+          <div ref={ref("veil")} className="absolute inset-0 bg-black" />
+          <div className="pointer-events-none absolute bottom-[7%] left-[6%] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.4em] text-white/60">
+            <span ref={ref("tagA")} className="block opacity-0">01 — Discover</span>
+            <span ref={ref("tagB")} className="absolute left-0 top-0 block whitespace-nowrap opacity-0">02 — Scan</span>
           </div>
-
-          {/* ROUND 4: Text Left */}
-          <div
-            ref={r4Ref}
-            className="absolute top-1/2 -translate-y-1/2 left-[5%] w-[42%] max-md:left-0 max-md:right-0 max-md:w-full max-md:top-auto max-md:bottom-[8%] max-md:translate-y-0 max-md:px-6 pointer-events-auto text-left"
-          >
-            <div className="flex items-center gap-3 mb-6 opacity-80">
-               <span className="font-[family-name:var(--font-mono)] text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Step 04</span>
-               <div className="h-px w-12 bg-gradient-to-r from-white/50 to-transparent"></div>
-            </div>
-            <h2 className="mb-6 font-[family-name:var(--font-display)] text-4xl md:text-5xl font-medium italic leading-[1.1] text-[#f8fafc] drop-shadow-[0_0_12px_rgba(255,255,255,0.15)]">
-              Transform
-            </h2>
-            <p className="font-[family-name:var(--font-mono)] text-base font-light leading-relaxed text-white/60 md:text-lg">
-              Follow routine. Track improvements. Re-analyze periodically. Healthy skin becomes measurable.
-            </p>
-          </div>
-
         </div>
       </div>
     </section>

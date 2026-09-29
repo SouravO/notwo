@@ -14,8 +14,8 @@ export default function Home() {
     <main className="bg-[#08090b]">
       <Navbar />
       <HeroIntro />
-      <About />
       <SkinType />
+      <About />
       <Services />
       <ProductShowcase />
       <Cards />
