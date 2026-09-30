@@ -5,7 +5,7 @@ const navigation = [
   { label: "Services", href: "/#products" },
   { label: "Products", href: "/products" },
   { label: "Technology", href: "/technology" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Footer() {

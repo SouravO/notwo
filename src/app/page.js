@@ -6,7 +6,6 @@ import VideoFeedback from "@/components/video";
 import SkinType from "@/components/SkinType";
 import ProductShowcase from "@/components/ProductShowcase";
 import Cards from "@/components/Cards";
-import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -19,7 +18,6 @@ export default function Home() {
       <VideoFeedback />
       <ProductShowcase />
       <Cards />
-      <Contact />
       <Footer />
     </main>
   );

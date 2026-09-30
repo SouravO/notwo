@@ -12,12 +12,13 @@ const links = [
   { href: "/#products", label: "Services" },
   { href: "/products", label: "Products" },
   { href: "/technology", label: "Technology" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const routeLinks = {
   "/products": "/products",
   "/technology": "/technology",
+  "/contact": "/contact",
 };
 
 export default function Navbar() {
@@ -93,7 +94,7 @@ export default function Navbar() {
         return;
       }
 
-      const activeSection = ["about", "products", "contact"]
+      const activeSection = ["about", "products"]
         .map((id) => document.getElementById(id))
         .filter((section) => section && section.getBoundingClientRect().top <= window.innerHeight * 0.42)
         .at(-1);
