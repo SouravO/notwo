@@ -433,7 +433,7 @@ export default function Hero({ isActive = true }) {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-4 sm:gap-8 lg:gap-8 lg:min-h-[60vh]">
         {/* LEFT: HERO TEXT */}
-        <div className="relative w-full lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
+        <div className="relative w-full translate-y-12 sm:translate-y-0 lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
           <div className="relative z-10">
            
             <h1
