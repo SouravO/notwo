@@ -42,8 +42,8 @@ const CTA_SECONDARY = { label: "How it works", href: "#technology" };
 
 // STORY TIMING
 const DARK_HOLD = 0.04;
-const PRODUCT_GAP = 0.5;
-const CENTER_SPIN_TIME = 2.2;
+const PRODUCT_GAP = 0.35;
+const CENTER_SPIN_TIME = 1.9;
 
 // PRODUCT SPIN SPEED (lower = faster)
 const ORBIT_STEP = 0.8; // seconds a bottle takes to rotate to the next position
@@ -340,21 +340,21 @@ export default function Hero({ isActive = true }) {
       story
         .to({}, { duration: DARK_HOLD })
         // Spotlight snaps ON quickly
-        .to(spotlightRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "power3.out" })
+        .to(spotlightRef.current, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.22, ease: "power3.out" })
         .to(spotlightRef.current, {
           keyframes: [
             { opacity: 0.5, duration: 0.04 },
             { opacity: 0.2, duration: 0.05 },
             { opacity: 0.95, duration: 0.06 },
             { opacity: 0.6, duration: 0.04 },
-            { opacity: 0.85, duration: 0.25, ease: "power2.out" },
+            { opacity: 0.85, duration: 0.18, ease: "power2.out" },
           ],
           onComplete: () => gsap.set(spotlightRef.current, { clearProps: "clipPath" }),
         }, "<")
         .to(bgRef.current, { opacity: 1, duration: 0.4, ease: "power1.out" }, "<")
         .to({}, { duration: PRODUCT_GAP })
-        .to(reveals[0], { v: 1, duration: 0.7, ease: "power2.out", onUpdate: renderOrbit })
-        .to(reveals.slice(1), { v: 1, duration: 0.6, stagger: 0.12, ease: "power2.out", onUpdate: renderOrbit }, "-=0.25")
+        .to(reveals[0], { v: 1, duration: 0.5, ease: "power2.out", onUpdate: renderOrbit })
+        .to(reveals.slice(1), { v: 1, duration: 0.45, stagger: 0.08, ease: "power2.out", onUpdate: renderOrbit }, "-=0.2")
         .add(() => orbitTlRef.current && orbitTlRef.current.play(0))
         .to({}, { duration: CENTER_SPIN_TIME })
         .addLabel("travel")
