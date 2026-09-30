@@ -403,7 +403,7 @@ export default function Hero({ isActive = true }) {
     <section
       ref={sectionRef}
       aria-labelledby="hero-title"
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#030304] px-4 py-16 sm:py-20 sm:px-10 lg:py-0"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#030304] px-4 py-6 sm:py-12 sm:px-10 lg:py-0"
     >
       <style>{`
         @keyframes scrollCue {
@@ -431,7 +431,7 @@ export default function Hero({ isActive = true }) {
         />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-8 sm:gap-10 lg:gap-8 min-h-[60vh]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-4 sm:gap-8 lg:gap-8 lg:min-h-[60vh]">
         {/* LEFT: HERO TEXT */}
         <div className="relative w-full lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
           <div className="relative z-10">
@@ -456,7 +456,7 @@ export default function Hero({ isActive = true }) {
             {/* Subcopy + actions */}
             <div
               ref={(el) => { fadeRefs.current[1] = el; }}
-              className="mt-8 sm:mt-10 flex max-w-[30rem] flex-col gap-7"
+              className="mt-4 sm:mt-8 flex max-w-[30rem] flex-col gap-4 sm:gap-7"
               style={{ opacity: 0 }}
             >
               <p className="font-sans text-sm leading-relaxed text-[#090a0c]/70 sm:text-base">
@@ -488,7 +488,7 @@ export default function Hero({ isActive = true }) {
         >
           <div
             ref={stageInnerRef}
-            className="relative w-full min-h-[360px] sm:min-h-[460px] lg:min-h-[min(84svh,700px)]"
+            className="relative w-full min-h-[240px] sm:min-h-[360px] lg:min-h-[min(84svh,700px)]"
           >
             {/* WATERMARK: large soft "NO TWO" sitting behind the products */}
             <div
