@@ -10,7 +10,7 @@ import radianceSerumImg from '@/app/assets/RadianceSerum.png';
 import calmElixirImg from '@/app/assets/calm-elixir.png';
 
 // Hero background is served directly from /public.
-const BANNER_SRC = '/banner.png';
+const BANNER_SRC = '/Banner.png';
 
 const FORMULAS = [
   {

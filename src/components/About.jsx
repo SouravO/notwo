@@ -198,11 +198,11 @@ export default function MissionVision() {
             >
               <span>K</span>
               <span data-grow-outer className="inline-flex overflow-hidden">
-                <span data-grow-inner className="whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">NOW </span>
+                <span data-grow-inner className="whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">{"NOW\u00a0"}</span>
               </span>
               <span>Y</span>
               <span data-grow-outer className="inline-flex overflow-hidden">
-                <span data-grow-inner className="whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">OUR </span>
+                <span data-grow-inner className="whitespace-nowrap bg-gradient-to-r from-[#111315] via-[#3e4349] to-[#16181a] bg-clip-text text-transparent">{"OUR\u00a0"}</span>
               </span>
               <span>S</span>
               <span data-grow-outer className="inline-flex overflow-hidden">
