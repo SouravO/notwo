@@ -12,7 +12,6 @@ export default function Services() {
   const containerRef = useRef(null);
   const pinRef = useRef(null);
   const textContainerRef = useRef(null);
-  const badgeRef = useRef(null);
   const orb1Ref = useRef(null);
   const orb2Ref = useRef(null);
 
@@ -26,14 +25,6 @@ export default function Services() {
         const words = textContainerRef.current.querySelectorAll(".scroll-word");
         const subtext = textContainerRef.current.querySelector(".scroll-subtext");
         const line = textContainerRef.current.querySelector(".accent-line");
-
-        // Continuous slow rotation for decorative badge
-        gsap.to(badgeRef.current, {
-          rotate: 360,
-          duration: 20,
-          repeat: -1,
-          ease: "none",
-        });
 
         // Parallax ambient fluid movement
         gsap.to(orb1Ref.current, {
@@ -128,39 +119,11 @@ export default function Services() {
           }}
         />
 
-        {/* Rotating Editorial Seal/Badge */}
-        <div className="absolute right-8 top-12 z-10 hidden sm:block md:right-16 md:top-16">
-          <div ref={badgeRef} className="relative flex h-24 w-24 items-center justify-center">
-            <svg className="h-full w-full" viewBox="0 0 100 100">
-              <path
-                id="textPath"
-                d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                fill="none"
-              />
-              <text className="fill-[#e6f0f4]/70 font-sans text-[9.5px] tracking-[2.8px] uppercase">
-                <textPath href="#textPath">
-                  • Skin Intelligence • Pure Science • KYS
-                </textPath>
-              </text>
-            </svg>
-            <div className="absolute h-2 w-2 rounded-full bg-[#9bd5ee] shadow-[0_0_14px_rgba(155,213,238,0.7)]" />
-          </div>
-        </div>
-
         {/* Main Content Area */}
         <div
           ref={textContainerRef}
           className="relative z-10 flex max-w-5xl flex-col items-center px-6 text-center md:px-12"
         >
-          {/* Eyebrow Tag */}
-          <div className="mb-8 flex items-center gap-3">
-            <span className="h-[1px] w-8 bg-[#9bd5ee]/70" />
-            <span className="font-sans text-xs font-medium uppercase tracking-[0.25em] text-[#b6d8e7]">
-              Our Promise
-            </span>
-            <span className="h-[1px] w-8 bg-[#9bd5ee]/70" />
-          </div>
-
           {/* Kinetic Headline with Word-by-Word Scroll Reveal */}
           <h2 className="font-serif text-3xl font-medium leading-[1.25] tracking-[0.005em] text-[#f3f7f9] sm:text-5xl md:text-6xl lg:text-7xl">
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all">

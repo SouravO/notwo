@@ -15,103 +15,83 @@ const BANNER_SRC = '/banner.png';
 const FORMULAS = [
   {
     id: 'hydra-cream',
-    code: 'FORMULA / 01',
     name: 'HYDRA CREAM',
     category: 'HYDRATION',
     tagline: 'Daily hydration for soft skin.',
     description: 'Deep cellular moisture infusion engineered to replenish lipids and restore natural epidermal barrier function.',
     image: hydraCreamImg,
     badges: ['HYDRATION', '150 ML', 'pH 5.5'],
-    clinicalStat: 'BARRIER REPAIR: +98%',
     accentGlow: 'rgba(203, 213, 225, 0.18)',
   },
   {
     id: 'purity-gel',
-    code: 'FORMULA / 02',
     name: 'PURITY GEL',
     category: 'CLEANSING',
     tagline: 'Gentle daily cleanser for all skin types.',
     description: 'A micro-foaming pH-balanced formulation that clarifies impurities without stripping vital cellular moisture.',
     image: purityGelImg,
     badges: ['CLEANSING', '120 ML', 'AMINO ACID'],
-    clinicalStat: 'PURITY INDEX: 99.4%',
     accentGlow: 'rgba(125, 211, 252, 0.18)',
   },
   {
     id: 'radiance-serum',
-    code: 'FORMULA / 03',
     name: 'RADIANCE SERUM',
     category: 'BRIGHTENING',
     tagline: 'Brightening serum with niacinamide.',
     description: 'High-potency bioactive elixir engineered to equalize skin tone, diffuse hyperpigmentation, and amplify natural glow.',
     image: radianceSerumImg,
     badges: ['BRIGHTENING', '100 ML', '10% NIACINAMIDE'],
-    clinicalStat: 'LUMINESCENCE: +84%',
     accentGlow: 'rgba(96, 165, 250, 0.2)',
   },
   {
     id: 'calm-elixir',
-    code: 'FORMULA / 04',
     name: 'CALM ELIXIR',
     category: 'CALMING',
     tagline: 'Soothing care for sensitive skin.',
     description: 'Intense soothing concentrate that rapidly reduces redness, calms inflammatory response, and reinforces reactive skin.',
     image: calmElixirImg,
     badges: ['CALMING', '50 ML', 'BISABOLOL'],
-    clinicalStat: 'REDNESS REDUCTION: IMMEDIATE',
     accentGlow: 'rgba(129, 140, 248, 0.2)',
   },
   {
     id: 'barrier-oil',
-    code: 'FORMULA / 05',
     name: 'BARRIER OIL',
     category: 'NIGHT CARE',
     tagline: 'Overnight lipid replenishment.',
     description: "A silicone-free facial oil that seals overnight moisture loss and reinforces the skin's natural lipid matrix while you sleep.",
     image: hydraCreamImg,
     badges: ['NIGHT CARE', '30 ML', 'CERAMIDE'],
-    clinicalStat: 'MOISTURE LOSS: -76%',
     accentGlow: 'rgba(203, 213, 225, 0.18)',
-    placeholder: true,
   },
   {
     id: 'pore-toner',
-    code: 'FORMULA / 06',
     name: 'PORE REFINE TONER',
     category: 'TONING',
     tagline: 'Micro-exfoliating toner for texture.',
     description: 'A low-pH toning solution that lifts residue and visibly refines pore appearance without disrupting the acid mantle.',
     image: purityGelImg,
     badges: ['TONING', '200 ML', 'PHA'],
-    clinicalStat: 'TEXTURE SCORE: +61%',
     accentGlow: 'rgba(125, 211, 252, 0.18)',
-    placeholder: true,
   },
   {
     id: 'repair-mask',
-    code: 'FORMULA / 07',
     name: 'OVERNIGHT REPAIR MASK',
     category: 'REPAIR',
     tagline: 'Intensive recovery while you sleep.',
     description: 'A wash-off overnight treatment concentrated with peptides to accelerate visible recovery from environmental stress.',
     image: radianceSerumImg,
     badges: ['REPAIR', '75 ML', 'PEPTIDE'],
-    clinicalStat: 'RECOVERY TIME: -40%',
     accentGlow: 'rgba(96, 165, 250, 0.2)',
-    placeholder: true,
   },
   {
     id: 'eye-complex',
-    code: 'FORMULA / 08',
     name: 'EYE COMPLEX',
     category: 'EYE CARE',
     tagline: 'Targeted care for the eye contour.',
     description: 'A cooling, fast-absorbing complex engineered for the thinnest skin on the face — de-puffing, firming, brightening.',
     image: calmElixirImg,
     badges: ['EYE CARE', '15 ML', 'CAFFEINE'],
-    clinicalStat: 'PUFFINESS: -52%',
     accentGlow: 'rgba(129, 140, 248, 0.2)',
-    placeholder: true,
   },
 ];
 
@@ -128,28 +108,26 @@ export default function Product() {
   return (
     <main className="bg-[#070709] text-white">
       {/* HERO */}
-      <section className="relative w-full overflow-hidden bg-[#070709]">
+      <section className="relative w-full overflow-hidden bg-[#070709] pt-24 sm:pt-28 md:h-[100svh] md:min-h-[500px] md:pt-0">
         <Image
           src={BANNER_SRC}
-          alt=""
-          width={2103}
-          height={748}
+          alt="NO TWO skincare collection"
+          width={1808}
+          height={870}
           priority
           unoptimized
-          className="block h-auto w-full"
+          sizes="100vw"
+          className="block h-auto w-full md:absolute md:inset-0 md:h-full md:w-full md:object-contain"
         />
       </section>
 
       {/* FORMULATION CATALOG */}
-      <section className="relative w-full py-20 md:py-32 px-6 md:px-16 bg-[#070709] text-white">
+      <section className="relative w-full bg-[#070709] px-4 pt-4 pb-12 text-white sm:px-6 sm:pt-6 md:px-16 md:pt-12 md:pb-20">
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-end justify-between mb-12 md:mb-16 border-b border-white/10 pb-6">
-            <h2 className="text-xs md:text-sm font-mono tracking-[0.3em] uppercase text-slate-400">
-              Formulation Catalog
+            <h2 className="font-serif text-3xl font-medium tracking-tight text-white md:text-4xl">
+              Shop By Category
             </h2>
-            <span className="text-[11px] font-mono tracking-widest text-slate-500">
-              {String(filteredFormulas.length).padStart(2, '0')} FORMULAS
-            </span>
           </div>
 
           {/* CATEGORY FILTER */}
@@ -195,16 +173,6 @@ export default function Product() {
                       sizes="(max-width: 768px) 45vw, 22vw"
                       className="object-contain transition-transform duration-700 group-hover:scale-105 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
                     />
-                    {f.placeholder && (
-                      <span className="absolute top-0 right-0 text-[8px] font-mono tracking-widest uppercase text-amber-300/80 border border-amber-300/30 bg-black/50 px-1.5 py-0.5">
-                        Pending
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="inline-flex items-center gap-2 text-[9px] font-mono tracking-[0.2em] uppercase text-[#454a50] mb-3">
-                    <span className="w-1 h-1 rounded-full bg-cyan-400" />
-                    {f.code}
                   </div>
 
                   <h3 className="text-lg md:text-xl font-light tracking-wide text-[#17191c] mb-2">
@@ -214,20 +182,17 @@ export default function Product() {
                     {f.tagline}
                   </p>
 
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 mb-4 font-sans text-xs text-[#34383e]">
                     {f.badges.slice(0, 2).map((b) => (
                       <span
                         key={b}
-                        className="px-2 py-0.5 border border-black/20 text-[9px] font-mono tracking-widest uppercase text-[#34383e]"
+                        className="whitespace-nowrap"
                       >
                         {b}
                       </span>
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-black/15 text-[9px] font-mono tracking-wider uppercase text-[#454a50]">
-                    <span className="text-[#087f8c]">[CLINICAL]</span> {f.clinicalStat}
-                  </div>
                 </div>
               ))}
             </div>
@@ -237,12 +202,6 @@ export default function Product() {
             </div>
           )}
 
-          {/* Closing CTA */}
-          <div className="mt-16 md:mt-24 pt-12 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-            <p className="text-sm md:text-base text-slate-300 font-light max-w-md">
-              Not sure which formula matches your skin? Run the scan and the system will narrow it down for you.
-            </p>
-          </div>
         </div>
       </section>
     </main>

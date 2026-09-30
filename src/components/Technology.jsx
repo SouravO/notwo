@@ -4,7 +4,7 @@ import { useEffect, useRef, useMemo, useState, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, ContactShadows, Html, Line, useGLTF } from "@react-three/drei";
+import { Environment, ContactShadows, Line, useGLTF } from "@react-three/drei";
 import { AdditiveBlending, Box3, CanvasTexture, Vector3 } from "three";
 
 if (typeof window !== "undefined") {
@@ -21,25 +21,10 @@ const NORM_SIZE = 2.2;
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
 const STAGES = [
-  { n: "01", title: "Analyze", side: "r", lead: "Your skin scanned using", body: "professional skin analysis technology.", meta: "Multi-spectral scan", bar: "w-28" },
-  { n: "02", title: "Understand", side: "l", lead: "Receive a complete report explaining", body: "your skin condition.", meta: "04 metrics mapped", bar: "w-28", segments: 4 },
-  { n: "03", title: "Personalize", side: "r", lead: "Experts recommend a skincare routine", body: "based on your unique skin profile.", meta: "Profile → routine", bar: "w-16" },
-  { n: "04", title: "Transform", side: "l", lead: "Follow routine. Track improvements. Re-analyze periodically.", body: "Healthy skin becomes measurable.", meta: "Progress signal", bar: "w-40" },
-];
-
-const CALLOUTS = [
-  { k: "sensor", pos: [1.0, 0.75, 0.5], side: "r", label: "Sensor array", value: "Multi-spectral lens" },
-  { k: "scanTag", pos: [1.0, -0.4, 0.5], side: "r", label: "Scan active", value: "Surface mapping" },
-  { k: "surface", pos: [-1.05, 0.3, 0.5], side: "l", label: "Surface mapping", value: "Texture / tone" },
-  { k: "ai", pos: [1.1, -0.62, 0.5], side: "r", label: "AI profile", value: "Routine engine" },
-  { k: "progress", pos: [-1.05, 0.45, 0.5], side: "l", label: "Progress signal", value: "Re-analysis" },
-];
-
-const POINTS = [
-  { pos: [-0.85, 0.95, 0.4], side: "l", label: "Hydration" },
-  { pos: [1.0, 0.7, 0.4], side: "r", label: "Barrier" },
-  { pos: [-0.9, -0.35, 0.4], side: "l", label: "Tone" },
-  { pos: [0.95, -0.5, 0.4], side: "r", label: "Texture" },
+  { title: "Analyze", side: "r", lead: "Your skin scanned using", body: "professional skin analysis technology." },
+  { title: "Understand", side: "l", lead: "Receive a complete report explaining", body: "your skin condition." },
+  { title: "Personalize", side: "r", lead: "Experts recommend a skincare routine", body: "based on your unique skin profile." },
+  { title: "Transform", side: "l", lead: "Follow routine. Track improvements. Re-analyze periodically.", body: "Healthy skin becomes measurable." },
 ];
 
 const AI_NODES = [
@@ -51,15 +36,10 @@ const AI_NODES = [
   [-0.95, -0.3, 0.3],
 ];
 const AI_EDGES = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0], [1, 4]];
-const AI_VALUES = [
-  { pos: [-0.9, 0.7, 0.3], side: "l", label: "M·01  0.74" },
-  { pos: [0.95, 0.55, 0.3], side: "r", label: "M·02  0.82" },
-];
-
 const makeProxy = () => ({
   x: 0, y: 0.02, z: -1.6, rotX: 0.05, rotY: -0.9, rotZ: 0, scale: 0.72,
   light: 0, rim: 0.6, lx: 0,
-  zone: 0.5, calloutK: 1, overlays: 1, float: 1,
+  zone: 0.5, overlays: 1, float: 1,
   scanY: 0, scanA: 0,
   sensor: 0, scanTag: 0, surface: 0, points: 0, ai: 0, progress: 0,
 });
@@ -112,39 +92,7 @@ function makeScanTexture() {
   return new CanvasTexture(canvas);
 }
 
-function Tag({ proxyRef, k, pos, side = "r", label, value, index = 0, micro = false }) {
-  const group = useRef(null);
-  const el = useRef(null);
-
-  useFrame(() => {
-    const p = proxyRef.current;
-    if (!group.current || !el.current) return;
-    group.current.position.set(pos[0] * p.calloutK, pos[1], pos[2]);
-    el.current.style.opacity = (clamp01((p[k] - index * 0.15) / 0.55) * p.overlays).toFixed(3);
-  });
-
-  const left = side === "l";
-  return (
-    <group ref={group}>
-      <Html zIndexRange={[10, 0]} pointerEvents="none">
-        <div
-          ref={el}
-          style={{ opacity: 0 }}
-          className={`flex w-max -translate-y-1/2 items-center gap-2 max-md:hidden ${left ? "-translate-x-full flex-row-reverse text-right" : ""}`}
-        >
-          <span className="h-1 w-1 shrink-0 rounded-full bg-white shadow-[0_0_6px_rgba(255,255,255,0.9)]" />
-          <span className={`h-px ${micro ? "w-3" : "w-6"} bg-white/40`} />
-          <span className="flex flex-col font-sans uppercase leading-tight">
-            <span className="text-[8px] tracking-[0.28em] text-white/50 md:text-[9px]">{label}</span>
-            {value && <span className="text-[10px] tracking-[0.12em] text-white/85 max-lg:hidden">{value}</span>}
-          </span>
-        </div>
-      </Html>
-    </group>
-  );
-}
-
-function AnalyzerScene({ proxyRef, showOverlays }) {
+function AnalyzerScene({ proxyRef }) {
   const { scene } = useGLTF("/model.glb");
   const outer = useRef(null);
   const inner = useRef(null);
@@ -258,19 +206,6 @@ function AnalyzerScene({ proxyRef, showOverlays }) {
           ))}
         </group>
 
-        {showOverlays && (
-          <>
-            {CALLOUTS.map((cfg) => (
-              <Tag key={cfg.k} proxyRef={proxyRef} {...cfg} />
-            ))}
-            {POINTS.map((cfg, i) => (
-              <Tag key={cfg.label} proxyRef={proxyRef} k="points" index={i} micro {...cfg} />
-            ))}
-            {AI_VALUES.map((cfg, i) => (
-              <Tag key={cfg.label} proxyRef={proxyRef} k="ai" index={i + 1} micro {...cfg} />
-            ))}
-          </>
-        )}
       </group>
     </>
   );
@@ -282,41 +217,9 @@ useGLTF.preload("/model.glb");
 /* Copy blocks                                                         */
 /* ------------------------------------------------------------------ */
 
-function StepMark({ n }) {
-  const label = <span>Step {n}</span>;
-  const rule = (cls) => <span className={`h-px ${cls}`} />;
-  const variants = {
-    "01": <>{rule("w-8 bg-white/45")}{label}</>,
-    "02": <>{label}{rule("w-14 bg-gradient-to-r from-white/45 to-transparent")}</>,
-    "03": <>{label}<span className="text-white/35">/ 04</span>{rule("w-10 bg-white/25")}</>,
-    "04": <>{rule("w-3 bg-white/60")}{label}{rule("w-3 bg-white/60")}</>,
-  };
-  return (
-    <div className="mb-5 flex items-center gap-3 font-sans text-[10px] font-medium uppercase tracking-[0.3em] text-white/65">
-      {variants[n]}
-    </div>
-  );
-}
-
-function Meter({ s }) {
-  return (
-    <div className="mt-7 flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.28em] text-white/40">
-      <span className={`flex gap-1 ${s.bar}`}>
-        {Array.from({ length: s.segments ?? 1 }, (_, i) => (
-          <span key={i} className="relative h-px flex-1 overflow-hidden bg-white/15">
-            <span data-fill className="absolute inset-0 origin-left bg-white/75" />
-          </span>
-        ))}
-      </span>
-      <span>{s.meta}</span>
-    </div>
-  );
-}
-
 function StageCopy({ s, animated }) {
   return (
     <div data-stage className={`w-full ${animated ? "opacity-0" : ""}`}>
-      <StepMark n={s.n} />
       <div style={{ filter: "drop-shadow(0 0 18px rgba(226,232,240,0.2))" }}>
         <h2
           className="pr-[0.08em] font-serif text-[clamp(2.6rem,12vw,3.5rem)] font-medium italic leading-[1.02] md:text-[clamp(2.75rem,6vw,6rem)]"
@@ -328,20 +231,6 @@ function StageCopy({ s, animated }) {
       <p className="mt-5 max-w-[30ch] font-sans text-[15px] font-light leading-relaxed text-white/60 md:max-w-[34ch] md:text-base lg:text-lg">
         {s.lead} <span className="font-normal text-white/90">{s.body}</span>
       </p>
-      <Meter s={s} />
-    </div>
-  );
-}
-
-function FinalStatement({ innerRef, animated }) {
-  return (
-    <div
-      ref={innerRef}
-      className={`flex items-center gap-3 font-sans text-[10px] uppercase tracking-[0.4em] text-white/50 ${animated ? "opacity-0" : ""}`}
-    >
-      <span className="h-px w-8 bg-white/30" />
-      AI Skin Intelligence
-      <span className="h-px w-8 bg-white/30" />
     </div>
   );
 }
@@ -383,13 +272,12 @@ export default function Technology() {
       },
       (ctx) => {
         const { desktop, tablet, mobile } = ctx.conditions;
-        const { section, pin, root, par, img, veil, sheen, scan, tagA, tagB, atmo, silver, cool, graphite, sweep, final } = R.current;
+        const { section, pin, root, par, img, veil, sheen, scan, atmo, silver, cool, graphite, sweep } = R.current;
         const stages = gsap.utils.toArray("[data-stage]", section);
         const K = desktop ? 1 : 0.85;
 
         Object.assign(P, makeProxy(), {
           zone: mobile ? 0.9 : 0.5,
-          calloutK: desktop ? 1 : 0.5,
           overlays: mobile ? 0 : 1,
           y: mobile ? 0.16 : 0.02,
         });
@@ -427,15 +315,12 @@ export default function Technology() {
         gsap.set(par, { yPercent: 2 });
         gsap.set(sheen, { xPercent: -110, opacity: 0 });
         gsap.set(scan, { yPercent: -110, opacity: 0 });
-        gsap.set([tagA, tagB], { opacity: 0 });
         gsap.set([silver, cool, graphite], { opacity: 0 });
         gsap.set(atmo, { xPercent: 0, yPercent: mobile ? -14 : 0 });
         gsap.set(sweep, { xPercent: -110, opacity: 0 });
-        gsap.set(final, { autoAlpha: 0, y: 8, filter: "blur(4px)" });
         stages.forEach((el, i) => {
           const dir = mobile ? 0 : STAGES[i].side === "r" ? 1 : -1;
           gsap.set(el, { autoAlpha: 0, x: dir * 56, y: mobile ? 26 : 16, filter: "blur(6px)" });
-          gsap.set(el.querySelectorAll("[data-fill]"), { scaleX: 0, transformOrigin: "left center" });
         });
 
         const tl = gsap.timeline({
@@ -466,11 +351,7 @@ export default function Technology() {
           .to(scan, { opacity: 1, duration: 1.2, ease: "sine.out" }, 9.6)
           .to(scan, { opacity: 0, duration: 2.2, ease: "sine.in" }, 11.6)
           .to(veil, { opacity: 1, duration: 3.6, ease: "power2.in" }, 11)
-          .to(root, { autoAlpha: 0, duration: 2.6, ease: "power2.inOut" }, 13.4)
-          .to(tagA, { opacity: 1, duration: 2 }, 0.5)
-          .to(tagA, { opacity: 0, duration: 1 }, 8.6)
-          .to(tagB, { opacity: 1, duration: 1 }, 9.6)
-          .to(tagB, { opacity: 0, duration: 1.6 }, 12.4);
+          .to(root, { autoAlpha: 0, duration: 2.6, ease: "power2.inOut" }, 13.4);
 
         // Model: one path per stage, position + rotation + scale + depth + light
         const moveTo = (i, [t0, t1], withLight = true) => {
@@ -496,7 +377,6 @@ export default function Technology() {
           if (i < 3) {
             tl.to(el, { autoAlpha: 0, x: dir * 56, y: mobile ? -18 : -10, filter: "blur(6px)", duration: t.out1 - t.hold, ease: "power3.in" }, t.hold);
           }
-          tl.to(el.querySelectorAll("[data-fill]"), { scaleX: 1, duration: (t.hold - t.in1) * 0.6, stagger: 0.5, ease: "power2.inOut" }, t.in1);
         });
 
         // Overlays
@@ -546,8 +426,6 @@ export default function Technology() {
         pass(55, 7, 0.9);
         pass(76.5, 6.5, 1);
 
-        // Final statement
-        tl.to(final, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 2.4, ease: "power3.out" }, 95.4);
         tl.set({}, {}, 100);
       }
     );
@@ -580,19 +458,16 @@ export default function Technology() {
         <div className="relative h-[75svh] w-full" aria-hidden="true">
           <Canvas frameloop="demand" camera={{ position: [0, 0, CAM_Z], fov: 45 }} dpr={[1, 2]} gl={{ antialias: true }}>
             <Suspense fallback={null}>
-              <AnalyzerScene proxyRef={proxyRef} showOverlays={false} />
+              <AnalyzerScene proxyRef={proxyRef} />
             </Suspense>
           </Canvas>
         </div>
         <div className="mx-auto max-w-[1100px] px-6 pb-8 md:px-12">
           {STAGES.map((s) => (
-            <div key={s.n} className={`border-t border-white/10 py-16 md:w-[60%] md:py-24 ${s.side === "r" ? "md:ml-auto" : ""}`}>
+              <div key={s.title} className={`border-t border-white/10 py-12 md:w-[60%] md:py-16 ${s.side === "r" ? "md:ml-auto" : ""}`}>
               <StageCopy s={s} />
             </div>
           ))}
-          <div className="flex justify-center py-12">
-            <FinalStatement />
-          </div>
         </div>
       </section>
     );
@@ -637,7 +512,7 @@ export default function Technology() {
         <div className="absolute inset-0 z-10" aria-hidden="true">
           <Canvas camera={{ position: [0, 0, CAM_Z], fov: 45 }} dpr={[1, 2]} gl={{ antialias: true, powerPreference: "high-performance" }}>
             <Suspense fallback={null}>
-              <AnalyzerScene proxyRef={proxyRef} showOverlays />
+              <AnalyzerScene proxyRef={proxyRef} />
             </Suspense>
           </Canvas>
         </div>
@@ -646,7 +521,7 @@ export default function Technology() {
         <div className="pointer-events-none absolute inset-0 z-20 mx-auto max-w-[1440px]">
           {STAGES.map((s) => (
             <div
-              key={s.n}
+              key={s.title}
               className={`absolute inset-x-0 bottom-[5%] px-6 md:bottom-0 md:top-0 md:flex md:w-[40%] md:items-center md:px-0 ${
                 s.side === "r" ? "md:left-auto md:right-[5%]" : "md:left-[5%] md:right-auto"
               }`}
@@ -654,11 +529,6 @@ export default function Technology() {
               <StageCopy s={s} animated />
             </div>
           ))}
-        </div>
-
-        {/* Closing statement */}
-        <div className="pointer-events-none absolute inset-x-0 top-[5%] z-20 flex justify-center md:bottom-[5%] md:top-auto">
-          <FinalStatement innerRef={ref("final")} animated />
         </div>
 
         {/* Opening scene: TechnologyBanner */}
@@ -686,10 +556,6 @@ export default function Technology() {
             style={{ background: "linear-gradient(to bottom, transparent, rgba(226,232,240,0.16) 70%, rgba(255,255,255,0.55) 99%, transparent 100%)" }}
           />
           <div ref={ref("veil")} className="absolute inset-0 bg-black" />
-          <div className="pointer-events-none absolute bottom-[7%] left-[6%] font-sans text-[10px] uppercase tracking-[0.4em] text-white/60">
-            <span ref={ref("tagA")} className="block opacity-0">01 — Discover</span>
-            <span ref={ref("tagB")} className="absolute left-0 top-0 block whitespace-nowrap opacity-0">02 — Scan</span>
-          </div>
         </div>
       </div>
     </section>

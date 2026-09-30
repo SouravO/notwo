@@ -18,7 +18,7 @@ export default function VideoFeedback() {
     <section
       id="feedback"
       aria-labelledby="feedback-title"
-      className="overflow-hidden bg-[linear-gradient(135deg,#07090d_0%,#0b1824_52%,#142b3d_100%)] py-16 text-white sm:py-20 lg:py-24"
+      className="overflow-hidden bg-[linear-gradient(135deg,#07090d_0%,#0b1824_52%,#142b3d_100%)] py-12 text-white sm:py-16 lg:py-20"
     >
       <div className="mx-auto max-w-[1600px]">
         <h2

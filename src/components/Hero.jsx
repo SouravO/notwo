@@ -86,7 +86,6 @@ export default function Hero({ isActive = true }) {
   const ringRef = useRef(null);
 
   // Live product caption
-  const captionNumRef = useRef(null);
   const captionNameRef = useRef(null);
   const dotRefs = useRef([]);
 
@@ -205,7 +204,6 @@ export default function Hero({ isActive = true }) {
 
     // Updates the caption + dots to the bottle currently in front
     const updateCaption = (idx, animate) => {
-      if (captionNumRef.current) captionNumRef.current.textContent = PRODUCTS[idx].id;
       if (captionNameRef.current) {
         captionNameRef.current.textContent = PRODUCTS[idx].name;
         if (animate) {
@@ -634,9 +632,7 @@ export default function Hero({ isActive = true }) {
                 className="flex flex-col items-center gap-3"
                 style={{ opacity: 0 }}
               >
-                <div className="flex items-center gap-3 font-sans text-[11px] font-medium uppercase tracking-[0.3em] text-[#090a0c] sm:text-xs">
-                  <span ref={captionNumRef} className="tabular-nums text-[#090a0c]/50">01</span>
-                  <span className="h-px w-6 bg-[#090a0c]/30" />
+                <div className="font-sans text-xs font-medium text-[#090a0c] sm:text-sm">
                   <span ref={captionNameRef} className="block">HYDRA CREAM</span>
                 </div>
                 <div className="flex items-center gap-1.5">

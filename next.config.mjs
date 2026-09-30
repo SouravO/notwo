@@ -12,6 +12,12 @@ const nextConfig = {
       {
         pathname: "/banner.png",
       },
+      {
+        pathname: "/pdtbanner.png",
+      },
+      {
+        pathname: "/pdt*.png",
+      },
     ],
   },
 };

@@ -248,9 +248,6 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:left-[8%] lg:left-[10%] md:top-[4%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
-              Our Mission
-            </span>
             <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               Informed Skincare Decisions
             </h2>
@@ -263,9 +260,6 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:right-0 lg:right-2 md:top-[15%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
-              Our Vision
-            </span>
             <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               Trusted Personalization
             </h2>
@@ -278,9 +272,6 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:left-0 lg:left-2 md:bottom-[15%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
-              Advanced Diagnostics
-            </span>
             <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               Advanced Skin Analysis
             </h2>
@@ -293,9 +284,6 @@ export default function MissionVision() {
             data-floating-card
             className="w-full z-10 md:absolute md:right-[8%] lg:right-[10%] md:bottom-[7%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
           >
-            <span className="mb-2 block font-sans text-[10px] font-medium uppercase tracking-[0.22em] text-[#EB583D]">
-              Our Science
-            </span>
             <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
               No Assumptions. Only Science.
             </h2>

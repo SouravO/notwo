@@ -30,15 +30,9 @@ export default function Footer() {
             <p className="mt-5 max-w-sm text-base leading-7 text-white/55">
               Intelligent skincare, shaped around the skin you are in.
             </p>
-            <p className="mt-8 font-mono text-[10px] uppercase tracking-[0.22em] text-white/30">
-              Personal by design <span className="mx-2 text-cyan-300/70">/</span> NO TWO alike
-            </p>
           </div>
 
           <nav aria-label="Footer navigation">
-            <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.22em] text-white/35">
-              Explore
-            </p>
             <ul className="grid grid-cols-2 gap-x-5 gap-y-4 lg:grid-cols-1">
               {navigation.map((link) => (
                 <li key={link.href}>
@@ -60,11 +54,7 @@ export default function Footer() {
           </nav>
 
           <div className="lg:justify-self-end lg:text-right">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-white/55">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_9px_rgba(103,232,249,0.8)]" />
-              Personalized care
-            </span>
-            <h2 className="mt-5 max-w-xs text-xl font-light leading-snug tracking-[-0.03em] text-white/90 lg:ml-auto">
+            <h2 className="max-w-xs text-xl font-light leading-snug tracking-[-0.03em] text-white/90 lg:ml-auto">
               Your skin has its own logic. Your routine should, too.
             </h2>
             <Link

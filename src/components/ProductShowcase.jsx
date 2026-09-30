@@ -4,12 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Assets imported directly
-import hydraCreamImg from '@/app/assets/HydraCream.png';
-import purityGelImg from '@/app/assets/PurityGel.png';
-import radianceSerumImg from '@/app/assets/RadianceSerum.png';
-import calmElixirImg from '@/app/assets/calm-elixir.png';
+gsap.registerPlugin(ScrollTrigger);
 
 const SLIDES = [
   {
@@ -17,10 +14,8 @@ const SLIDES = [
     name: 'HYDRA CREAM',
     tagline: 'Daily hydration for soft skin.',
     description: 'Deep cellular moisture infusion engineered to replenish lipids and restore natural epidermal barrier function.',
-    image: hydraCreamImg,
-    techId: 'FORMULA / 01',
+    image: '/pdt1.png',
     badges: ['HYDRATION', '150 ML', 'pH 5.5'],
-    clinicalStat: 'BARRIER REPAIR: +98%',
     imageScale: 'scale-100',
     accentGlow: 'rgba(203, 213, 225, 0.12)',
   },
@@ -29,10 +24,8 @@ const SLIDES = [
     name: 'PURITY GEL',
     tagline: 'Gentle daily cleanser for all skin types.',
     description: 'A micro-foaming pH-balanced formulation that clarifies impurities without stripping vital cellular moisture.',
-    image: purityGelImg,
-    techId: 'FORMULA / 02',
+    image: '/pdt2.png',
     badges: ['CLEANSING', '120 ML', 'AMINO ACID'],
-    clinicalStat: 'PURITY INDEX: 99.4%',
     imageScale: 'scale-100',
     accentGlow: 'rgba(125, 211, 252, 0.12)',
   },
@@ -41,25 +34,10 @@ const SLIDES = [
     name: 'RADIANCE SERUM',
     tagline: 'Brightening serum with niacinamide.',
     description: 'High-potency bioactive elixir engineered to equalize skin tone, diffuse hyperpigmentation, and amplify natural glow.',
-    image: radianceSerumImg,
-    techId: 'FORMULA / 03',
+    image: '/pdt3.png',
     badges: ['BRIGHTENING', '100 ML', '10% NIACINAMIDE'],
-    clinicalStat: 'LUMINESCENCE: +84%',
     imageScale: 'scale-105',
     accentGlow: 'rgba(96, 165, 250, 0.14)',
-  },
-  {
-    id: 'calm-elixir',
-    name: 'CALM ELIXIR',
-    tagline: 'Soothing care for sensitive skin.',
-    description: 'Intense soothing concentrate that rapidly reduces redness, calms inflammatory response, and reinforces reactive skin.',
-    image: calmElixirImg,
-    techId: 'FORMULA / 04',
-    badges: ['CALMING', '50 ML', 'BISABOLOL'],
-    clinicalStat: 'REDNESS REDUCTION: IMMEDIATE',
-    // Scaled up to balance visual volume with larger product bottles
-    imageScale: 'scale-125 md:scale-135',
-    accentGlow: 'rgba(129, 140, 248, 0.14)',
   },
   {
     id: 'see-all',
@@ -69,6 +47,7 @@ const SLIDES = [
 
 export default function ProductShowcase() {
   const sectionRef = useRef(null);
+  const bannerRef = useRef(null);
   const slidesRef = useRef([]);
   const progressBarRef = useRef(null);
 
@@ -83,6 +62,24 @@ export default function ProductShowcase() {
 
   useEffect(() => {
     let ctx = gsap.context(() => {
+      const bannerImage = bannerRef.current?.querySelector('img');
+      if (bannerImage) {
+        gsap.fromTo(
+          bannerImage,
+          { scale: 0.96 },
+          {
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: bannerRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          }
+        );
+      }
+
       // 1. Initial DOM Setup: Hide all slides completely
       slidesRef.current.forEach((slide, idx) => {
         if (!slide) return;
@@ -203,18 +200,12 @@ export default function ProductShowcase() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full h-[100svh] min-h-[650px] bg-[#070709] text-white overflow-hidden flex flex-col justify-between selection:bg-cyan-500/20 selection:text-cyan-200"
+      className="relative w-full bg-[#070709] text-white overflow-hidden selection:bg-cyan-500/20 selection:text-cyan-200"
     >
       {/* SHARED ONYX ATMOSPHERE & GLOW */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {/* Fine Technical Grid Lines */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,#000_70%,transparent_100%)] opacity-40" />
-
-        {/* Corner Diagnostic Crosshairs (+) to eliminate visual emptiness */}
-        <div className="absolute top-8 left-8 text-white/20 font-mono text-xs">+</div>
-        <div className="absolute top-8 right-8 text-white/20 font-mono text-xs">+</div>
-        <div className="absolute bottom-12 left-8 text-white/20 font-mono text-xs">+</div>
-        <div className="absolute bottom-12 right-8 text-white/20 font-mono text-xs">+</div>
 
         {/* Dynamic Formula Aura Ambient Tint */}
         <div
@@ -225,28 +216,19 @@ export default function ProductShowcase() {
         />
       </div>
 
-      {/* HEADER SECTION INTRO */}
-      <div className="relative z-20 pt-8 md:pt-12 px-6 md:px-16 w-full max-w-[1600px] mx-auto flex items-center justify-between">
-        <div>
-          <h2 className="text-[10px] md:text-xs font-mono tracking-[0.3em] uppercase text-slate-400 flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            THE NO TWO SYSTEM
-          </h2>
-        </div>
-
-        {/* Dynamic Slide Counter (e.g. 01 / 04) */}
-        <div className="text-[11px] font-mono tracking-widest text-slate-400">
-          {!currentSlideData.isSeeAll ? (
-            <>
-              <span className="text-white font-medium">0{activeIndex + 1}</span>
-              <span className="text-slate-600 mx-1.5">/</span>
-              <span>04</span>
-            </>
-          ) : (
-            <span className="text-cyan-400">END OF SYSTEM</span>
-          )}
-        </div>
+      {/* PRODUCT RANGE BANNER */}
+      <div ref={bannerRef} className="relative z-10 w-full aspect-[1944/809] overflow-hidden">
+        <Image
+          src="/pdtbanner.png"
+          alt="No Two product range"
+          fill
+          priority
+          sizes="100vw"
+          className="object-contain will-change-transform"
+        />
       </div>
+
+      <div className="relative z-10 flex h-[90svh] min-h-[600px] flex-col justify-between">
 
       {/* MAIN SINGLE-PRODUCT EXHIBITION STAGE */}
       <div className="relative z-10 flex-1 w-full max-w-[1600px] mx-auto flex items-center">
@@ -260,10 +242,6 @@ export default function ProductShowcase() {
               /* FINAL STATE: SEE ALL BUTTON */
               <div className="w-full h-full flex flex-col items-center justify-center text-center px-6">
                 <div className="w-[1px] h-12 bg-gradient-to-b from-transparent to-white/20 mb-8" />
-
-                <p className="text-xs font-mono tracking-[0.3em] uppercase text-slate-400 mb-4">
-                  COMPLETE FORMULATION RANGE
-                </p>
 
                 <Link
                   href="/products"
@@ -287,36 +265,24 @@ export default function ProductShowcase() {
               <div className="w-full h-full flex flex-col md:flex-row items-center">
 
                 {/* LEFT SIDE: Product Asset Stage */}
-                <div className="product-asset w-full md:w-[48%] h-[50%] md:h-full flex flex-col justify-center items-center relative px-6 md:px-12 pt-6 md:pt-0">
+                <div className="product-asset w-full md:w-1/2 h-[50%] md:h-full flex flex-col justify-center items-center relative px-6 md:px-8 pt-6 md:pt-0">
                   {/* Subtle ground reflection shadow */}
                   <div className="absolute bottom-6 md:bottom-20 left-1/2 -translate-x-1/2 w-2/3 h-6 bg-black/80 blur-xl rounded-full pointer-events-none" />
 
-                  <div className={`relative w-full max-w-[240px] sm:max-w-[280px] md:max-w-[360px] h-full max-h-[320px] md:max-h-[520px] transition-transform duration-500 ${slide.imageScale}`}>
+                  <div className={`relative w-full h-[92%] md:w-full md:h-[94%] transition-transform duration-500 ${slide.imageScale}`}>
                     <Image
                       src={slide.image}
                       alt={slide.name}
                       fill
                       sizes="(max-width: 768px) 60vw, 35vw"
-                      className="object-contain filter contrast-[1.02] brightness-[1.02] drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]"
+                      className="object-contain object-center filter contrast-[1.02] brightness-[1.02] drop-shadow-[0_25px_50px_rgba(0,0,0,0.9)]"
                     />
                   </div>
 
-                  {/* AI Diagnostic Line below image */}
-                  <div className="hidden md:flex items-center gap-4 mt-6 text-[9px] font-mono tracking-[0.25em] text-slate-400 uppercase">
-                    <span>SYS.REF // 8492</span>
-                    <span className="w-12 h-[1px] bg-white/10" />
-                    <span>ELEVATION: 0.00MM</span>
-                  </div>
                 </div>
 
                 {/* RIGHT SIDE: Product Information */}
-                <div className="product-info w-full md:w-[52%] h-[50%] md:h-full flex flex-col justify-start md:justify-center items-center md:items-start text-center md:text-left px-6 lg:px-16 pb-8 md:pb-0">
-
-                  {/* AI Technical Marker */}
-                  <div className="inline-flex items-center gap-2.5 px-3 py-1 rounded-full bg-white/[0.03] border border-white/10 text-[10px] font-mono tracking-[0.25em] uppercase text-slate-300 mb-4 backdrop-blur-md">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                    {slide.techId}
-                  </div>
+                <div className="product-info w-full md:w-1/2 h-[50%] md:h-full flex flex-col justify-start md:justify-center items-center md:items-start text-center md:text-left px-6 lg:px-16 pb-8 md:pb-0">
 
                   {/* Product Title */}
                   <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-wide text-white mb-3">
@@ -333,26 +299,31 @@ export default function ProductShowcase() {
                     {slide.description}
                   </p>
 
+                  <Link
+                    href="/products"
+                    className="group inline-flex items-center gap-3 border border-cyan-400/40 bg-cyan-400/[0.06] px-6 py-3 text-[10px] font-mono tracking-[0.25em] uppercase text-cyan-200 transition-colors duration-300 hover:border-cyan-300 hover:bg-cyan-300 hover:text-[#070709] mb-6"
+                  >
+                    <span>SHOP NOW</span>
+                    <svg
+                      className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </Link>
+
                   {/* Minimal Metadata Badges */}
-                  <div className="flex flex-wrap justify-center md:justify-start gap-2.5 mb-6">
+                  <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 mb-6 text-xs font-sans text-slate-400">
                     {slide.badges.map((badge, bIdx) => (
                       <span
                         key={bIdx}
-                        className="px-3 py-1 border border-white/10 bg-white/[0.02] text-[10px] font-mono tracking-widest uppercase text-slate-300 backdrop-blur-sm"
+                        className="whitespace-nowrap"
                       >
                         {badge}
                       </span>
                     ))}
-                  </div>
-
-                  {/* Clinical Metric Detail to eliminate emptiness */}
-                  <div className="flex items-center gap-3 pt-3 border-t border-white/10 w-full max-w-md justify-center md:justify-start">
-                    <span className="text-[10px] font-mono text-cyan-400 tracking-widest uppercase">
-                      [ CLINICAL ]
-                    </span>
-                    <span className="text-[11px] font-mono text-slate-300 tracking-wider uppercase">
-                      {slide.clinicalStat}
-                    </span>
                   </div>
 
                 </div>
@@ -375,8 +346,7 @@ export default function ProductShowcase() {
         </div>
 
         {/* Minimal Dot Indicators */}
-        <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
-          <span className="tracking-widest">AUTO-ROTATING // 2.0S</span>
+        <div className="flex items-center justify-end text-[10px] font-mono text-slate-400">
           <div className="flex items-center gap-2">
             {SLIDES.map((s, i) => (
               <span
@@ -388,6 +358,7 @@ export default function ProductShowcase() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

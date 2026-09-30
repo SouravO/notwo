@@ -11,15 +11,6 @@ if (typeof window !== "undefined") {
 const BUTTON_GRADIENT =
   "linear-gradient(115deg, #06131D 0%, #0B3650 38%, #176D94 72%, #4DA6C8 100%)";
 
-const GUESS_WORDS = [
-  { text: "Oily?", top: "6%", left: "4%" },
-  { text: "Dry?", top: "16%", left: "76%" },
-  { text: "Combination?", top: "46%", left: "0%" },
-  { text: "Sensitive?", top: "60%", left: "80%" },
-  { text: "Normal?", top: "82%", left: "8%" },
-  { text: "Dehydrated?", top: "90%", left: "66%" },
-];
-
 export default function SkinType() {
   const stageRef = useRef(null);
   const climaxRef = useRef(null);
@@ -32,7 +23,6 @@ export default function SkinType() {
   const scanTrackRef = useRef(null);
   const scanLineRef = useRef(null);
   const scanGlowRef = useRef(null);
-  const wordsWrapRef = useRef(null);
   const entrancePlayedRef = useRef(false);
 
   // NEW: parallax targets — image panel wrapper and text column
@@ -47,7 +37,6 @@ export default function SkinType() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const words = Array.from(wordsWrapRef.current?.querySelectorAll("[data-guess-word]") ?? []);
       const track = scanTrackRef.current;
       const line = scanLineRef.current;
       const glowBand = scanGlowRef.current;
@@ -61,13 +50,12 @@ export default function SkinType() {
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (prefersReducedMotion) {
-        gsap.set([face, glow, flash, wordsWrapRef.current], {
+        gsap.set([face, glow, flash], {
           clearProps: "all",
           opacity: 1,
           filter: "none",
         });
         gsap.set(face, { clipPath: "inset(0% 0% 0% 0%)" });
-        gsap.set(wordsWrapRef.current, { opacity: 0 });
         gsap.set([line, glowBand], { opacity: 0 });
         return;
       }
@@ -119,23 +107,6 @@ export default function SkinType() {
             }
           );
         }
-      });
-
-      gsap.to(words, {
-        y: (i) => (i % 2 === 0 ? "+=14" : "-=14"),
-        x: (i) => (i % 3 === 0 ? "+=8" : "-=8"),
-        rotate: (i) => (i % 2 === 0 ? 3 : -3),
-        duration: (i) => 4 + (i % 4),
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        stagger: { each: 0.25 },
-        scrollTrigger: {
-          trigger: canvasRef.current,
-          start: "top 90%",
-          end: "bottom top",
-          toggleActions: "play pause resume pause",
-        },
       });
 
       gsap.to(brackets, {
@@ -191,11 +162,6 @@ export default function SkinType() {
         });
 
         tl.to(face, { opacity: 1, filter: "blur(0px) saturate(1)", duration: 1, ease: "none" }, 0)
-          .to(
-            words,
-            { opacity: 0, y: -16, scale: 0.85, filter: "blur(4px)", stagger: 0.04, duration: 0.7, ease: "none" },
-            0.22
-          )
           .to(glow, { opacity: 0.9, scale: 1.15, duration: 0.8, ease: "none" }, 0.35)
           .to(flash, { opacity: 0.55, scale: 1.25, duration: 0.2, ease: "none" }, 0.78)
           .to(flash, { opacity: 0, duration: 0.3, ease: "none" }, 0.95)
@@ -250,7 +216,7 @@ export default function SkinType() {
     <div
       ref={stageRef}
       data-stage
-      className={`overflow-hidden border-b border-[#78a9c2]/20 bg-[linear-gradient(125deg,#05080d_0%,#081522_46%,#102b43_100%)] px-4 py-14 text-white first:pt-0 sm:px-6 md:-mx-8 md:w-[calc(100%+4rem)] md:px-0 md:py-24 lg:-mx-12 lg:w-[calc(100%+6rem)] xl:-mx-20 xl:w-[calc(100%+10rem)] 2xl:-mx-32 2xl:px-32`}
+      className={`overflow-hidden border-b border-[#78a9c2]/20 bg-[linear-gradient(125deg,#05080d_0%,#081522_46%,#102b43_100%)] px-4 py-10 text-white first:pt-0 sm:px-6 md:-mx-8 md:w-[calc(100%+4rem)] md:px-0 md:py-16 lg:-mx-12 lg:w-[calc(100%+6rem)] xl:-mx-20 xl:w-[calc(100%+10rem)] 2xl:-mx-32 2xl:px-32`}
     >
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-stretch gap-10 md:grid-cols-[1.15fr_0.85fr] md:gap-16 md:px-8 lg:px-12 xl:px-20 2xl:px-32">
         <div ref={parallaxTextRef} className="flex h-full flex-col justify-center">
@@ -364,18 +330,6 @@ export default function SkinType() {
                   />
                 </div>
 
-                <div ref={wordsWrapRef} className="pointer-events-none absolute inset-0">
-                  {GUESS_WORDS.map((w) => (
-                    <span
-                      key={w.text}
-                      data-guess-word
-                      className="absolute font-sans text-[11px] uppercase tracking-[0.15em] text-white/80 sm:text-xs"
-                      style={{ top: w.top, left: w.left }}
-                    >
-                      {w.text}
-                    </span>
-                  ))}
-                </div>
               </div>
 
               {/* reveal CTA — anchored low, on the chest, well clear of the face, with a warm

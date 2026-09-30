@@ -44,7 +44,7 @@ const ANIMATION_SCROLL_VH = SECTION_SCROLL_VH - 1;
 const SECTION_HEIGHT = `${SECTION_SCROLL_VH * 100}dvh`;
 
 const WhyCard = forwardRef(function WhyCard({ item, index, variant = "stack" }, ref) {
-  const { id, title, copy, img, accent } = item;
+  const { title, copy, img } = item;
   const isEven = index % 2 === 0;
 
   const shape =
@@ -75,16 +75,6 @@ const WhyCard = forwardRef(function WhyCard({ item, index, variant = "stack" }, 
 
       {/* Content Section */}
       <div className="relative flex flex-col justify-center p-8 md:w-1/2 md:p-12 lg:p-16">
-        <div className="flex items-center gap-4 text-[#2B2330]/60">
-          <span className="font-sans text-xl tracking-wider">
-            {id}
-          </span>
-          <span
-            className="h-[1px] w-12"
-            style={{ backgroundColor: accent }}
-          />
-        </div>
-        
         <h3 className="mt-6 font-serif text-3xl font-medium leading-[1.1] text-[#2B2330] sm:text-4xl md:text-4xl">
           {title}
         </h3>
@@ -195,7 +185,7 @@ function WhyChooseStack() {
   }, []);
 
   return (
-    <section id="products" className={`relative isolate w-full scroll-mt-24 bg-[#FAF5EE] pb-[10dvh]`}>
+    <section id="products" className={`relative isolate w-full scroll-mt-24 bg-[#FAF5EE] pb-[3dvh]`}>
       <div ref={sectionRef} className="relative w-full motion-reduce:h-auto" style={{ height: SECTION_HEIGHT }}>
         <div className="sticky top-0 h-[100dvh] w-full overflow-hidden motion-reduce:h-auto motion-reduce:sticky motion-reduce:top-auto motion-reduce:overflow-visible">
           
@@ -250,7 +240,7 @@ function WhyChooseStack() {
         </div>
 
         {/* Fallback for motion reduced preferences */}
-        <div className="hidden flex-col gap-12 bg-[#FAF5EE] px-4 py-16 motion-reduce:flex sm:py-24">
+        <div className="hidden flex-col gap-12 bg-[#FAF5EE] px-4 py-12 motion-reduce:flex sm:py-16">
           {WHY_CHOOSE.map((item, i) => (
             <WhyCard key={item.id} index={i} item={item} variant="static" />
           ))}

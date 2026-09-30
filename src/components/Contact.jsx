@@ -23,7 +23,7 @@ export default function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative scroll-mt-24 overflow-hidden bg-[#1a1a1c] px-6 py-28 sm:px-10 sm:py-36"
+      className="relative scroll-mt-24 overflow-hidden bg-[#1a1a1c] px-6 py-16 sm:px-10 sm:py-20 lg:py-24"
     >
       <div className="pointer-events-none absolute bottom-[-10%] right-[-8%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,_#8fb6de_0%,_transparent_70%)] opacity-10 blur-3xl" />
 
