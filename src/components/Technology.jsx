@@ -330,7 +330,7 @@ export default function Technology() {
           scrollTrigger: {
             trigger: section,
             start: "top top",
-            end: () => `+=${Math.round(window.innerHeight * (desktop ? 8 : tablet ? 7.5 : 7))}`,
+            end: () => `+=${Math.round(window.innerHeight * (desktop ? 3.5 : tablet ? 3 : 2.5))}`,
             scrub: 1,
             pin,
             anticipatePin: 1,
