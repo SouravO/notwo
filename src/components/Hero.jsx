@@ -438,7 +438,7 @@ export default function Hero({ isActive = true }) {
            
             <h1
               id="hero-title"
-              className="font-serif text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#090a0c] uppercase leading-[1.02]"
+              className="font-serif text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#1C1C1A] uppercase leading-[1.02]"
             >
               {HEADLINE_LINES.map((line, i) => (
                 <span key={line.text} className="block overflow-hidden">
@@ -459,20 +459,20 @@ export default function Hero({ isActive = true }) {
               className="mt-4 sm:mt-8 flex max-w-[30rem] flex-col gap-4 sm:gap-7"
               style={{ opacity: 0 }}
             >
-              <p className="font-sans text-sm leading-relaxed text-[#090a0c]/70 sm:text-base">
+              <p className="font-sans text-sm leading-relaxed text-[#1C1C1A]/70 sm:text-base">
                 {SUBCOPY}
               </p>
               <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                 <a
                   href={CTA_PRIMARY.href}
-                  className="group inline-flex items-center gap-3 rounded-full bg-[#090a0c] px-7 py-3.5 font-sans text-sm font-medium tracking-wide text-[#e6e9ec] transition-transform duration-300 hover:scale-[1.03]"
+                  className="group inline-flex items-center gap-3 rounded-full bg-[#16336F] px-7 py-3.5 font-sans text-sm font-medium tracking-wide text-[#EFEDDE] transition-transform duration-300 hover:scale-[1.03]"
                 >
                   {CTA_PRIMARY.label}
                   <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                 </a>
                 <a
                   href={CTA_SECONDARY.href}
-                  className="font-sans text-sm font-medium tracking-wide text-[#090a0c] underline decoration-[#090a0c]/30 underline-offset-[6px] transition-colors duration-300 hover:decoration-[#090a0c]"
+                  className="font-sans text-sm font-medium tracking-wide text-[#16336F] underline decoration-[#16336F]/50 underline-offset-[6px] transition-colors duration-300 hover:decoration-[#16336F]"
                 >
                   {CTA_SECONDARY.label}
                 </a>
@@ -599,7 +599,7 @@ export default function Hero({ isActive = true }) {
                 <div
                   ref={ringRef}
                   aria-hidden="true"
-                  className="pointer-events-none absolute rounded-[50%] border border-[#090a0c]/[0.14]"
+                  className="pointer-events-none absolute rounded-[50%] border border-[#1C1C1A]/[0.14]"
                   style={{ opacity: 0 }}
                 />
 
@@ -632,7 +632,7 @@ export default function Hero({ isActive = true }) {
                 className="flex flex-col items-center gap-3"
                 style={{ opacity: 0 }}
               >
-                <div className="font-sans text-xs font-medium text-[#090a0c] sm:text-sm">
+                <div className="font-sans text-xs font-medium text-[#1C1C1A] sm:text-sm">
                   <span ref={captionNameRef} className="block">HYDRA CREAM</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -640,7 +640,7 @@ export default function Hero({ isActive = true }) {
                     <span
                       key={product.id}
                       ref={(el) => { dotRefs.current[idx] = el; }}
-                      className="h-[2px] w-[10px] rounded-full bg-[#090a0c] opacity-35 transition-all duration-500"
+                      className="h-[2px] w-[10px] rounded-full bg-[#1C1C1A] opacity-35 transition-all duration-500"
                     />
                   ))}
                 </div>

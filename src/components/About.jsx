@@ -8,6 +8,36 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// Same blob path as before, shared by the clip mask and the hairline outline
+const BLOB_PATH =
+  "M 1.0056 0.1606 C 1.1476 0.2960, 1.0364 0.5577, 0.7571 0.7451 C 0.4778 0.9326, 0.1365 0.9748, -0.0056 0.8394 C -0.1476 0.7040, -0.0364 0.4423, 0.2429 0.2549 C 0.5222 0.0674, 0.8635 0.0252, 1.0056 0.1606 Z";
+
+// Fine film grain — gives the metallic background a tactile, printed feel
+const GRAIN = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`;
+
+const CARDS = [
+  {
+    title: "Informed Skincare Decisions",
+    body: "KYS exists to help people make informed skincare decisions through advanced skin diagnostics and personalized product recommendations.",
+    position: "md:left-[8%] lg:left-[10%] md:top-[4%]",
+  },
+  {
+    title: "Trusted Personalization",
+    body: "To become India's most trusted personalized skincare company by combining technology, science, and skincare into one seamless experience.",
+    position: "md:right-0 lg:right-2 md:top-[15%]",
+  },
+  {
+    title: "Advanced Skin Analysis",
+    body: "Our advanced skin analysis machine provides detailed insights about your skin health before any product recommendation.",
+    position: "md:left-0 lg:left-2 md:bottom-[15%]",
+  },
+  {
+    title: "No Assumptions. Only Science.",
+    body: "Don't Guess. Know. Every skincare journey starts with one question. What does your skin actually need?",
+    position: "md:right-[8%] lg:right-[10%] md:bottom-[7%]",
+  },
+];
+
 export default function MissionVision() {
   const containerRef = useRef(null);
   const parallaxImgRef = useRef(null);
@@ -47,11 +77,11 @@ export default function MissionVision() {
         const startY = 110 + index * 20;
 
         if (prefersReducedMotion) {
-          gsap.set(card, { y: 0, yPercent: 0 });
+          gsap.set(card, { y: 0, yPercent: 0, opacity: 1 });
           return;
         }
 
-        gsap.set(card, { y: startY });
+        gsap.set(card, { y: startY, opacity: 0 });
 
         gsap.fromTo(
           card,
@@ -68,11 +98,28 @@ export default function MissionVision() {
           }
         );
 
+        // Cards emerge rather than just slide in
         gsap.fromTo(
           card,
-          { yPercent: -6 },
+          { opacity: 0 },
           {
-            yPercent: 6,
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 95%",
+              end: "top 75%",
+              scrub: true,
+            },
+          }
+        );
+
+        // Gentler drift than before (was -6 / 6)
+        gsap.fromTo(
+          card,
+          { yPercent: -4 },
+          {
+            yPercent: 4,
             ease: "none",
             scrollTrigger: {
               trigger: containerRef.current,
@@ -179,8 +226,20 @@ export default function MissionVision() {
     <section
       id="about"
       ref={containerRef}
-      className={`relative left-1/2 min-h-screen w-screen -translate-x-1/2 scroll-mt-24 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#17191c] sm:px-8 lg:px-16 lg:pb-16`}
+      className={`relative left-1/2 min-h-screen w-screen -translate-x-1/2 scroll-mt-24 overflow-hidden bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)] px-4 pt-0 pb-10 text-[#1C1C1A] sm:px-8 lg:px-16 lg:pb-16`}
     >
+      {/* Soft studio light pooled behind the image */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_58%,rgba(255,255,255,0.30)_0%,rgba(255,255,255,0)_70%)]"
+      />
+      {/* Film grain */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 opacity-[0.16] mix-blend-multiply"
+        style={{ backgroundImage: GRAIN }}
+      />
+
       <div className="max-w-7xl mx-auto relative z-10 mb-1 lg:mb-2 pt-14 sm:pt-16 lg:pt-24">
         <div className="relative flex flex-col items-center text-center">
           <h1
@@ -210,12 +269,12 @@ export default function MissionVision() {
               </span>
             </span>
             <br />
-            <span className="mt-2 block font-serif text-3xl font-semibold italic leading-[1.12] text-[#17191c]/90 sm:text-5xl lg:text-6xl">
+            <span className="mt-2 block font-serif text-3xl font-semibold italic leading-[1.12] text-[#1C1C1A]/90 sm:text-5xl lg:text-6xl">
               before you treat it.
             </span>
           </h1>
 
-          <p className="mt-6 max-w-lg mx-auto font-sans text-sm leading-relaxed text-[#17191c]/75 sm:text-base">
+          <p className="mt-6 max-w-lg mx-auto font-sans text-sm leading-relaxed text-[#1C1C1A]/75 sm:text-base">
             Modern skincare has become confusing. Thousands of products, thousands of ingredients, and thousands of opinions. But only one thing truly matters: understanding your skin.
           </p>
         </div>
@@ -225,72 +284,67 @@ export default function MissionVision() {
         <svg width="0" height="0" className="pointer-events-none absolute" aria-hidden="true">
           <defs>
             <clipPath id={maskId} clipPathUnits="objectBoundingBox">
-              <path d="M 1.0056 0.1606 C 1.1476 0.2960, 1.0364 0.5577, 0.7571 0.7451 C 0.4778 0.9326, 0.1365 0.9748, -0.0056 0.8394 C -0.1476 0.7040, -0.0364 0.4423, 0.2429 0.2549 C 0.5222 0.0674, 0.8635 0.0252, 1.0056 0.1606 Z" />
+              <path d={BLOB_PATH} />
             </clipPath>
           </defs>
         </svg>
 
-        <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[82%] sm:w-[65%] lg:w-[48%] aspect-[4/5] z-0 bg-[#F7F5EC] drop-shadow-[0_22px_38px_rgba(34,34,32,0.28)]"
-          style={{ clipPath: `url(#${maskId})` }}
-        >
-          <div
-            ref={parallaxImgRef}
-            className="absolute inset-0 h-[134%] w-full -top-[17%] bg-cover bg-center"
-            style={{
-              backgroundImage: `url('/Parallax.png')`,
-            }}
-          />
+        {/* Image frame: hairline outline + shadow layer + clipped image */}
+        <div className="absolute left-1/2 top-1/2 z-0 aspect-[4/5] w-[82%] -translate-x-1/2 -translate-y-1/2 sm:w-[65%] lg:w-[48%]">
+          {/* Offset hairline echoing the blob shape */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 1 1"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+            style={{ transform: "scale(1.06)" }}
+          >
+            <path
+              d={BLOB_PATH}
+              fill="none"
+              stroke="rgba(255,255,255,0.45)"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+
+          {/* drop-shadow lives on a parent of the clipped element so clip-path doesn't cut it off */}
+          <div className="absolute inset-0 drop-shadow-[0_32px_44px_rgba(20,22,25,0.32)]">
+            <div className="absolute inset-0 bg-[#EFEDDE]" style={{ clipPath: `url(#${maskId})` }}>
+              <div
+                ref={parallaxImgRef}
+                className="absolute inset-0 h-[134%] w-full -top-[17%] bg-cover bg-center"
+                style={{
+                  backgroundImage: `url('/Parallax.png')`,
+                }}
+              />
+              {/* Gentle tonal grade so the photo sits inside the metallic palette */}
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.10)_0%,rgba(255,255,255,0)_35%,rgba(10,12,14,0.22)_100%)]" />
+            </div>
+          </div>
         </div>
 
         <div className="relative z-10 flex w-full flex-col gap-5 py-6 md:contents">
-          <div
-            data-floating-card
-            className="w-full z-10 md:absolute md:left-[8%] lg:left-[10%] md:top-[4%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
-          >
-            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
-              Informed Skincare Decisions
-            </h2>
-            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
-              KYS exists to help people make informed skincare decisions through advanced skin diagnostics and personalized product recommendations.
-            </p>
-          </div>
-
-          <div
-            data-floating-card
-            className="w-full z-10 md:absolute md:right-0 lg:right-2 md:top-[15%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
-          >
-            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
-              Trusted Personalization
-            </h2>
-            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
-              To become India's most trusted personalized skincare company by combining technology, science, and skincare into one seamless experience.
-            </p>
-          </div>
-
-          <div
-            data-floating-card
-            className="w-full z-10 md:absolute md:left-0 lg:left-2 md:bottom-[15%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
-          >
-            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
-              Advanced Skin Analysis
-            </h2>
-            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
-              Our advanced skin analysis machine provides detailed insights about your skin health before any product recommendation.
-            </p>
-          </div>
-
-          <div
-            data-floating-card
-            className="w-full z-10 md:absolute md:right-[8%] lg:right-[10%] md:bottom-[7%] md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-[#B2BEDE]/30 bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F0E4_100%)] p-3.5 shadow-[0_18px_40px_-25px_rgba(0,0,0,0.28)] backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_22px_45px_-25px_rgba(0,0,0,0.4)] sm:p-4"
-          >
-            <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] text-[#222220]">
-              No Assumptions. Only Science.
-            </h2>
-            <p className="font-sans text-[12.5px] leading-relaxed text-[#222220]/70">
-              Don't Guess. Know. Every skincare journey starts with one question. What does your skin actually need?
-            </p>
-          </div>
+          {CARDS.map((card, i) => (
+            <div
+              key={card.title}
+              data-floating-card
+              className={`w-full z-10 md:absolute ${card.position} md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(239,237,222,0.94)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_-2px_rgba(0,0,0,0.10),0_26px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-md transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_-2px_rgba(0,0,0,0.12),0_30px_56px_-28px_rgba(0,0,0,0.55)] sm:p-5`}
+            >
+              <div className="mb-3 flex items-center gap-3" aria-hidden="true">
+                <span className="font-mono text-[10px] tracking-[0.3em] text-[#1C1C1A]/45">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="h-px flex-1 bg-[#1C1C1A]/15" />
+              </div>
+              <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] tracking-[-0.01em] text-[#1C1C1A]">
+                {card.title}
+              </h2>
+              <p className="font-sans text-[13px] leading-[1.7] text-[#1C1C1A]/70">
+                {card.body}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

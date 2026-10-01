@@ -1,0 +1,95 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+
+const PROMO_BANNERS = ['/pdtbanner1.png', '/pdtbanner2.png'];
+
+export default function PromoBannerCarousel() {
+  const [activeBanner, setActiveBanner] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveBanner((current) => (current + 1) % PROMO_BANNERS.length);
+    }, 5500);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  return (
+    <section className="relative overflow-hidden bg-[#070709] px-4 pb-2 pt-28 sm:px-6 sm:pb-3 sm:pt-32 md:px-8 md:pt-36">
+      <div className="mx-auto w-full max-w-[1440px]">
+        <div
+          aria-label="Promotional offers"
+          aria-roledescription="carousel"
+          className="relative aspect-[3/1] w-full overflow-hidden rounded-xl bg-[#070709] sm:rounded-2xl"
+        >
+          {PROMO_BANNERS.map((src, index) => (
+            <div
+              key={src}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${PROMO_BANNERS.length}`}
+              aria-hidden={activeBanner !== index}
+              className={`absolute inset-0 transition-[opacity,transform] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                activeBanner === index
+                  ? 'translate-x-0 opacity-100'
+                  : 'translate-x-3 opacity-0'
+              }`}
+            >
+              <Image
+                src={src}
+                alt={`NO TWO skincare promotion ${index + 1}`}
+                fill
+                priority={index === 0}
+                sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) calc(100vw - 3rem), min(1440px, calc(100vw - 4rem))"
+                className="object-contain"
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="relative mt-3 flex items-center justify-between">
+          <button
+            type="button"
+            aria-label="Previous promotional banner"
+            onClick={() => setActiveBanner((current) => (current - 1 + PROMO_BANNERS.length) % PROMO_BANNERS.length)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F] text-[#EFEDDE] transition-colors hover:bg-[#16336F]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1]"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+              <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2" aria-label="Choose promotional banner">
+            {PROMO_BANNERS.map((src, index) => (
+              <button
+                key={src}
+                type="button"
+                aria-label={`Show promotional banner ${index + 1}`}
+                aria-current={activeBanner === index ? 'true' : undefined}
+                onClick={() => setActiveBanner(index)}
+                className={`h-1 rounded-full transition-[width,background-color] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] ${
+                  activeBanner === index
+                    ? 'w-6 bg-[#16336F]'
+                    : 'w-2 bg-[#EFEDDE]/35 hover:bg-[#EFEDDE]/60'
+                }`}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            aria-label="Next promotional banner"
+            onClick={() => setActiveBanner((current) => (current + 1) % PROMO_BANNERS.length)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F] text-[#EFEDDE] transition-colors hover:bg-[#16336F]/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1]"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+              <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}

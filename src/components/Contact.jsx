@@ -23,7 +23,7 @@ export default function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative scroll-mt-24 overflow-hidden bg-[#1a1a1c] px-6 pt-32 pb-16 sm:px-10 sm:pt-36 sm:pb-20 lg:py-24"
+      className="relative scroll-mt-24 overflow-hidden bg-[#1C1C1A] px-6 pt-32 pb-16 sm:px-10 sm:pt-36 sm:pb-20 lg:py-24"
     >
       <div className="pointer-events-none absolute bottom-[-10%] right-[-8%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,_#8fb6de_0%,_transparent_70%)] opacity-10 blur-3xl" />
 
@@ -52,7 +52,7 @@ export default function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           onSubmit={handleSubmit}
-          className="relative rounded-2xl bg-[#f5f4ef] p-8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] sm:p-10"
+          className="relative rounded-2xl bg-[#EFEDDE] p-8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] sm:p-10"
         >
           <div className="grid gap-6 sm:grid-cols-2">
             <Field label="Name" name="name" type="text" />
@@ -65,12 +65,12 @@ export default function Contact() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="group relative mt-8 w-full overflow-hidden rounded-full bg-[#0a0a0c] py-4 text-sm font-semibold text-[#f5f4ef] transition-transform duration-300 hover:scale-[1.01] disabled:opacity-70"
+            className="group relative mt-8 w-full overflow-hidden rounded-full bg-[#16336F] py-4 text-sm font-semibold text-[#EFEDDE] transition-transform duration-300 hover:scale-[1.01] disabled:opacity-70"
           >
             <span className="relative z-10">
               {status === "sending" ? "Sending" : status === "sent" ? "Message sent" : "Send message"}
             </span>
-            <span className="absolute inset-0 -translate-x-full bg-[#e4572e]/20 transition-transform duration-500 group-hover:translate-x-0" />
+            <span className="absolute inset-0 -translate-x-full bg-[#FD492A]/20 transition-transform duration-500 group-hover:translate-x-0" />
           </button>
         </motion.form>
       </div>
@@ -90,7 +90,7 @@ function Field({ label, name, type }) {
     onBlur: () => setFocused(false),
     onChange: (e) => setValue(e.target.value),
     className:
-      "peer w-full border-b border-[#0a0a0c]/15 bg-transparent pb-2 pt-6 text-[#0a0a0c] outline-none transition-colors focus:border-[#a9bfe3]",
+      "peer w-full border-b border-[#0a0a0c]/15 bg-transparent pb-2 pt-6 text-[#0a0a0c] outline-none transition-colors focus:border-[#B0BEE1]",
   };
 
   return (
@@ -99,7 +99,7 @@ function Field({ label, name, type }) {
       <label
         htmlFor={name}
         className={`pointer-events-none absolute left-0 transition-all duration-200 ${
-          active ? "top-0 text-xs text-[#16224a]" : "top-6 text-sm text-[#0a0a0c]/40"
+          active ? "top-0 text-xs text-[#16336F]" : "top-6 text-sm text-[#0a0a0c]/40"
         }`}
       >
         {label}

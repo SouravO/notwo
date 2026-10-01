@@ -142,7 +142,7 @@ export default function Navbar() {
         >
           <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
           <span className="ml-0.5 -translate-y-2 text-[10px] text-white/40">™</span>
-          <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(103,232,249,0.8)]" />
+          <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-[#16336F]" />
         </Link>
 
         <div className="hidden items-center gap-1 text-[13px] font-medium text-white/65 md:flex">
@@ -159,7 +159,7 @@ export default function Navbar() {
                 {isActive && (
                   <motion.span
                     layoutId="desktop-nav-active"
-                    className="absolute inset-0 -z-10 rounded-full border border-white/10 bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                    className="absolute inset-0 -z-10 rounded-full border border-[#16336F] bg-[#16336F]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -174,7 +174,7 @@ export default function Navbar() {
           aria-expanded={open}
           aria-controls="mobile-navigation"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8fb6de] md:hidden"
+          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full bg-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] md:hidden"
         >
           <motion.span animate={{ rotate: open ? 45 : 0, y: open ? 6 : 0 }} className="h-[1.5px] w-5 bg-white" />
           <motion.span animate={{ opacity: open ? 0 : 1 }} className="h-[1.5px] w-5 bg-white" />
@@ -209,7 +209,7 @@ export default function Navbar() {
                     {isActive && (
                       <motion.span
                         layoutId="mobile-nav-active"
-                        className="absolute inset-0 -z-10 rounded-xl border border-white/10 bg-white/[0.08]"
+                        className="absolute inset-0 -z-10 rounded-xl border border-[#16336F] bg-[#16336F]"
                         transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}

@@ -103,7 +103,7 @@ export default function Services() {
         {/* Animated Fluid Ambient Glow Orbs */}
         <div
           ref={orb1Ref}
-          className="pointer-events-none absolute -left-20 top-1/4 h-[350px] w-[350px] rounded-full bg-gradient-to-tr from-[#a9d9f0]/25 to-[#0b3b55]/15 blur-3xl md:h-[500px] md:w-[500px]"
+          className="pointer-events-none absolute -left-20 top-1/4 h-[350px] w-[350px] rounded-full bg-gradient-to-tr from-[#b6bbc0]/10 to-[#0b3b55]/15 blur-3xl md:h-[500px] md:w-[500px]"
         />
         <div
           ref={orb2Ref}
@@ -129,21 +129,21 @@ export default function Services() {
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all">
               We promise to
             </span>{" "}
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all italic font-normal text-[#9bd5ee]">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all italic font-normal text-[#EFEDDE]">
               recommend only
             </span>{" "}
             <br className="hidden sm:inline" />
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all">
               what your skin
             </span>{" "}
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all underline decoration-[#9bd5ee]/70 decoration-wavy decoration-1 underline-offset-8">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all underline decoration-[#16336F] decoration-wavy decoration-1 underline-offset-8">
               needs.
             </span>
           </h2>
 
           {/* Bold Impact Phrases */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-serif text-2xl italic sm:mt-12 sm:text-4xl md:text-5xl">
-            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#9bd5ee]">
+            <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-[#EFEDDE]">
               Nothing more.
             </span>
             <span className="scroll-word inline-block translate-y-4 opacity-15 blur-[4px] transition-all text-white/45 font-light">
@@ -155,7 +155,7 @@ export default function Services() {
           </div>
 
           {/* Expanding Decorative Separator Line */}
-          <div className="accent-line my-10 h-[1.5px] w-24 origin-center scale-x-0 bg-gradient-to-r from-transparent via-[#9bd5ee] to-transparent sm:my-12 sm:w-36" />
+          <div className="accent-line my-10 h-[1.5px] w-24 origin-center scale-x-0 bg-gradient-to-r from-transparent via-[#16336F] to-transparent sm:my-12 sm:w-36" />
 
           {/* Subtext */}
           <p className="scroll-subtext max-w-md translate-y-4 font-sans text-sm tracking-wide text-[#d2e4ec] opacity-0 sm:text-base">

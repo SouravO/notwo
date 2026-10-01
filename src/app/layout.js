@@ -1,19 +1,5 @@
 import { ReactLenis } from "lenis/react";
-import { GFS_Didot, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-});
-
-const gfsDidot = GFS_Didot({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-gfs-didot",
-  display: "swap",
-});
 
 export const metadata = {
   title: "Create Next App",
@@ -22,7 +8,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`h-full antialiased ${spaceGrotesk.variable} ${gfsDidot.variable}`}>
+    <html lang="en" className="h-full antialiased">
       <body className="flex min-h-full flex-col">
         <ReactLenis
           root

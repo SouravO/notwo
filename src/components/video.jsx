@@ -57,7 +57,7 @@ export default function VideoFeedback() {
             type="button"
             onClick={() => slide(-1)}
             aria-label="Scroll feedback videos left"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#9bd5ee]/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bd5ee]"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F] text-[#EFEDDE] transition hover:bg-[#16336F]/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1]"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
               <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
@@ -67,7 +67,7 @@ export default function VideoFeedback() {
             type="button"
             onClick={() => slide(1)}
             aria-label="Scroll feedback videos right"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition hover:border-[#9bd5ee]/70 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9bd5ee]"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F] text-[#EFEDDE] transition hover:bg-[#16336F]/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1]"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
               <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />

@@ -2,6 +2,7 @@
 import Navbar from "@/components/Navbar";
 import HeroIntro from "@/components/HeroIntro";
 import About from "@/components/About";
+import AppSection from "@/components/AppSection";
 import VideoFeedback from "@/components/video";
 import SkinType from "@/components/SkinType";
 import ProductShowcase from "@/components/ProductShowcase";
@@ -15,6 +16,7 @@ export default function Home() {
       <HeroIntro />
       <SkinType />
       <About />
+      <AppSection />
       <VideoFeedback />
       <ProductShowcase />
       <Cards />

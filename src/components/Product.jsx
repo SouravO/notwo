@@ -2,15 +2,13 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import PromoBannerCarousel from './PromoBannerCarousel';
 
 // Reused product assets (placeholders for the 4 new formulas until real images are ready)
 import hydraCreamImg from '@/app/assets/HydraCream.png';
 import purityGelImg from '@/app/assets/PurityGel.png';
 import radianceSerumImg from '@/app/assets/RadianceSerum.png';
 import calmElixirImg from '@/app/assets/calm-elixir.png';
-
-// Hero background is served directly from /public.
-const BANNER_SRC = '/Banner.png';
 
 const FORMULAS = [
   {
@@ -31,7 +29,7 @@ const FORMULAS = [
     description: 'A micro-foaming pH-balanced formulation that clarifies impurities without stripping vital cellular moisture.',
     image: purityGelImg,
     badges: ['CLEANSING', '120 ML', 'AMINO ACID'],
-    accentGlow: 'rgba(125, 211, 252, 0.18)',
+    accentGlow: 'rgba(22, 51, 111, 0.18)',
   },
   {
     id: 'radiance-serum',
@@ -41,7 +39,7 @@ const FORMULAS = [
     description: 'High-potency bioactive elixir engineered to equalize skin tone, diffuse hyperpigmentation, and amplify natural glow.',
     image: radianceSerumImg,
     badges: ['BRIGHTENING', '100 ML', '10% NIACINAMIDE'],
-    accentGlow: 'rgba(96, 165, 250, 0.2)',
+    accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
   {
     id: 'calm-elixir',
@@ -51,7 +49,7 @@ const FORMULAS = [
     description: 'Intense soothing concentrate that rapidly reduces redness, calms inflammatory response, and reinforces reactive skin.',
     image: calmElixirImg,
     badges: ['CALMING', '50 ML', 'BISABOLOL'],
-    accentGlow: 'rgba(129, 140, 248, 0.2)',
+    accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
   {
     id: 'barrier-oil',
@@ -71,7 +69,7 @@ const FORMULAS = [
     description: 'A low-pH toning solution that lifts residue and visibly refines pore appearance without disrupting the acid mantle.',
     image: purityGelImg,
     badges: ['TONING', '200 ML', 'PHA'],
-    accentGlow: 'rgba(125, 211, 252, 0.18)',
+    accentGlow: 'rgba(22, 51, 111, 0.18)',
   },
   {
     id: 'repair-mask',
@@ -81,7 +79,7 @@ const FORMULAS = [
     description: 'A wash-off overnight treatment concentrated with peptides to accelerate visible recovery from environmental stress.',
     image: radianceSerumImg,
     badges: ['REPAIR', '75 ML', 'PEPTIDE'],
-    accentGlow: 'rgba(96, 165, 250, 0.2)',
+    accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
   {
     id: 'eye-complex',
@@ -91,7 +89,7 @@ const FORMULAS = [
     description: 'A cooling, fast-absorbing complex engineered for the thinnest skin on the face — de-puffing, firming, brightening.',
     image: calmElixirImg,
     badges: ['EYE CARE', '15 ML', 'CAFFEINE'],
-    accentGlow: 'rgba(129, 140, 248, 0.2)',
+    accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
 ];
 
@@ -107,19 +105,7 @@ export default function Product() {
 
   return (
     <main className="bg-[#070709] text-white">
-      {/* HERO */}
-      <section className="relative w-full overflow-hidden bg-[#070709] pt-24 sm:pt-28 md:h-[100svh] md:min-h-[500px] md:pt-0">
-        <Image
-          src={BANNER_SRC}
-          alt="NO TWO skincare collection"
-          width={1808}
-          height={870}
-          priority
-          unoptimized
-          sizes="100vw"
-          className="block h-auto w-full md:absolute md:inset-0 md:h-full md:w-full md:object-contain"
-        />
-      </section>
+      <PromoBannerCarousel />
 
       {/* FORMULATION CATALOG */}
       <section className="relative w-full bg-[#070709] px-4 pt-4 pb-12 text-white sm:px-6 sm:pt-6 md:px-16 md:pt-12 md:pb-20">
@@ -142,8 +128,8 @@ export default function Product() {
                   aria-pressed={isActive}
                   className={`px-4 py-2 text-[10px] font-mono tracking-[0.2em] uppercase border transition-colors duration-300 ${
                     isActive
-                      ? 'bg-white text-black border-white'
-                      : 'border-white/15 text-slate-400 hover:text-white hover:border-white/30'
+                      ? 'bg-[#16336F] text-[#EFEDDE] border-[#16336F]'
+                      : 'border-[#16336F]/50 text-slate-400 hover:text-white hover:border-[#16336F]'
                   }`}
                 >
                   {cat}
@@ -175,7 +161,7 @@ export default function Product() {
                     />
                   </div>
 
-                  <h3 className="text-lg md:text-xl font-light tracking-wide text-[#17191c] mb-2">
+                  <h3 className="text-lg md:text-xl font-light tracking-wide text-[#1C1C1A] mb-2">
                     {f.name}
                   </h3>
                   <p className="text-xs text-[#30343a] font-light leading-relaxed mb-4 flex-1">

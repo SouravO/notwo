@@ -25,7 +25,7 @@ export default function Footer() {
             >
               <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
               <sup className="ml-1 mt-0.5 text-[9px] font-medium tracking-normal text-white/40">™</sup>
-              <span className="ml-2 mt-2 h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.75)]" />
+              <span className="ml-2 mt-2 h-1.5 w-1.5 rounded-full bg-[#16336F]" />
             </Link>
             <p className="mt-5 max-w-sm text-base leading-7 text-white/55">
               Intelligent skincare, shaped around the skin you are in.
@@ -43,7 +43,7 @@ export default function Footer() {
                     <span>{link.label}</span>
                     <span
                       aria-hidden="true"
-                      className="-translate-x-1 text-cyan-200 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                      className="-translate-x-1 text-[#16336F] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
                     >
                       ↗
                     </span>
@@ -62,7 +62,7 @@ export default function Footer() {
               className="group mt-5 inline-flex items-center gap-3 text-xs font-medium uppercase tracking-[0.16em] text-white/65 transition-colors hover:text-white"
             >
               Explore the formulas
-              <span className="text-cyan-200 transition-transform duration-300 group-hover:translate-x-1">→</span>
+              <span className="text-[#16336F] transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
           </div>
         </div>
