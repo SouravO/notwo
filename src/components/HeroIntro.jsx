@@ -43,6 +43,8 @@ export default function HeroIntro() {
       );
     }
 
+    // Resolve the intro gate from browser-only navigation state after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShowIntro(!shouldSkipIntro);
     setIntroResolved(true);
   }, []);

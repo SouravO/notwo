@@ -3,6 +3,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import hydraCream from '../app/assets/HydraCream.png';
+import purityGel from '../app/assets/PurityGel.png';
+import radianceSerum from '../app/assets/RadianceSerum.png';
+import calmElixir from '../app/assets/calm-elixir.png';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -19,7 +23,7 @@ const PRODUCTS = [
     blurb: 'Daily hydration | Restores skin barrier',
     skinFor: 'For dry skin',
     price: '₹490',
-    image: '/pdt1.png',
+    image: hydraCream,
     href: '/products',
   },
   {
@@ -31,7 +35,7 @@ const PRODUCTS = [
     blurb: 'Amino acid, pH balanced | Gentle daily cleanse',
     skinFor: 'For all skin types',
     price: '₹399',
-    image: '/pdt2.png',
+    image: purityGel,
     href: '/products',
   },
   {
@@ -43,7 +47,19 @@ const PRODUCTS = [
     blurb: '10% niacinamide | Evens tone, boosts glow',
     skinFor: 'For dull, uneven skin',
     price: '₹599',
-    image: '/pdt3.png',
+    image: radianceSerum,
+    href: '/products',
+  },
+  {
+    id: 'calm-elixir',
+    name: 'No Two Calm Elixir, 50ml',
+    category: 'Calming',
+    rating: '4.6',
+    size: '50ml',
+    blurb: 'Soothing care for sensitive skin',
+    skinFor: 'For sensitive skin',
+    price: '₹499',
+    image: calmElixir,
     href: '/products',
   },
 ];
@@ -144,7 +160,7 @@ export default function ProductShowcase() {
       {/* PRODUCT RANGE BANNER */}
       <div ref={bannerRef} className="relative z-10 w-full aspect-[1944/809] overflow-hidden">
         <Image
-          src="/pdtbanner.png"
+          src="/pdtbanner1.png"
           alt="No Two product range"
           fill
           priority
@@ -155,21 +171,13 @@ export default function ProductShowcase() {
 
       {/* PRODUCT CARD CAROUSEL */}
       <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-16 pt-6 pb-16 md:pb-24">
-        {/* Header row: title, catalog link, and carousel controls */}
+        {/* Header row: title and carousel controls */}
         <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
           <h3 className="font-serif text-2xl font-light italic text-white sm:text-3xl">
             Formulas built for your skin
           </h3>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-2 rounded-full border border-[#16336F] bg-[#16336F] px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[#EFEDDE] transition-colors hover:bg-[#16336F]/90 sm:px-5"
-            >
-              <span>See all</span>
-              <ArrowIcon className="h-3.5 w-3.5" />
-            </Link>
-
             <button
               type="button"
               aria-label="Previous products"
@@ -202,10 +210,10 @@ export default function ProductShowcase() {
               key={p.id}
               data-card
               style={{ backgroundColor: '#101114' }}
-              className="group flex w-[82%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101114] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.9)] sm:w-[calc((100%_-_1.5rem)/2)] lg:w-[calc((100%_-_3rem)/3)]"
+              className="group flex w-[72%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#101114] shadow-[0_20px_50px_-25px_rgba(0,0,0,0.9)] sm:w-[calc((100%_-_1.5rem)/2)] xl:w-[calc((100%_-_4.5rem)/4)]"
             >
               {/* Image tile */}
-              <div className="relative aspect-[4/3.6] w-full overflow-hidden bg-[radial-gradient(circle_at_50%_45%,#1a2340_0%,#0b0e18_70%)]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[radial-gradient(circle_at_50%_45%,#1a2340_0%,#0b0e18_70%)]">
                 {/* Category badge */}
                 <span className="absolute left-3 top-3 z-10 rounded-md bg-[#16336F] px-3 py-1.5 font-sans text-xs tracking-wide text-[#EFEDDE]">
                   {p.category}
@@ -226,7 +234,7 @@ export default function ProductShowcase() {
                     alt={p.name}
                     fill
                     sizes="(max-width: 640px) 78vw, (max-width: 1024px) 45vw, 28vw"
-                    className="object-contain object-center drop-shadow-[0_20px_36px_rgba(0,0,0,0.85)] transition-transform duration-500 group-hover:scale-105"
+                    className="product-showcase-image object-contain object-center drop-shadow-[0_20px_36px_rgba(0,0,0,0.5)]"
                   />
                 </div>
 
@@ -238,11 +246,11 @@ export default function ProductShowcase() {
 
               {/* Info */}
               <div className="flex flex-1 flex-col items-center bg-[#101114] px-5 pb-5 pt-6 text-center">
-                <h4 className="min-h-[3.5rem] font-sans text-lg font-medium leading-snug text-white">
+                <h4 className="min-h-[3.5rem] font-serif text-base font-medium leading-snug text-white lg:text-lg">
                   {p.name}
                 </h4>
 
-                <p className="mt-3 min-h-[3.25rem] max-w-[16rem] font-sans text-[13px] font-light leading-relaxed text-slate-400">
+                <p className="mt-3 min-h-[3.25rem] max-w-[16rem] font-sans text-xs font-light leading-relaxed text-slate-400 lg:text-[13px]">
                   {p.blurb}
                   <br />
                   {p.skinFor}
@@ -260,6 +268,16 @@ export default function ProductShowcase() {
             </article>
           ))}
 
+        </div>
+
+        <div className="mt-5 flex justify-center">
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 rounded-full border border-[#16336F] bg-[#16336F] px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[#EFEDDE] transition-colors hover:bg-[#16336F]/90"
+          >
+            <span>See all</span>
+            <ArrowIcon className="h-3.5 w-3.5" />
+          </Link>
         </div>
       </div>
     </section>

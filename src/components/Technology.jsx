@@ -102,7 +102,7 @@ function AnalyzerScene({ proxyRef }) {
   const ambient = useRef(null);
   const scan = useRef(null);
   const ai = useRef(null);
-  const scanTex = useMemo(makeScanTexture, []);
+  const scanTex = useMemo(() => makeScanTexture(), []);
 
   const model = useMemo(() => {
     const object = scene.clone(true);
@@ -125,6 +125,8 @@ function AnalyzerScene({ proxyRef }) {
     };
   }, [scene]);
 
+  // Three.js frame updates intentionally mutate scene objects and material values.
+  /* eslint-disable react-hooks/immutability */
   useFrame((state) => {
     const p = proxyRef.current;
     const o = outer.current;
@@ -168,6 +170,7 @@ function AnalyzerScene({ proxyRef }) {
       });
     }
   });
+  /* eslint-enable react-hooks/immutability */
 
   const c = model.center;
   const n = model.norm;

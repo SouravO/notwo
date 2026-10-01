@@ -6,7 +6,6 @@ import AppSection from "@/components/AppSection";
 import VideoFeedback from "@/components/video";
 import SkinType from "@/components/SkinType";
 import ProductShowcase from "@/components/ProductShowcase";
-import Cards from "@/components/Cards";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -19,7 +18,6 @@ export default function Home() {
       <AppSection />
       <VideoFeedback />
       <ProductShowcase />
-      <Cards />
       <Footer />
     </main>
   );

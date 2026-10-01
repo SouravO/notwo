@@ -7,9 +7,8 @@ import Image from "next/image";
 const PLAY_STORE_URL = "YOUR_PLAY_STORE_URL";
 const IS_PLACEHOLDER_URL = PLAY_STORE_URL === "YOUR_PLAY_STORE_URL";
 
-const HEADING_FONT =
-  "'DM Sans', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif";
-const BODY_FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEADING_FONT = "var(--font-editorial)";
+const BODY_FONT = "var(--font-utility)";
 
 const EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]";
 
@@ -47,8 +46,8 @@ const AppSection = () => {
     ).matches;
 
     if (prefersReducedMotion || !("IntersectionObserver" in window)) {
-      setVisible(true);
-      return;
+      const revealFrame = window.requestAnimationFrame(() => setVisible(true));
+      return () => window.cancelAnimationFrame(revealFrame);
     }
 
     const observer = new IntersectionObserver(
@@ -253,7 +252,7 @@ const AppSection = () => {
                   <path d="M2.5 1.5L12 7L2.5 12.5V1.5Z" fill="#FD492A" />
                 </svg>
               </span>
-              GOOGLE PLAY
+              INSTALL NOW
             </a>
           </div>
         </div>

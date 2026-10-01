@@ -7,14 +7,13 @@ export default function SkinType() {
       className="relative isolate flex min-h-[760px] items-start overflow-hidden bg-[#08090b] bg-[url('/machinemobile.png')] bg-cover bg-left-top px-6 pb-16 pt-20 text-white sm:px-10 md:min-h-[min(760px,90svh)] md:items-center md:bg-[url('/machine.png')] md:bg-center md:py-24"
     >
       <div className="mx-auto w-full max-w-7xl">
-        <div className="max-w-xl">
+        <div className="max-w-2xl">
           <h2
             id="skin-journey-title"
-            className="mb-7 max-w-[22rem] font-serif text-[clamp(2rem,7vw,4.5rem)] font-medium leading-[0.98] tracking-tight text-white md:max-w-none"
+            className="mb-7 max-w-[22rem] font-serif text-[clamp(2.2rem,6.5vw,4rem)] font-medium leading-[0.98] tracking-tight text-white md:max-w-2xl"
           >
-            We Don&rsquo;t Sell Products.
-            <br />
-            We Build Personalized Skin Journeys.
+            <span className="block">Personalized skincare,</span>
+            <span className="block">built around you.</span>
           </h2>
 
           <div className="space-y-3 font-sans text-sm leading-relaxed text-white/85 sm:space-y-4 sm:text-base md:text-lg">

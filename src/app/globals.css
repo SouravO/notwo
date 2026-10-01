@@ -16,8 +16,8 @@
 
   --background: var(--beige);
   --foreground: var(--fake-black);
-  --font-editorial: "DM Sans", Arial, sans-serif;
-  --font-utility: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-editorial: "DM Sans", "Helvetica Neue", sans-serif;
+  --font-utility: "Helvetica Neue", "DM Sans", sans-serif;
 }
 
 @theme inline {
@@ -63,5 +63,26 @@ textarea {
   }
   100% {
     background-position: -200% 0;
+  }
+}
+
+@keyframes product-image-zoom {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.product-showcase-image {
+  animation: product-image-zoom 5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-showcase-image {
+    animation: none;
   }
 }

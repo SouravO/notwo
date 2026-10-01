@@ -3,13 +3,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-// Brand tokens used here: Fake Black (section bg — a contact moment, not a
-// diagnostic one, so it sits in the neutral dark family rather than Dark
-// Azure, which stays reserved for the scan/AI sections), Paper White (the
-// form panel — the palette's light surface), Mirage Blue (input focus
-// accent), Midnight Blue (active label), Sunset Orange (CTA hover — the
-// one high-value activation accent in this section).
-
 export default function Contact() {
   const [status, setStatus] = useState("idle");
 
@@ -23,26 +16,38 @@ export default function Contact() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative scroll-mt-24 overflow-hidden bg-[#1C1C1A] px-6 pt-32 pb-16 sm:px-10 sm:pt-36 sm:pb-20 lg:py-24"
+      className="relative isolate scroll-mt-24 overflow-hidden bg-[#EFEDDE] px-6 pb-16 pt-32 sm:px-10 sm:pb-20 sm:pt-36 lg:flex lg:min-h-[calc(100svh-5rem)] lg:items-center lg:py-28"
     >
-      <div className="pointer-events-none absolute bottom-[-10%] right-[-8%] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,_#8fb6de_0%,_transparent_70%)] opacity-10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-40 top-1/4 -z-10 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(253,73,42,0.08)_0%,transparent_68%)] blur-3xl" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-16 lg:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <h2
-            id="contact-title"
-            className="max-w-md text-4xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-4xl"
-          >
-            Talk to the team behind your formula.
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+        <div className="max-w-xl">
+          <div className="mb-8 flex items-center gap-3 text-[11px] uppercase tracking-[0.28em] text-[#16336F]/75">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FD492A]" />
+            <span>Contact · No Two</span>
+          </div>
+          <h2 id="contact-title" className="max-w-lg font-serif text-4xl font-medium leading-[1.08] tracking-[-0.035em] text-[#1C1C1A] sm:text-5xl lg:text-6xl">
+            A better routine begins with a conversation.
           </h2>
-          <p className="mt-6 max-w-sm text-white/50">
-            Questions about your results, ingredients, or a partnership — we
-            reply within one business day.
+          <p className="mt-6 max-w-md text-base leading-7 text-[#1C1C1A]/70 sm:text-lg sm:leading-8">
+            Questions about your results, ingredients, or a partnership? We’re here to help, and usually reply within one business day.
           </p>
 
-          <div className="mt-12 space-y-3 text-sm text-white/55">
-            <p>hello@notwo.co</p>
-            <p>+1 (415) 555-0142</p>
+          <div className="mt-10 max-w-md border-t border-[#1C1C1A]/15">
+            <a href="mailto:hello@notwo.co" className="group flex items-center justify-between gap-4 border-b border-[#1C1C1A]/15 py-5 text-[#1C1C1A] transition-colors hover:text-[#16336F]">
+              <span>
+                <span className="mb-1 block text-[10px] uppercase tracking-[0.24em] text-[#1C1C1A]/45">Email</span>
+                <span className="text-sm sm:text-base">hello@notwo.co</span>
+              </span>
+              <span aria-hidden="true" className="text-lg text-[#16336F] transition-transform group-hover:translate-x-1">↗</span>
+            </a>
+            <a href="tel:+14155550142" className="group flex items-center justify-between gap-4 border-b border-[#1C1C1A]/15 py-5 text-[#1C1C1A] transition-colors hover:text-[#16336F]">
+              <span>
+                <span className="mb-1 block text-[10px] uppercase tracking-[0.24em] text-[#1C1C1A]/45">Call</span>
+                <span className="text-sm sm:text-base">+1 (415) 555-0142</span>
+              </span>
+              <span aria-hidden="true" className="text-lg text-[#16336F] transition-transform group-hover:translate-x-1">↗</span>
+            </a>
           </div>
         </div>
 
@@ -52,8 +57,16 @@ export default function Contact() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           onSubmit={handleSubmit}
-          className="relative rounded-2xl bg-[#EFEDDE] p-8 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] sm:p-10"
+          className="relative overflow-hidden rounded-[1.75rem] border border-[#1C1C1A]/10 bg-[#1C1C1A] p-7 text-[#EFEDDE] shadow-[0_32px_90px_-32px_rgba(0,0,0,0.35)] sm:p-10 lg:p-12"
         >
+          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-[#16336F]" />
+          <div className="mb-8 flex items-start justify-between gap-4 border-b border-[#EFEDDE]/15 pb-6 sm:mb-10">
+            <div>
+              <p className="mb-2 text-[10px] uppercase tracking-[0.24em] text-[#EFEDDE]/50">Start a conversation</p>
+              <h3 className="font-serif text-2xl font-medium tracking-tight text-[#EFEDDE] sm:text-3xl">Send us a note.</h3>
+            </div>
+            <span className="rounded-full border border-[#EFEDDE]/20 px-3 py-1.5 font-mono text-[10px] tracking-[0.16em] text-[#EFEDDE]/60">01 / 01</span>
+          </div>
           <div className="grid gap-6 sm:grid-cols-2">
             <Field label="Name" name="name" type="text" />
             <Field label="Email" name="email" type="email" />
@@ -65,11 +78,12 @@ export default function Contact() {
           <button
             type="submit"
             disabled={status === "sending"}
-            className="group relative mt-8 w-full overflow-hidden rounded-full bg-[#16336F] py-4 text-sm font-semibold text-[#EFEDDE] transition-transform duration-300 hover:scale-[1.01] disabled:opacity-70"
+            className="group relative mt-8 flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-[#16336F] py-4 text-sm font-semibold text-[#EFEDDE] transition-transform duration-300 hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16336F] disabled:opacity-70"
           >
             <span className="relative z-10">
               {status === "sending" ? "Sending" : status === "sent" ? "Message sent" : "Send message"}
             </span>
+            {status === "idle" && <span aria-hidden="true" className="relative z-10 transition-transform group-hover:translate-x-1">→</span>}
             <span className="absolute inset-0 -translate-x-full bg-[#FD492A]/20 transition-transform duration-500 group-hover:translate-x-0" />
           </button>
         </motion.form>
@@ -90,7 +104,7 @@ function Field({ label, name, type }) {
     onBlur: () => setFocused(false),
     onChange: (e) => setValue(e.target.value),
     className:
-      "peer w-full border-b border-[#0a0a0c]/15 bg-transparent pb-2 pt-6 text-[#0a0a0c] outline-none transition-colors focus:border-[#B0BEE1]",
+      "peer w-full border-b border-[#EFEDDE]/25 bg-transparent pb-2 pt-6 text-[#EFEDDE] outline-none transition-colors focus:border-[#B0BEE1]",
   };
 
   return (
@@ -99,7 +113,7 @@ function Field({ label, name, type }) {
       <label
         htmlFor={name}
         className={`pointer-events-none absolute left-0 transition-all duration-200 ${
-          active ? "top-0 text-xs text-[#16336F]" : "top-6 text-sm text-[#0a0a0c]/40"
+          active ? "top-0 text-xs text-[#B0BEE1]" : "top-6 text-sm text-[#EFEDDE]/45"
         }`}
       >
         {label}

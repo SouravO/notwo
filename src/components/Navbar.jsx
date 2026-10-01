@@ -9,7 +9,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const links = [
   { href: "/#about", label: "About" },
-  { href: "/#products", label: "Services" },
   { href: "/products", label: "Products" },
   { href: "/technology", label: "Technology" },
   { href: "/contact", label: "Contact" },
@@ -25,6 +24,7 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [open, setOpen] = useState(false);
   const [activeHref, setActiveHref] = useState(null);
 
@@ -81,8 +81,19 @@ export default function Navbar() {
   }, [pathname]);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     const updateNavigationState = () => {
-      setScrolled(window.scrollY > 24);
+      const currentScrollY = window.scrollY;
+      setScrolled(currentScrollY > 24);
+
+      if (open || currentScrollY <= 24) {
+        setVisible(true);
+      } else if (currentScrollY > lastScrollY + 6) {
+        setVisible(false);
+      } else if (currentScrollY < lastScrollY - 6) {
+        setVisible(true);
+      }
+      lastScrollY = currentScrollY;
 
       if (routeLinks[pathname]) {
         setActiveHref(routeLinks[pathname]);
@@ -106,7 +117,7 @@ export default function Navbar() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [pathname]);
+  }, [pathname, open]);
 
   useEffect(() => {
     const closeMenu = () => setOpen(false);
@@ -126,7 +137,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500 sm:px-6 ${scrolled ? "py-3" : "py-3 sm:py-6"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500 sm:px-6 ${scrolled ? "py-3" : "py-3 sm:py-6"} ${visible ? "translate-y-0" : "-translate-y-full pointer-events-none"}`}>
       <nav
         aria-label="Main navigation"
         className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border px-4 transition-all duration-500 sm:px-6 lg:px-8 ${
