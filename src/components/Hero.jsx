@@ -28,7 +28,7 @@ const INTRO_PRODUCT_HEIGHTS = { lg: 270, md: 160, sm: 110 };
 const HEADLINE_LINES = ["No two skins", "read the same.", "Neither should", "your routine."];
 const SUBCOPY =
   "Our AI reads what your skin actually needs, then matches formulas built around it. One routine. Yours alone.";
-const CTA_PRIMARY = { label: "Discover your routine", href: "#products" };
+const CTA_PRIMARY = { label: "Discover your routine", href: "/products" };
 
 // STORY TIMING
 const DARK_HOLD = 0.04;
