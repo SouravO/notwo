@@ -46,6 +46,7 @@ const SCALE_FRONT = 1.25;
 // SPOTLIGHT / PODIUM ALIGNMENT (intro only)
 const PODIUM_Y_FRAC = 0.85; // podium top-surface center inside light.png, fraction of image height (0 = top, 1 = bottom)
 const LIGHT_ASPECT_FALLBACK = 1.6; // fallback width/height ratio of light.png
+const LIGHT_WIDTH_FACTOR = 0.9; // slightly narrow the intro spotlight without shifting its podium
 
 // FULL BACKGROUND SILVER (solid, no gradient)
 const SILVER = "#b6bbc0";
@@ -121,7 +122,7 @@ export default function Hero({ isActive = true }) {
       const podiumY = anchor.getBoundingClientRect().top - innerTop + currentRadii.y;
       const height = (podiumY - top) / PODIUM_Y_FRAC;
       const aspect = img && img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : LIGHT_ASPECT_FALLBACK;
-      gsap.set(light, { top, height, width: height * aspect });
+      gsap.set(light, { top, height, width: height * aspect * LIGHT_WIDTH_FACTOR });
     };
 
     // Halo / floor shadow / orbit ring, positioned relative to the orbit anchor

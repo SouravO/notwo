@@ -163,7 +163,6 @@ export default function ProductShowcase() {
           src="/pdtbanner1.png"
           alt="No Two product range"
           fill
-          priority
           sizes="100vw"
           className="object-contain will-change-transform"
         />

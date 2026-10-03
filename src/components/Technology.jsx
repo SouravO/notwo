@@ -314,7 +314,7 @@ export default function Technology() {
 
         gsap.set(root, { autoAlpha: 1 });
         gsap.set(veil, { opacity: 0.65 });
-        gsap.set(img, { scale: 1.03 });
+        gsap.set(img, { scale: 1 });
         gsap.set(par, { yPercent: 2 });
         gsap.set(sheen, { xPercent: -110, opacity: 0 });
         gsap.set(scan, { yPercent: -110, opacity: 0 });
@@ -342,7 +342,7 @@ export default function Technology() {
         tl.to(veil, { opacity: 0, duration: 6.5, ease: "power2.out" }, 0)
           .to(img, { scale: 1, duration: 6.5, ease: "power2.out" }, 0)
           .to(par, { yPercent: -2, duration: 15, ease: "none" }, 0)
-          .to(img, { scale: 1.08, duration: 6, ease: "power2.in" }, 9)
+          .to(img, { scale: 1.04, duration: 6, ease: "power2.in" }, 9)
           .to(sheen, { xPercent: 150, duration: 6, ease: "power2.inOut" }, 2)
           .to(sheen, { opacity: 0.9, duration: 2.4, ease: "sine.out" }, 2)
           .to(sheen, { opacity: 0, duration: 3.6, ease: "sine.in" }, 4.4)
@@ -536,14 +536,14 @@ export default function Technology() {
 
         {/* Opening scene: TechnologyBanner */}
         <div ref={ref("root")} className="absolute inset-0 z-30 overflow-hidden bg-black">
-          <div ref={ref("par")} className="absolute -inset-[4%] will-change-transform">
+          <div ref={ref("par")} className="absolute inset-0 will-change-transform">
             <img
               ref={ref("img")}
               src="/TechnologyBanner.png"
               alt="Skin analysis technology"
               decoding="async"
               draggable={false}
-              className="h-full w-full object-cover will-change-transform"
+              className="h-full w-full object-contain will-change-transform"
               style={{ maskImage: IMG_MASK, WebkitMaskImage: IMG_MASK }}
             />
           </div>

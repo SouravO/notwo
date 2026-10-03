@@ -26,10 +26,14 @@ export default function HeroIntro() {
     const shouldSkipIntro =
       hasSkipParameter || skipForNavigation || introCompletedInDocument;
 
-    if (!shouldSkipIntro) {
-      currentUrl.hash = "";
+    // Returning from another route skips the intro, but must still start the
+    // landing page at the top. Otherwise the previous route's scroll position
+    // can carry over while the landing page's scroll animations initialize.
+    if (!hadSectionHash) {
       window.scrollTo(0, 0);
     }
+
+    if (!shouldSkipIntro) currentUrl.hash = "";
 
     if (hasSkipParameter) {
       currentUrl.searchParams.delete("notwo_skip_intro");

@@ -41,7 +41,8 @@ export default function PromoBannerCarousel() {
                 src={src}
                 alt={`NO TWO skincare promotion ${index + 1}`}
                 fill
-                priority={index === 0}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                fetchPriority={index === 0 ? 'high' : 'auto'}
                 sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) calc(100vw - 3rem), min(1440px, calc(100vw - 4rem))"
                 className="object-contain"
               />
