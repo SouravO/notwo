@@ -7,7 +7,7 @@ import Image from "next/image";
 const PLAY_STORE_URL = "YOUR_PLAY_STORE_URL";
 const IS_PLACEHOLDER_URL = PLAY_STORE_URL === "YOUR_PLAY_STORE_URL";
 
-const HEADING_FONT = "var(--font-editorial)";
+const HEADING_FONT = "var(--font-heading)";
 const BODY_FONT = "var(--font-utility)";
 
 const EASE = "ease-[cubic-bezier(0.22,1,0.36,1)]";
@@ -135,7 +135,7 @@ const AppSection = () => {
       ref={sectionRef}
       id="app"
       aria-labelledby="app-section-heading"
-      className="relative w-full bg-[#EFEDDE] text-[#1C1C1A]"
+      className="relative w-full bg-[#D4D7DA] text-[#1C1C1A]"
       style={{ overflowX: "clip", fontFamily: BODY_FONT }}
     >
       {/* Soft atmospheric light — decorative only */}
@@ -208,7 +208,7 @@ const AppSection = () => {
                     visible ? "opacity-100" : "opacity-0"
                   }`}
                   style={{
-                    fontFamily: HEADING_FONT,
+                    fontFamily: BODY_FONT,
                     transitionDelay: visible ? `${660 + i * 120}ms` : "0ms",
                   }}
                 >

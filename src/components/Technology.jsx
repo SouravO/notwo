@@ -225,7 +225,7 @@ function StageCopy({ s, animated }) {
     <div data-stage className={`w-full ${animated ? "opacity-0" : ""}`}>
       <div style={{ filter: "drop-shadow(0 0 18px rgba(226,232,240,0.2))" }}>
         <h2
-          className="pr-[0.08em] font-serif text-[clamp(2.6rem,12vw,3.5rem)] font-medium italic leading-[1.02] md:text-[clamp(2.75rem,6vw,6rem)]"
+          className="pr-[0.08em] font-display text-[clamp(2.6rem,12vw,3.5rem)] font-medium italic leading-[1.02] md:text-[clamp(2.75rem,6vw,6rem)]"
           style={TITLE_STYLE}
         >
           {s.title}

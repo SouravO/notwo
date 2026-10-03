@@ -340,7 +340,7 @@ export default function Hero({ isActive = true }) {
           <div className="relative z-10">
             <h1
               id="hero-title"
-              className="font-serif text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#1C1C1A] uppercase leading-[1.02]"
+              className="font-display text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#1C1C1A] uppercase leading-[1.02]"
             >
               {HEADLINE_LINES.map((text, i) => (
                 <span key={text} className="block overflow-hidden">
@@ -376,7 +376,7 @@ export default function Hero({ isActive = true }) {
             <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[12%] lg:top-[16%] z-0 flex select-none justify-center">
               <span
                 ref={watermarkRef}
-                className="whitespace-nowrap font-serif font-semibold uppercase leading-none tracking-[-0.06em] text-[22vw] sm:text-[16vw] lg:text-[clamp(120px,11.5vw,190px)]"
+                className="whitespace-nowrap font-display font-semibold uppercase leading-none tracking-[-0.06em] text-[22vw] sm:text-[16vw] lg:text-[clamp(120px,11.5vw,190px)]"
                 style={WATERMARK_STYLE}
               >
                 NO TWO

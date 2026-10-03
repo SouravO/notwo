@@ -244,7 +244,7 @@ export default function MissionVision() {
         <div className="relative flex flex-col items-center text-center">
           <h1
             ref={titleRef}
-            className="font-serif text-4xl font-semibold italic leading-[1.08] tracking-[-0.05em] sm:text-6xl lg:text-7xl"
+            className="font-display text-4xl font-semibold italic leading-[1.08] tracking-[-0.05em] sm:text-6xl lg:text-7xl"
           >
             {/* 
               CRITICAL STRUCTURAL FIX: 
@@ -269,7 +269,7 @@ export default function MissionVision() {
               </span>
             </span>
             <br />
-            <span className="mt-2 block font-serif text-3xl font-semibold italic leading-[1.12] text-[#1C1C1A]/90 sm:text-5xl lg:text-6xl">
+            <span className="mt-2 block font-display text-3xl font-semibold italic leading-[1.12] text-[#1C1C1A]/90 sm:text-5xl lg:text-6xl">
               before you treat it.
             </span>
           </h1>
@@ -329,15 +329,15 @@ export default function MissionVision() {
             <div
               key={card.title}
               data-floating-card
-              className={`w-full z-10 md:absolute ${card.position} md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(239,237,222,0.94)_100%)] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_-2px_rgba(0,0,0,0.10),0_26px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-md transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_-2px_rgba(0,0,0,0.12),0_30px_56px_-28px_rgba(0,0,0,0.55)] sm:p-5`}
+              className={`w-full z-10 md:absolute ${card.position} md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/45 bg-transparent p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.10),0_26px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-2xl backdrop-saturate-150 transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.12),0_30px_56px_-28px_rgba(0,0,0,0.55)] sm:p-5`}
             >
               <div className="mb-3 flex items-center gap-3" aria-hidden="true">
-                <span className="font-mono text-[10px] tracking-[0.3em] text-[#1C1C1A]/45">
+                <span className="font-sans text-[10px] tracking-[0.3em] text-[#1C1C1A]/45">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="h-px flex-1 bg-[#1C1C1A]/15" />
               </div>
-              <h2 className="mb-2 font-serif text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] tracking-[-0.01em] text-[#1C1C1A]">
+              <h2 className="mb-2 font-sans text-[clamp(1.3rem,1.6vw,1.75rem)] font-semibold italic leading-[1.05] tracking-[-0.01em] text-[#1C1C1A]">
                 {card.title}
               </h2>
               <p className="font-sans text-[13px] leading-[1.7] text-[#1C1C1A]/70">

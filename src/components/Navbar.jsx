@@ -137,26 +137,26 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 px-3 transition-all duration-500 sm:px-6 ${scrolled ? "py-3" : "py-3 sm:py-6"} ${visible ? "translate-y-0" : "-translate-y-full pointer-events-none"}`}>
+    <header className={`fixed inset-x-0 top-0 z-50 w-full transition-all duration-500 ${visible ? "translate-y-0" : "-translate-y-full pointer-events-none"}`}>
       <nav
         aria-label="Main navigation"
-        className={`mx-auto flex max-w-7xl items-center justify-between rounded-full border px-4 transition-all duration-500 sm:px-6 lg:px-8 ${
+        className={`flex w-full items-center justify-between border-b px-5 transition-all duration-500 sm:px-8 lg:px-12 ${
           scrolled
-            ? "border-white/15 bg-[#0a0a0c]/80 py-2.5 shadow-[0_12px_40px_-18px_rgba(143,182,222,0.6)] backdrop-blur-2xl"
-            : "border-white/[0.08] bg-[#0a0a0c]/20 py-3 backdrop-blur-md"
+            ? "border-black/10 bg-[#EAECEF] py-2.5 shadow-sm"
+            : "border-black/10 bg-[#EAECEF]/95 py-3 backdrop-blur-md"
         }`}
       >
         <Link
           href="/"
           onClick={() => prepareSectionNavigation("/")}
-          className="group flex items-center gap-1 text-lg font-semibold tracking-tight text-white"
+          className="group flex items-center gap-1 text-lg font-semibold tracking-tight text-[#1C1C1A]"
         >
           <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
-          <span className="ml-0.5 -translate-y-2 text-[10px] text-white/40">™</span>
+          <span className="ml-0.5 -translate-y-2 text-[10px] text-black/40">™</span>
           <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-[#16336F]" />
         </Link>
 
-        <div className="hidden items-center gap-1 text-[13px] font-medium text-white/65 md:flex">
+        <div className="hidden items-center gap-1 text-[13px] font-medium text-[#34383e] md:flex">
           {links.map((link) => {
             const isActive = activeHref === link.href;
             return (
@@ -165,7 +165,7 @@ export default function Navbar() {
                 href={link.href}
                 onClick={(event) => navigateToSection(event, link.href)}
                 aria-current={isActive ? "page" : undefined}
-                className={`group relative isolate rounded-full px-4 py-2.5 transition-colors duration-300 hover:text-white ${isActive ? "text-white" : ""}`}
+                className={`group relative isolate rounded-full px-4 py-2.5 transition-colors duration-300 hover:text-[#16336F] ${isActive ? "text-white hover:text-white" : ""}`}
               >
                 {isActive && (
                   <motion.span
@@ -201,7 +201,7 @@ export default function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
             id="mobile-navigation"
-            className="mx-auto mt-2 max-w-7xl overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a0c]/95 backdrop-blur-xl md:hidden"
+            className="mt-0 w-full overflow-hidden border-b border-black/10 bg-[#EAECEF] md:hidden"
           >
             <div className="flex flex-col gap-1 p-4">
               {links.map((link) => {
@@ -215,7 +215,7 @@ export default function Navbar() {
                       setOpen(false);
                     }}
                     aria-current={isActive ? "page" : undefined}
-                    className={`relative isolate overflow-hidden rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:text-white ${isActive ? "text-white" : "text-white/70"}`}
+                    className={`relative isolate overflow-hidden rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:text-[#16336F] ${isActive ? "text-white hover:text-white" : "text-[#34383e]"}`}
                   >
                     {isActive && (
                       <motion.span

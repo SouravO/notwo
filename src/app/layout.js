@@ -1,5 +1,11 @@
-import { ReactLenis } from "lenis/react";
 import "./globals.css";
+import { DM_Sans } from "next/font/google";
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -8,19 +14,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <ReactLenis
-          root
-          options={{
-            lerp: 0.14,
-            duration: 0.8,
-            smoothWheel: true,
-            syncTouch: false,
-          }}
-        >
-          {children}
-        </ReactLenis>
+        {children}
       </body>
     </html>
   );

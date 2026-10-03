@@ -4,10 +4,10 @@ import Footer from "@/components/Footer";
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-[#08090b]">
+    <main className="min-h-screen bg-[#EAECEF]">
       <Navbar />
       <Contact />
-      <Footer />
+      <Footer light />
     </main>
   );
 }

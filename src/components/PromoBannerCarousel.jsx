@@ -17,12 +17,12 @@ export default function PromoBannerCarousel() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-[#070709] px-4 pb-2 pt-28 sm:px-6 sm:pb-3 sm:pt-32 md:px-8 md:pt-36">
+    <section className="relative overflow-hidden bg-[#EAECEF] px-4 pb-2 pt-28 sm:px-6 sm:pb-3 sm:pt-32 md:px-8 md:pt-36">
       <div className="mx-auto w-full max-w-[1440px]">
         <div
           aria-label="Promotional offers"
           aria-roledescription="carousel"
-          className="relative aspect-[3/1] w-full overflow-hidden rounded-xl bg-[#070709] sm:rounded-2xl"
+          className="relative aspect-[3/1] w-full overflow-hidden rounded-xl bg-[#EAECEF] sm:rounded-2xl"
         >
           {PROMO_BANNERS.map((src, index) => (
             <div
@@ -84,7 +84,7 @@ export default function PromoBannerCarousel() {
                 className={`h-1 rounded-full transition-[width,background-color] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] ${
                   activeBanner === index
                     ? 'w-6 bg-[#16336F]'
-                    : 'w-2 bg-[#EFEDDE]/35 hover:bg-[#EFEDDE]/60'
+                    : 'w-2 bg-[#16336F]/35 hover:bg-[#16336F]/60'
                 }`}
               />
             ))}

@@ -18,12 +18,12 @@ export default function VideoFeedback() {
     <section
       id="feedback"
       aria-labelledby="feedback-title"
-      className="overflow-hidden bg-[linear-gradient(135deg,#07090d_0%,#0b1824_52%,#142b3d_100%)] py-12 text-white sm:py-16 lg:py-20"
+      className="overflow-hidden bg-[#A4A9AE] py-12 text-white sm:py-16 lg:py-20"
     >
       <div className="mx-auto max-w-[1600px]">
         <h2
           id="feedback-title"
-          className="mb-8 px-5 text-center font-serif text-3xl font-medium tracking-wide text-[#f2f5f7] sm:mb-12 sm:text-4xl lg:text-4xl"
+          className="mb-8 px-5 text-center font-display text-3xl font-medium tracking-wide text-[#f2f5f7] sm:mb-12 sm:text-4xl lg:text-4xl"
         >
           Real stories. Real routines.
         </h2>

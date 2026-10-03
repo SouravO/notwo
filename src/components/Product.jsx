@@ -4,12 +4,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import PromoBannerCarousel from './PromoBannerCarousel';
 
-// Reused product assets (placeholders for the 4 new formulas until real images are ready)
-import hydraCreamImg from '@/app/assets/HydraCream.png';
-import purityGelImg from '@/app/assets/PurityGel.png';
-import radianceSerumImg from '@/app/assets/RadianceSerum.png';
-import calmElixirImg from '@/app/assets/calm-elixir.png';
-
 const FORMULAS = [
   {
     id: 'hydra-cream',
@@ -17,7 +11,7 @@ const FORMULAS = [
     category: 'HYDRATION',
     tagline: 'Daily hydration for soft skin.',
     description: 'Deep cellular moisture infusion engineered to replenish lipids and restore natural epidermal barrier function.',
-    image: hydraCreamImg,
+    image: '/showcase1.png',
     badges: ['HYDRATION', '150 ML', 'pH 5.5'],
     accentGlow: 'rgba(203, 213, 225, 0.18)',
   },
@@ -27,7 +21,7 @@ const FORMULAS = [
     category: 'CLEANSING',
     tagline: 'Gentle daily cleanser for all skin types.',
     description: 'A micro-foaming pH-balanced formulation that clarifies impurities without stripping vital cellular moisture.',
-    image: purityGelImg,
+    image: '/showcase2.png',
     badges: ['CLEANSING', '120 ML', 'AMINO ACID'],
     accentGlow: 'rgba(22, 51, 111, 0.18)',
   },
@@ -37,7 +31,7 @@ const FORMULAS = [
     category: 'BRIGHTENING',
     tagline: 'Brightening serum with niacinamide.',
     description: 'High-potency bioactive elixir engineered to equalize skin tone, diffuse hyperpigmentation, and amplify natural glow.',
-    image: radianceSerumImg,
+    image: '/showcase3.png',
     badges: ['BRIGHTENING', '100 ML', '10% NIACINAMIDE'],
     accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
@@ -47,7 +41,7 @@ const FORMULAS = [
     category: 'CALMING',
     tagline: 'Soothing care for sensitive skin.',
     description: 'Intense soothing concentrate that rapidly reduces redness, calms inflammatory response, and reinforces reactive skin.',
-    image: calmElixirImg,
+    image: '/showcase4.png',
     badges: ['CALMING', '50 ML', 'BISABOLOL'],
     accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
@@ -57,7 +51,7 @@ const FORMULAS = [
     category: 'NIGHT CARE',
     tagline: 'Overnight lipid replenishment.',
     description: "A silicone-free facial oil that seals overnight moisture loss and reinforces the skin's natural lipid matrix while you sleep.",
-    image: hydraCreamImg,
+    image: '/showcase1.png',
     badges: ['NIGHT CARE', '30 ML', 'CERAMIDE'],
     accentGlow: 'rgba(203, 213, 225, 0.18)',
   },
@@ -67,7 +61,7 @@ const FORMULAS = [
     category: 'TONING',
     tagline: 'Micro-exfoliating toner for texture.',
     description: 'A low-pH toning solution that lifts residue and visibly refines pore appearance without disrupting the acid mantle.',
-    image: purityGelImg,
+    image: '/showcase2.png',
     badges: ['TONING', '200 ML', 'PHA'],
     accentGlow: 'rgba(22, 51, 111, 0.18)',
   },
@@ -77,7 +71,7 @@ const FORMULAS = [
     category: 'REPAIR',
     tagline: 'Intensive recovery while you sleep.',
     description: 'A wash-off overnight treatment concentrated with peptides to accelerate visible recovery from environmental stress.',
-    image: radianceSerumImg,
+    image: '/showcase3.png',
     badges: ['REPAIR', '75 ML', 'PEPTIDE'],
     accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
@@ -87,7 +81,7 @@ const FORMULAS = [
     category: 'EYE CARE',
     tagline: 'Targeted care for the eye contour.',
     description: 'A cooling, fast-absorbing complex engineered for the thinnest skin on the face — de-puffing, firming, brightening.',
-    image: calmElixirImg,
+    image: '/showcase4.png',
     badges: ['EYE CARE', '15 ML', 'CAFFEINE'],
     accentGlow: 'rgba(22, 51, 111, 0.2)',
   },
@@ -104,14 +98,14 @@ export default function Product() {
       : FORMULAS.filter((f) => f.category === activeCategory);
 
   return (
-    <main className="bg-[#070709] text-white">
+    <main className="bg-[#EAECEF] text-[#1C1C1A]">
       <PromoBannerCarousel />
 
       {/* FORMULATION CATALOG */}
-      <section className="relative w-full bg-[#070709] px-4 pt-4 pb-12 text-white sm:px-6 sm:pt-6 md:px-16 md:pt-12 md:pb-20">
+      <section className="relative w-full bg-[#EAECEF] px-4 pt-4 pb-12 text-[#1C1C1A] sm:px-6 sm:pt-6 md:px-16 md:pt-12 md:pb-20">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-end justify-between mb-12 md:mb-16 border-b border-white/10 pb-6">
-            <h2 className="font-serif text-3xl font-medium tracking-tight text-white md:text-4xl">
+          <div className="flex items-end justify-between mb-12 md:mb-16 border-b border-black/10 pb-6">
+            <h2 className="font-display text-3xl font-medium tracking-tight text-[#1C1C1A] md:text-4xl">
               Shop By Category
             </h2>
           </div>
@@ -126,10 +120,10 @@ export default function Product() {
                   type="button"
                   onClick={() => setActiveCategory(cat)}
                   aria-pressed={isActive}
-                  className={`px-4 py-2 text-[10px] font-mono tracking-[0.2em] uppercase border transition-colors duration-300 ${
+                  className={`px-4 py-2 text-[10px] font-sans tracking-[0.2em] uppercase border transition-colors duration-300 ${
                     isActive
                       ? 'bg-[#16336F] text-[#EFEDDE] border-[#16336F]'
-                      : 'border-[#16336F]/50 text-slate-400 hover:text-white hover:border-[#16336F]'
+                      : 'border-[#16336F]/50 text-slate-600 hover:text-[#16336F] hover:border-[#16336F]'
                   }`}
                 >
                   {cat}
@@ -144,14 +138,14 @@ export default function Product() {
               {filteredFormulas.map((f) => (
                 <div
                   key={f.id}
-                  className="group relative bg-transparent p-6 md:p-8 flex flex-col overflow-hidden hover:bg-black/[0.04] transition-colors duration-500"
+                  className="group relative bg-[#F1F3F5]/90 p-6 md:p-8 flex flex-col overflow-hidden hover:bg-[#F8F9FA] transition-colors duration-500"
                 >
                   <div
                     className="absolute -inset-10 rounded-full blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10"
                     style={{ background: f.accentGlow }}
                   />
 
-                  <div className="relative w-full aspect-square mb-6">
+                  <div className="relative w-full aspect-[2/3] mb-6">
                     <Image
                       src={f.image}
                       alt={f.name}
@@ -161,7 +155,7 @@ export default function Product() {
                     />
                   </div>
 
-                  <h3 className="text-lg md:text-xl font-light tracking-wide text-[#1C1C1A] mb-2">
+                  <h3 className="font-sans text-lg md:text-xl font-light tracking-wide text-[#1C1C1A] mb-2">
                     {f.name}
                   </h3>
                   <p className="text-xs text-[#30343a] font-light leading-relaxed mb-4 flex-1">
@@ -183,7 +177,7 @@ export default function Product() {
               ))}
             </div>
           ) : (
-            <div className="py-20 text-center text-xs font-mono tracking-widest uppercase text-slate-500 border border-white/10">
+            <div className="py-20 text-center text-xs font-sans tracking-widest uppercase text-slate-500 border border-black/10">
               No formulas in this category yet.
             </div>
           )}
