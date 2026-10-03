@@ -222,6 +222,7 @@ export default function ProductShowcase() {
                     src={p.image}
                     alt={p.name}
                     fill
+                    unoptimized
                     sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 25vw"
                     className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                   />

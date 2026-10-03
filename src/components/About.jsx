@@ -329,7 +329,7 @@ export default function MissionVision() {
             <div
               key={card.title}
               data-floating-card
-              className={`w-full z-10 md:absolute ${card.position} md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/45 bg-transparent p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.10),0_26px_50px_-28px_rgba(0,0,0,0.45)] backdrop-blur-2xl backdrop-saturate-150 transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.12),0_30px_56px_-28px_rgba(0,0,0,0.55)] sm:p-5`}
+              className={`w-full z-10 md:absolute ${card.position} md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/55 bg-white/[0.06] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_0_0_1px_rgba(255,255,255,0.06),0_2px_6px_-2px_rgba(0,0,0,0.08),0_26px_50px_-28px_rgba(0,0,0,0.32)] backdrop-blur-md backdrop-saturate-125 transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.1),0_30px_56px_-28px_rgba(0,0,0,0.4)] sm:p-5`}
             >
               <div className="mb-3 flex items-center gap-3" aria-hidden="true">
                 <span className="font-sans text-[10px] tracking-[0.3em] text-[#1C1C1A]/45">

@@ -168,29 +168,6 @@ export default function BrandStory() {
                   ))}
                 </div>
 
-                <a
-                  href={block.cta.href}
-                  className="group/cta mt-9 inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest text-[#0A0A0A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#16336F]"
-                >
-                  {block.cta.label}
-                  <span
-                    aria-hidden="true"
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-[#16336F]/45 text-[#16336F] transition-colors duration-300 group-hover/cta:border-[#16336F] group-hover/cta:bg-[#16336F] group-hover/cta:text-[#EFEDDE]"
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M4 12h16M13.5 5.5L20 12l-6.5 6.5" />
-                    </svg>
-                  </span>
-                </a>
               </div>
             </div>
           </article>

@@ -3,6 +3,15 @@
 import { useRef } from "react";
 
 const VIDEOS = Array.from({ length: 7 }, (_, index) => index + 1);
+const VIDEO_WIDTHS = [
+  "w-[58vw] sm:w-[32vw] lg:w-[15vw]",
+  "w-[63vw] sm:w-[36vw] lg:w-[18vw]",
+  "w-[68vw] sm:w-[40vw] lg:w-[21vw]",
+  "w-[72vw] sm:w-[44vw] lg:w-[24vw]",
+  "w-[63vw] sm:w-[36vw] lg:w-[18vw]",
+  "w-[58vw] sm:w-[32vw] lg:w-[15vw]",
+  "w-[68vw] sm:w-[40vw] lg:w-[21vw]",
+];
 
 export default function VideoFeedback() {
   const railRef = useRef(null);
@@ -36,11 +45,13 @@ export default function VideoFeedback() {
             <div
               key={video}
               data-video-card
-              className="w-[72vw] max-w-[320px] shrink-0 snap-start overflow-hidden rounded-xl border border-white/10 bg-[#080d13] shadow-[0_20px_55px_-30px_rgba(0,0,0,0.9)] sm:w-[42vw] md:w-[30vw] lg:w-[22vw]"
+              className={`${VIDEO_WIDTHS[video - 1]} h-[min(62svh,680px)] max-w-[420px] shrink-0 snap-start overflow-hidden rounded-xl border border-white/10 bg-[#080d13] shadow-[0_20px_55px_-30px_rgba(0,0,0,0.9)]`}
             >
               <video
-                className="aspect-[9/16] h-auto w-full object-cover"
-                controls
+                className="block h-full w-full object-cover"
+                autoPlay
+                muted
+                loop
                 playsInline
                 preload="auto"
                 aria-label={`Customer feedback video ${video}`}

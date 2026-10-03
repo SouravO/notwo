@@ -150,6 +150,7 @@ export default function Product() {
                       src={f.image}
                       alt={f.name}
                       fill
+                      unoptimized
                       sizes="(max-width: 768px) 45vw, 22vw"
                       className="object-contain transition-transform duration-700 group-hover:scale-105 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"
                     />

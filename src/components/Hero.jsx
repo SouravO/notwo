@@ -34,6 +34,8 @@ const CTA_PRIMARY = { label: "Discover your routine", href: "/products" };
 const DARK_HOLD = 0.04;
 const PRODUCT_GAP = 0.35;
 const CENTER_SPIN_TIME = 1.9;
+const TRAVEL_DURATION = 1.6; // products rise + silver reveal
+const MOBILE_TEXT_START = 0.7; // mobile: hero text appears when the products are this far (0–1) through their rise, i.e. as they reach the top
 
 // PRODUCT SPIN SPEED (lower = faster)
 const ORBIT_STEP = 0.8; // seconds a bottle takes to rotate to the next position
@@ -48,6 +50,10 @@ const PODIUM_Y_FRAC = 0.85; // podium top-surface center inside light.png, fract
 const LIGHT_ASPECT_FALLBACK = 1.6; // fallback width/height ratio of light.png
 const LIGHT_WIDTH_FACTOR = 0.9; // slightly narrow the intro spotlight without shifting its podium
 
+// MOBILE INTRO (screens up to 767px wide only — desktop and tablet landscape are untouched)
+const MOBILE_PODIUM_FRAC = 0.74; // during the intro the podium sits this far down the screen, so the spotlight covers ~70–80% of it from the top
+const MOBILE_INTRO_PRODUCT_BOOST = 1.2; // intro product size multiplier on mobile, keeps the bottle in proportion with the taller spotlight/podium
+
 // FULL BACKGROUND SILVER (solid, no gradient)
 const SILVER = "#b6bbc0";
 
@@ -55,7 +61,7 @@ const SILVER = "#b6bbc0";
 const GRAIN =
   "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")";
 
-const CSS = `@keyframes scrollCue{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}@keyframes floatDust{0%{transform:translate(0,0) scale(var(--s));opacity:0}30%,70%{opacity:var(--o)}100%{transform:translate(var(--tx),var(--ty)) scale(var(--s));opacity:0}}`;
+const CSS = `@keyframes scrollCue{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}@keyframes floatDust{0%{transform:translate(0,0) scale(var(--s));opacity:0}30%,70%{opacity:var(--o)}100%{transform:translate(var(--tx),var(--ty)) scale(var(--s));opacity:0}}@keyframes heroNavIn{from{opacity:0}to{opacity:1}}body:has([data-hero-intro="pending"]) :is([data-navbar],body>header,body>nav){visibility:hidden!important;opacity:0!important;pointer-events:none!important}@media (prefers-reduced-motion:no-preference){body:has([data-hero-intro="done"]) :is([data-navbar],body>header,body>nav){animation:heroNavIn .7s ease backwards}}`;
 
 const HIDDEN = { opacity: 0 };
 const mask = (v) => ({ maskImage: v, WebkitMaskImage: v });
@@ -94,11 +100,24 @@ export default function Hero({ isActive = true }) {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  // Safety net: if the intro never completes for any reason, still show the navbar after a while
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const el = sectionRef.current;
+      if (el && el.dataset.heroIntro === "pending") el.dataset.heroIntro = "done";
+    }, 12000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   useLayoutEffect(() => {
     if (!isActive) return;
 
     const mediaQueries = gsap.matchMedia(sectionRef);
     const stageRightShift = window.matchMedia("(min-width: 1024px)").matches ? 48 : 0;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const isMobileNow = () => window.matchMedia("(max-width: 767px)").matches;
+    // How far the stage ends up above its natural position on mobile once the intro is over (unchanged behaviour)
+    const mobileLift = isMobile ? Math.min(window.innerHeight * 0.1, 120) : 0;
     const orbit = { rotation: 90 };
     const orbitStep = 360 / PRODUCTS.length;
     const global = { alpha: 1 };
@@ -152,7 +171,12 @@ export default function Hero({ isActive = true }) {
       "(min-width: 640px) and (max-width: 1023px)": [160, 40, "md"],
       "(max-width: 639px)": [95, 25, "sm"],
     }).forEach(([query, [x, y, key]]) =>
-      mediaQueries.add(query, () => { currentRadii = { x, y }; introH = INTRO_PRODUCT_HEIGHTS[key]; layoutAll(); })
+      mediaQueries.add(query, () => {
+        currentRadii = { x, y };
+        // Mobile only: a slightly bigger intro bottle, so it stays in proportion with the taller spotlight
+        introH = INTRO_PRODUCT_HEIGHTS[key] * (isMobileNow() ? MOBILE_INTRO_PRODUCT_BOOST : 1);
+        layoutAll();
+      })
     );
 
     layoutAll();
@@ -219,13 +243,14 @@ export default function Hero({ isActive = true }) {
       introGrown = true; // no intro: show the final (big) product size
       sizeFactor.v = 1;
       renderOrbit();
-      gsap.set(stageRef.current, { x: stageRightShift });
+      gsap.set(stageRef.current, { x: stageRightShift, y: 0 });
       gsap.set(bgRef.current, { opacity: 1 });
       gsap.set(spotlightRef.current, { opacity: 0 }); // final state: spotlight is gone, only products remain
       gsap.set(getDecor(), { opacity: 1 });
       gsap.set(copyGlowRef.current, { opacity: 1, clipPath: "circle(150% at 30% 50%)" });
       gsap.set(lineRefs.current, { yPercent: 0, opacity: 1 });
       gsap.set(fadeRefs.current, { opacity: 1, y: 0 });
+      if (sectionRef.current) sectionRef.current.dataset.heroIntro = "done"; // no intro: navbar shows right away
     });
 
     // --- CINEMATIC STORY MOTION ---
@@ -233,16 +258,27 @@ export default function Hero({ isActive = true }) {
       const stage = stageRef.current, section = sectionRef.current, decor = getDecor();
       const spot = spotlightRef.current;
 
-      gsap.set(stage, { x: 0 });
+      gsap.set(stage, { x: 0, y: 0 });
       const stageBox = stage.getBoundingClientRect();
       const sectionBox = section.getBoundingClientRect();
       const centerOffset = sectionBox.left + sectionBox.width / 2 - (stageBox.left + stageBox.width / 2);
+
+      // Mobile intro: the stage starts lower, so the podium (and the spotlight above it) reaches
+      // MOBILE_PODIUM_FRAC of the screen height instead of leaving the lower half empty.
+      // It rises back to its final spot during the "travel" step together with the silver reveal.
+      // Desktop / tablet keep introY = 0, exactly as before.
+      let introY = mobileLift;
+      if (isMobile && anchorRef.current) {
+        const viewH = Math.min(window.innerHeight, sectionBox.height);
+        const naturalPodiumY = anchorRef.current.getBoundingClientRect().top - sectionBox.top + currentRadii.y;
+        introY = Math.max(mobileLift, MOBILE_PODIUM_FRAC * viewH - naturalPodiumY);
+      }
 
       // Intro: products start at the smaller size
       introGrown = false;
       sizeFactor.v = introRatio;
 
-      gsap.set(stage, { x: centerOffset });
+      gsap.set(stage, { x: centerOffset, y: introY });
       gsap.set(bgRef.current, { opacity: 0 });
       gsap.set(spot, { opacity: 0, clipPath: "inset(0% 0% 100% 0%)" });
       gsap.set(copyGlowRef.current, { opacity: 0, clipPath: "circle(0% at 30% 50%)" });
@@ -250,6 +286,10 @@ export default function Hero({ isActive = true }) {
       gsap.set(lineRefs.current, { yPercent: 110, opacity: 0 });
       gsap.set(fadeRefs.current, { opacity: 0, y: 16 });
       gsap.set(reveals, { v: 0 });
+
+      // Re-measure now that the stage sits at its intro position, so the spotlight is sized for it
+      // before it appears (otherwise it could first show at the old size and then jump).
+      layoutAll();
 
       // Continuous fast spin: short hold with a bottle in front, then a quick step to the next one
       orbitTlRef.current = gsap.timeline({ paused: true, repeat: -1, onUpdate: renderOrbit });
@@ -262,6 +302,21 @@ export default function Hero({ isActive = true }) {
 
       orbit.rotation = 90;
       renderOrbit();
+
+      // Text reveal timing. Desktop: unchanged (starts with the travel). Mobile: the products rise from the
+      // bottom, and the headline, copy and button appear right as they reach the top (a quick reveal, so
+      // the text never lingers behind the moving products).
+      const linesAt = isMobile ? `travel+=${(TRAVEL_DURATION * MOBILE_TEXT_START).toFixed(2)}` : "travel";
+      const fadesAt = isMobile ? `travel+=${(TRAVEL_DURATION * MOBILE_TEXT_START + 0.15).toFixed(2)}` : "travel+=0.5";
+      const linesVars = isMobile
+        ? { duration: 0.6, stagger: 0.09 }
+        : { duration: 0.9, stagger: 0.14 };
+      const fadesVars = isMobile
+        ? { duration: 0.5, stagger: 0.1 }
+        : { duration: 0.8, stagger: 0.15 };
+
+      // The navbar stays hidden (see CSS) until the hero reveals; this is flipped to "done" with the text
+      section.dataset.heroIntro = "pending";
 
       gsap.timeline()
         .to({}, { duration: DARK_HOLD })
@@ -285,9 +340,14 @@ export default function Hero({ isActive = true }) {
         .to({}, { duration: CENTER_SPIN_TIME })
         .addLabel("travel")
         .add(() => { introGrown = true; }, "travel")
-        .to(stage, { x: stageRightShift, duration: 1.6, ease: "power3.inOut" }, "travel")
+        .to(stage, {
+          x: stageRightShift,
+          y: mobileLift ? -mobileLift : 0,
+          duration: TRAVEL_DURATION,
+          ease: "power3.inOut",
+        }, "travel")
         // Products GROW from the intro size to the big display size with the silver reveal
-        .to(sizeFactor, { v: 1, duration: 1.6, ease: "power3.inOut", onUpdate: renderOrbit }, "travel")
+        .to(sizeFactor, { v: 1, duration: TRAVEL_DURATION, ease: "power3.inOut", onUpdate: renderOrbit }, "travel")
         // Spotlight DISAPPEARS: flickers off, then retracts upward and fades out
         .to(spot, {
           keyframes: [
@@ -299,11 +359,13 @@ export default function Hero({ isActive = true }) {
         }, "travel")
         .fromTo(spot, { clipPath: "inset(0% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 100% 0%)", duration: 0.7, ease: "power3.in", immediateRender: false }, "travel+=0.1")
         // Full screen solid silver reveal
-        .to(copyGlowRef.current, { opacity: 1, clipPath: "circle(150% at 30% 50%)", duration: 1.6, ease: "power2.inOut" }, "travel")
+        .to(copyGlowRef.current, { opacity: 1, clipPath: "circle(150% at 30% 50%)", duration: TRAVEL_DURATION, ease: "power2.inOut" }, "travel")
         // Depth decor (watermark, halo, floor shadow, orbit ring) fades in with the silver
         .to(decor, { opacity: 1, duration: 1.4, stagger: 0.12, ease: "power2.out" }, "travel+=0.2")
-        .to(lineRefs.current, { yPercent: 0, opacity: 1, duration: 0.9, stagger: 0.14, ease: "power3.out" }, "travel")
-        .to(fadeRefs.current, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" }, "travel+=0.5");
+        .to(lineRefs.current, { yPercent: 0, opacity: 1, ...linesVars, ease: "power3.out" }, linesAt)
+        .to(fadeRefs.current, { opacity: 1, y: 0, ...fadesVars, ease: "power2.out" }, fadesAt)
+        // Hero is revealed: now the navbar may appear
+        .add(() => { section.dataset.heroIntro = "done"; }, linesAt);
     });
 
     return () => {
@@ -319,7 +381,11 @@ export default function Hero({ isActive = true }) {
     <section
       ref={sectionRef}
       aria-labelledby="hero-title"
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#030304] px-4 py-6 sm:py-12 sm:px-10 lg:py-0"
+      data-hero-intro="pending"
+      // Mobile: extra top padding (and pb-12 on the text block below) leaves room for the text block's
+      // translate-y-12, so the button can never be clipped on short screens. The group stays centered
+      // exactly as before whenever the screen is tall enough.
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[#030304] px-4 pt-[4.5rem] pb-6 sm:py-12 sm:px-10 lg:py-0"
     >
       <style>{CSS}</style>
 
@@ -336,11 +402,12 @@ export default function Hero({ isActive = true }) {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-4 sm:gap-8 lg:gap-8 lg:min-h-[60vh]">
         {/* LEFT: HERO TEXT */}
-        <div className="relative w-full translate-y-12 sm:translate-y-0 lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
+        <div className="relative w-full translate-y-12 pb-12 sm:translate-y-0 sm:pb-0 lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
           <div className="relative z-10">
+            {/* Mobile: size follows the screen width so the longest (no-wrap) line always fits; sm and up unchanged */}
             <h1
               id="hero-title"
-              className="font-display text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#1C1C1A] uppercase leading-[1.02]"
+              className="font-display text-[min(2.4rem,calc((100vw_-_2rem)/9))] sm:text-[clamp(2.4rem,5.5vw,3.75rem)] font-normal italic tracking-[-0.02em] text-[#1C1C1A] uppercase leading-[1.02]"
             >
               {HEADLINE_LINES.map((text, i) => (
                 <span key={text} className="block overflow-hidden">
@@ -416,7 +483,7 @@ export default function Hero({ isActive = true }) {
 
             {/* ORBIT STAGE */}
             <div className="absolute inset-0 z-10 cursor-default">
-              <div ref={anchorRef} className="absolute top-[76%] sm:top-[82%] lg:top-[84%] left-1/2 w-0 h-0">
+              <div ref={anchorRef} className="absolute top-[82%] sm:top-[88%] lg:top-[90%] left-1/2 w-0 h-0">
                 {/* Soft backlight halo behind the front bottle */}
                 <div
                   ref={haloRef}
