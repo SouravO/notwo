@@ -142,7 +142,7 @@ export default function Navbar() {
         aria-label="Main navigation"
         className={`flex w-full items-center justify-between border-b px-5 transition-all duration-500 sm:px-8 lg:px-12 ${
           scrolled
-            ? "border-black/10 bg-transparent py-2.5 shadow-sm md:bg-[#EAECEF]"
+            ? "border-black/10 bg-[#EAECEF]/95 py-2.5 shadow-sm backdrop-blur-md"
             : "border-black/10 bg-transparent py-3 backdrop-blur-none md:bg-[#EAECEF]/95 md:backdrop-blur-md"
         }`}
       >
