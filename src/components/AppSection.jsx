@@ -31,9 +31,45 @@ const FEATURES = [
   },
 ];
 
+const PhoneVisual = ({ containerClassName, visual, parallaxRef }) => (
+  <div
+    className={`relative -mx-3 sm:mx-0 lg:w-[116%] lg:max-w-none ${containerClassName} ${visual.className}`}
+    style={visual.style}
+  >
+    <div ref={parallaxRef} className="relative will-change-transform">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[100%] w-[100%] -translate-x-1/2 -translate-y-1/2"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(176,190,225,0.42) 0%, rgba(176,190,225,0) 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[3%] left-1/2 h-[18%] w-[72%] -translate-x-1/2"
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(28,28,26,0.12) 0%, rgba(28,28,26,0) 100%)",
+        }}
+      />
+      <Image
+        src="/mobile.png"
+        alt="The NO TWO mobile app shown on two phone screens"
+        width={1600}
+        height={1600}
+        sizes="(min-width: 1024px) 66vw, 100vw"
+        className="relative z-10 block"
+        style={{ width: "100%", height: "auto" }}
+      />
+    </div>
+  </div>
+);
+
 const AppSection = () => {
   const sectionRef = useRef(null);
-  const parallaxRef = useRef(null);
+  const mobileParallaxRef = useRef(null);
+  const desktopParallaxRef = useRef(null);
   const [visible, setVisible] = useState(false);
 
   // Reveal once when the section enters the viewport.
@@ -67,8 +103,8 @@ const AppSection = () => {
   // Very gentle scroll-linked drift on the phone image (no looping motion).
   useEffect(() => {
     const section = sectionRef.current;
-    const target = parallaxRef.current;
-    if (!section || !target) return;
+    const targets = [mobileParallaxRef.current, desktopParallaxRef.current].filter(Boolean);
+    if (!section || !targets.length) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let frame = null;
@@ -83,7 +119,9 @@ const AppSection = () => {
       );
       const amplitude = window.innerWidth >= 1024 ? 44 : 18;
       const offset = (0.5 - progress) * amplitude;
-      target.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
+      targets.forEach((target) => {
+        target.style.transform = `translate3d(0, ${offset.toFixed(1)}px, 0)`;
+      });
     };
 
     const onScroll = () => {
@@ -159,6 +197,12 @@ const AppSection = () => {
             {headingLine("Your skin,", 0)}
             {headingLine("understood.", 140)}
           </h2>
+
+          <PhoneVisual
+            containerClassName="mt-6 mb-6 lg:hidden"
+            visual={visual}
+            parallaxRef={mobileParallaxRef}
+          />
 
           <div className={`mt-9 max-w-[32rem] ${sub.className}`} style={sub.style}>
             <p
@@ -258,41 +302,12 @@ const AppSection = () => {
         </div>
 
         {/* Right: phone visual, extending past its column on desktop */}
-        <div className="relative lg:col-span-7">
-          <div
-            className={`relative -mx-3 sm:mx-0 lg:w-[116%] lg:max-w-none ${visual.className}`}
-            style={visual.style}
-          >
-            <div ref={parallaxRef} className="relative will-change-transform">
-              {/* Soft depth behind the phones — separate layers, image untouched */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-1/2 h-[100%] w-[100%] -translate-x-1/2 -translate-y-1/2"
-                style={{
-                  background:
-                    "radial-gradient(closest-side, rgba(176,190,225,0.42) 0%, rgba(176,190,225,0) 100%)",
-                }}
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute bottom-[3%] left-1/2 h-[18%] w-[72%] -translate-x-1/2"
-                style={{
-                  background:
-                    "radial-gradient(closest-side, rgba(28,28,26,0.12) 0%, rgba(28,28,26,0) 100%)",
-                }}
-              />
-
-              <Image
-                src="/mobile.png"
-                alt="The NO TWO mobile app shown on two phone screens"
-                width={1600}
-                height={1600}
-                sizes="(min-width: 1024px) 66vw, 100vw"
-                className="relative z-10 block"
-                style={{ width: "100%", height: "auto" }}
-              />
-            </div>
-          </div>
+        <div className="relative hidden lg:col-span-7 lg:block">
+          <PhoneVisual
+            containerClassName=""
+            visual={visual}
+            parallaxRef={desktopParallaxRef}
+          />
         </div>
       </div>
     </section>
