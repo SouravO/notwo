@@ -144,7 +144,7 @@ export default function Navbar() {
         className={`flex w-full items-center justify-between border-b px-5 transition-all duration-500 sm:px-8 lg:px-12 ${
           scrolled
             ? "border-black/10 bg-[#b6bbc0]/95 py-2.5 shadow-sm backdrop-blur-md"
-            : "border-black/10 bg-transparent py-3 backdrop-blur-none md:bg-[#b6bbc0]/95 md:backdrop-blur-md"
+            : "border-black/10 bg-[#b6bbc0]/95 py-3 backdrop-blur-md"
         }`}
       >
         <Link

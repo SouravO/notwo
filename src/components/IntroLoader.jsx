@@ -56,12 +56,12 @@ export default function IntroLoader({ onComplete }) {
     >
       {/* Centered Brand Title */}
       <div className="relative z-10 flex flex-col items-center">
-        <h1
+        <img
           ref={textRef}
-          className="font-display text-5xl sm:text-7xl md:text-8xl font-black tracking-[0.35em] text-[#1C1C1A] uppercase pl-[0.35em] drop-shadow-sm"
-        >
-          NOTWO
-        </h1>
+          src="/logo.png"
+          alt="NO TWO"
+          className="h-auto w-64 sm:w-80 md:w-96 drop-shadow-sm"
+        />
       </div>
     </div>
   );
