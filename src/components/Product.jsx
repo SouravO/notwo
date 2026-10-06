@@ -135,7 +135,7 @@ export default function Product() {
           {/* Hairline-divided grid — sharp edges, no rounded cards */}
           {filteredFormulas.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-black/15 bg-[linear-gradient(135deg,#34373b_0%,#74797f_24%,#b6bbc0_48%,#70757b_72%,#393c40_100%)]">
-              {filteredFormulas.map((f) => (
+              {filteredFormulas.map((f, index) => (
                 <div
                   key={f.id}
                   className="group relative bg-[#F1F3F5]/90 p-6 md:p-8 flex flex-col overflow-hidden hover:bg-[#F8F9FA] transition-colors duration-500"
@@ -150,6 +150,7 @@ export default function Product() {
                       src={f.image}
                       alt={f.name}
                       fill
+                      loading={index === 0 ? 'eager' : 'lazy'}
                       unoptimized
                       sizes="(max-width: 768px) 45vw, 22vw"
                       className="object-contain transition-transform duration-700 group-hover:scale-105 drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)]"

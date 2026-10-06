@@ -209,7 +209,7 @@ export default function ProductShowcase() {
           onScroll={updateArrows}
           className="-mx-6 flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto px-6 pb-6 md:-mx-16 md:px-16 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          {PRODUCTS.map((p) => (
+          {PRODUCTS.map((p, index) => (
             <article
               key={p.id}
               data-card
@@ -222,6 +222,7 @@ export default function ProductShowcase() {
                     src={p.image}
                     alt={p.name}
                     fill
+                    loading={index === 0 ? "eager" : "lazy"}
                     unoptimized
                     sizes="(max-width: 640px) 80vw, (max-width: 1024px) 45vw, 25vw"
                     className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
