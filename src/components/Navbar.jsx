@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -142,8 +143,8 @@ export default function Navbar() {
         aria-label="Main navigation"
         className={`flex w-full items-center justify-between border-b px-5 transition-all duration-500 sm:px-8 lg:px-12 ${
           scrolled
-            ? "border-black/10 bg-[#EAECEF]/95 py-2.5 shadow-sm backdrop-blur-md"
-            : "border-black/10 bg-transparent py-3 backdrop-blur-none md:bg-[#EAECEF]/95 md:backdrop-blur-md"
+            ? "border-black/10 bg-[#b6bbc0]/95 py-2.5 shadow-sm backdrop-blur-md"
+            : "border-black/10 bg-transparent py-3 backdrop-blur-none md:bg-[#b6bbc0]/95 md:backdrop-blur-md"
         }`}
       >
         <Link
@@ -151,7 +152,14 @@ export default function Navbar() {
           onClick={() => prepareSectionNavigation("/")}
           className="group flex items-center gap-1 text-lg font-semibold tracking-tight text-[#1C1C1A]"
         >
-          <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
+          <Image
+            src="/logo.png"
+            alt="NO TWO"
+            width={1742}
+            height={353}
+            unoptimized
+            className="h-[18px] w-auto transition-opacity group-hover:opacity-75"
+          />
         </Link>
 
         <div className="hidden items-center gap-1 text-[13px] font-medium text-[#34383e] md:flex">

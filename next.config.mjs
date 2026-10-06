@@ -38,6 +38,9 @@ const nextConfig = {
         pathname: "/brand.png",
       },
       {
+        pathname: "/logo.png",
+      },
+      {
         pathname: "/pdt*.png",
       },
       {
