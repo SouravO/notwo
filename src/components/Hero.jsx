@@ -123,7 +123,7 @@ export default function Hero({ isActive = true }) {
     const global = { alpha: 1 };
     const reveals = PRODUCTS.map(() => ({ v: 1 }));
     const sizeFactor = { v: 1 }; // products start at intro size and grow to 1 after the silver reveal
-    let currentRadii = { x: 250, y: 58 };
+    let currentRadii = { x: 310, y: 58 };
     let activeIdx = -1;
     let introH = INTRO_PRODUCT_HEIGHTS.lg;
     let introRatio = 1;
@@ -167,9 +167,9 @@ export default function Hero({ isActive = true }) {
     layoutLightRef.current = layoutAll;
 
     Object.entries({
-      "(min-width: 1024px)": [250, 58, "lg"],
-      "(min-width: 640px) and (max-width: 1023px)": [160, 40, "md"],
-      "(max-width: 639px)": [95, 25, "sm"],
+      "(min-width: 1024px)": [310, 58, "lg"],
+      "(min-width: 640px) and (max-width: 1023px)": [200, 40, "md"],
+      "(max-width: 639px)": [108, 25, "sm"],
     }).forEach(([query, [x, y, key]]) =>
       mediaQueries.add(query, () => {
         currentRadii = { x, y };
@@ -400,9 +400,9 @@ export default function Hero({ isActive = true }) {
         <div className="absolute inset-0 opacity-[0.06] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-4 sm:gap-8 lg:gap-8 lg:min-h-[60vh]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col lg:flex-row items-center lg:items-stretch gap-0 sm:gap-8 lg:gap-8 lg:min-h-[60vh]">
         {/* LEFT: HERO TEXT */}
-        <div className="relative w-full translate-y-12 pb-12 sm:translate-y-0 sm:pb-0 lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
+        <div className="relative w-full translate-y-0 pb-12 sm:translate-y-0 sm:pb-0 lg:w-[42%] flex flex-col justify-center order-2 lg:order-1 pt-0 lg:pt-20 z-20 pointer-events-auto">
           <div className="relative z-10">
             {/* Mobile: size follows the screen width so the longest (no-wrap) line always fits; sm and up unchanged */}
             <h1
@@ -437,7 +437,7 @@ export default function Hero({ isActive = true }) {
         </div>
 
         {/* RIGHT: CINEMATIC PRODUCT ORBIT */}
-        <div ref={stageRef} className="relative w-full lg:w-[58%] flex flex-col justify-end order-1 lg:order-2 z-10">
+        <div ref={stageRef} className="relative mt-16 w-full flex flex-col justify-end order-1 lg:order-2 z-10 sm:mt-0 lg:w-[58%]">
           <div ref={stageInnerRef} className="relative w-full min-h-[240px] sm:min-h-[360px] lg:min-h-[min(84svh,700px)]">
             {/* WATERMARK: large soft "NO TWO" behind the products */}
             <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-[12%] lg:top-[16%] z-0 flex select-none justify-center">
@@ -522,22 +522,22 @@ export default function Hero({ isActive = true }) {
                 ))}
               </div>
             </div>
+          </div>
 
-            {/* LIVE PRODUCT CAPTION */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center pb-1 sm:pb-2">
-              <div ref={(el) => { fadeRefs.current[2] = el; }} className="flex flex-col items-center gap-3" style={HIDDEN}>
-                <div className="font-sans text-xs font-medium text-[#1C1C1A] sm:text-sm">
-                  <span ref={captionNameRef} className="block">HYDRA CREAM</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  {PRODUCTS.map((product, idx) => (
-                    <span
-                      key={product.id}
-                      ref={(el) => { dotRefs.current[idx] = el; }}
-                      className="h-[2px] w-[10px] rounded-full bg-[#1C1C1A] opacity-35 transition-all duration-500"
-                    />
-                  ))}
-                </div>
+          {/* LIVE PRODUCT CAPTION: sits below the product stage with its own spacing */}
+          <div className="pointer-events-none relative z-20 mt-6 flex w-full justify-center pb-2">
+            <div ref={(el) => { fadeRefs.current[2] = el; }} className="flex flex-col items-center gap-3" style={HIDDEN}>
+              <div className="font-sans text-xs font-medium text-[#1C1C1A] sm:text-sm">
+                <span ref={captionNameRef} className="block">HYDRA CREAM</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {PRODUCTS.map((product, idx) => (
+                  <span
+                    key={product.id}
+                    ref={(el) => { dotRefs.current[idx] = el; }}
+                    className="h-[2px] w-[10px] rounded-full bg-[#1C1C1A] opacity-35 transition-all duration-500"
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -545,4 +545,4 @@ export default function Hero({ isActive = true }) {
       </div>
     </section>
   );
-} 
+}

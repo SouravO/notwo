@@ -152,8 +152,6 @@ export default function Navbar() {
           className="group flex items-center gap-1 text-lg font-semibold tracking-tight text-[#1C1C1A]"
         >
           <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
-          <span className="ml-0.5 -translate-y-2 text-[10px] text-black/40">™</span>
-          <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-[#16336F]" />
         </Link>
 
         <div className="hidden items-center gap-1 text-[13px] font-medium text-[#34383e] md:flex">

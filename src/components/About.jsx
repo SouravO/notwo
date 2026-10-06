@@ -19,22 +19,22 @@ const CARDS = [
   {
     title: "Informed Skincare Decisions",
     body: "KYS exists to help people make informed skincare decisions through advanced skin diagnostics and personalized product recommendations.",
-    position: "md:left-[8%] lg:left-[10%] md:top-[4%]",
+    position: "lg:left-[10%] lg:top-[4%]",
   },
   {
     title: "Trusted Personalization",
     body: "To become India's most trusted personalized skincare company by combining technology, science, and skincare into one seamless experience.",
-    position: "md:right-0 lg:right-2 md:top-[15%]",
+    position: "lg:right-2 lg:top-[15%]",
   },
   {
     title: "Advanced Skin Analysis",
     body: "Our advanced skin analysis machine provides detailed insights about your skin health before any product recommendation.",
-    position: "md:left-0 lg:left-2 md:bottom-[15%]",
+    position: "lg:left-2 lg:bottom-[15%]",
   },
   {
     title: "No Assumptions. Only Science.",
     body: "Don't Guess. Know. Every skincare journey starts with one question. What does your skin actually need?",
-    position: "md:right-[8%] lg:right-[10%] md:bottom-[7%]",
+    position: "lg:right-[10%] lg:bottom-[7%]",
   },
 ];
 
@@ -280,7 +280,7 @@ export default function MissionVision() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative min-h-[660px] lg:min-h-[760px] flex items-center justify-center">
+      <div className="max-w-7xl mx-auto relative flex min-h-0 flex-col items-center justify-center lg:min-h-[760px] lg:flex-row">
         <svg width="0" height="0" className="pointer-events-none absolute" aria-hidden="true">
           <defs>
             <clipPath id={maskId} clipPathUnits="objectBoundingBox">
@@ -290,7 +290,7 @@ export default function MissionVision() {
         </svg>
 
         {/* Image frame: hairline outline + shadow layer + clipped image */}
-        <div className="absolute left-1/2 top-1/2 z-0 aspect-[4/5] w-[82%] -translate-x-1/2 -translate-y-1/2 sm:w-[65%] lg:w-[48%]">
+        <div className="relative z-0 mb-6 aspect-[4/5] w-[82%] sm:w-[65%] lg:absolute lg:left-1/2 lg:top-1/2 lg:mb-0 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-[48%]">
           {/* Offset hairline echoing the blob shape */}
           <svg
             aria-hidden="true"
@@ -324,12 +324,12 @@ export default function MissionVision() {
           </div>
         </div>
 
-        <div className="relative z-10 flex w-full flex-col gap-5 py-6 md:contents">
+        <div className="relative z-10 flex w-full flex-col gap-5 py-6 lg:contents">
           {CARDS.map((card, i) => (
             <div
               key={card.title}
               data-floating-card
-              className={`w-full z-10 md:absolute ${card.position} md:w-auto md:max-w-[16.5rem] lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/55 bg-white/[0.06] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_0_0_1px_rgba(255,255,255,0.06),0_2px_6px_-2px_rgba(0,0,0,0.08),0_26px_50px_-28px_rgba(0,0,0,0.32)] backdrop-blur-md backdrop-saturate-125 transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.1),0_30px_56px_-28px_rgba(0,0,0,0.4)] sm:p-5`}
+              className={`w-full z-10 lg:absolute ${card.position} lg:w-auto lg:max-w-[18.5rem] rounded-[1.5rem] border border-white/55 bg-white/[0.06] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.42),0_0_0_1px_rgba(255,255,255,0.06),0_2px_6px_-2px_rgba(0,0,0,0.08),0_26px_50px_-28px_rgba(0,0,0,0.32)] backdrop-blur-md backdrop-saturate-125 transition-shadow duration-500 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_0_0_1px_rgba(255,255,255,0.08),0_2px_6px_-2px_rgba(0,0,0,0.1),0_30px_56px_-28px_rgba(0,0,0,0.4)] sm:p-5`}
             >
               <div className="mb-3 flex items-center gap-3" aria-hidden="true">
                 <span className="font-sans text-[10px] tracking-[0.3em] text-[#1C1C1A]/45">

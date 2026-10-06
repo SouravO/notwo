@@ -28,8 +28,6 @@ export default function Footer({ light = false }) {
               className={`group inline-flex items-start text-2xl font-semibold tracking-[-0.06em] ${primaryText}`}
             >
               <span className="transition-opacity group-hover:opacity-75">NO TWO</span>
-              <sup className={`ml-1 mt-0.5 text-[9px] font-medium tracking-normal ${light ? "text-black/40" : "text-white/40"}`}>™</sup>
-              <span className="ml-2 mt-2 h-1.5 w-1.5 rounded-full bg-[#16336F]" />
             </Link>
             <p className={`mt-5 max-w-sm text-base leading-7 ${light ? "text-[#1C1C1A]/65" : "text-white/55"}`}>
               Intelligent skincare, shaped around the skin you are in.

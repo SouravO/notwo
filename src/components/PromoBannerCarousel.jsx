@@ -53,27 +53,38 @@ export default function PromoBannerCarousel() {
             type="button"
             aria-label="Previous promotional banner"
             onClick={() => setActiveBanner((current) => (current - 1 + PROMO_BANNERS.length) % PROMO_BANNERS.length)}
-            className="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F]/90 text-[#EFEDDE] transition-colors hover:bg-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] sm:left-4 sm:h-10 sm:w-10"
+            className="absolute left-3 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F]/90 text-[#EFEDDE] transition-colors hover:bg-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] sm:left-4 sm:flex sm:h-10 sm:w-10"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
               <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
-
           <button
             type="button"
             aria-label="Next promotional banner"
             onClick={() => setActiveBanner((current) => (current + 1) % PROMO_BANNERS.length)}
-            className="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F]/90 text-[#EFEDDE] transition-colors hover:bg-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] sm:right-4 sm:h-10 sm:w-10"
+            className="absolute right-3 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#16336F] bg-[#16336F]/90 text-[#EFEDDE] transition-colors hover:bg-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] sm:right-4 sm:flex sm:h-10 sm:w-10"
           >
             <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
               <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
+
         </div>
 
-        <div className="relative mt-3 flex items-center justify-center">
-          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2" aria-label="Choose promotional banner">
+        <div className="mt-1 grid min-h-11 grid-cols-[1fr_auto_1fr] items-center" role="group" aria-label="Promotional banner controls">
+          <button
+            type="button"
+            aria-label="Previous promotional banner"
+            onClick={() => setActiveBanner((current) => (current - 1 + PROMO_BANNERS.length) % PROMO_BANNERS.length)}
+            className="flex h-11 w-11 items-center justify-center justify-self-start rounded-full text-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[#16336F] sm:hidden"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+              <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+
+          <div className="flex items-center" role="group" aria-label="Choose promotional banner">
             {PROMO_BANNERS.map((src, index) => (
               <button
                 key={src}
@@ -81,15 +92,29 @@ export default function PromoBannerCarousel() {
                 aria-label={`Show promotional banner ${index + 1}`}
                 aria-current={activeBanner === index ? 'true' : undefined}
                 onClick={() => setActiveBanner(index)}
-                className={`h-1 rounded-full transition-[width,background-color] duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B0BEE1] ${
-                  activeBanner === index
-                    ? 'w-6 bg-[#16336F]'
-                    : 'w-2 bg-[#16336F]/35 hover:bg-[#16336F]/60'
-                }`}
-              />
+                className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[#B0BEE1]"
+              >
+                <span
+                  className={`h-1 rounded-full transition-[width,background-color] duration-300 ${
+                    activeBanner === index
+                      ? 'w-6 bg-[#16336F]'
+                      : 'w-2 bg-[#16336F]/35 hover:bg-[#16336F]/60'
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
+          <button
+            type="button"
+            aria-label="Next promotional banner"
+            onClick={() => setActiveBanner((current) => (current + 1) % PROMO_BANNERS.length)}
+            className="flex h-11 w-11 items-center justify-center justify-self-end rounded-full text-[#16336F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[#16336F] sm:hidden"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+              <path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
