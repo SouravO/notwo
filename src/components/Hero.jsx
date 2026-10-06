@@ -545,4 +545,4 @@ export default function Hero({ isActive = true }) {
       </div>
     </section>
   );
-}
+} 
