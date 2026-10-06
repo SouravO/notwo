@@ -1,6 +1,6 @@
 import "./globals.css";
 import { DM_Sans } from "next/font/google";
-import favicon from "./assets/fevicon.png";
+import favicon from "./assets/favicon.png";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
