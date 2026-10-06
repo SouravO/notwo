@@ -53,6 +53,7 @@ const LIGHT_WIDTH_FACTOR = 0.9; // slightly narrow the intro spotlight without s
 // MOBILE INTRO (screens up to 767px wide only — desktop and tablet landscape are untouched)
 const MOBILE_PODIUM_FRAC = 0.74; // during the intro the podium sits this far down the screen, so the spotlight covers ~70–80% of it from the top
 const MOBILE_INTRO_PRODUCT_BOOST = 1.2; // intro product size multiplier on mobile, keeps the bottle in proportion with the taller spotlight/podium
+const MOBILE_INTRO_PRODUCT_LIFT = 22; // lift the mobile intro carousel slightly so the bottles sit on the podium surface
 
 // FULL BACKGROUND SILVER (solid, no gradient)
 const SILVER = "#b6bbc0";
@@ -123,6 +124,7 @@ export default function Hero({ isActive = true }) {
     const global = { alpha: 1 };
     const reveals = PRODUCTS.map(() => ({ v: 1 }));
     const sizeFactor = { v: 1 }; // products start at intro size and grow to 1 after the silver reveal
+    const introProductLift = { v: 0 };
     let currentRadii = { x: 310, y: 58 };
     let activeIdx = -1;
     let introH = INTRO_PRODUCT_HEIGHTS.lg;
@@ -220,7 +222,7 @@ export default function Hero({ isActive = true }) {
         gsap.set(ref, {
           xPercent: -50,
           x: Math.cos(angleRad) * rX,
-          y: sin * rY,
+          y: sin * rY - introProductLift.v,
           scale,
           opacity,
           filter: `brightness(${brightness}) blur(${blur}px)`,
@@ -277,6 +279,7 @@ export default function Hero({ isActive = true }) {
       // Intro: products start at the smaller size
       introGrown = false;
       sizeFactor.v = introRatio;
+      introProductLift.v = isMobile ? MOBILE_INTRO_PRODUCT_LIFT : 0;
 
       gsap.set(stage, { x: centerOffset, y: introY });
       gsap.set(bgRef.current, { opacity: 0 });
@@ -348,6 +351,7 @@ export default function Hero({ isActive = true }) {
         }, "travel")
         // Products GROW from the intro size to the big display size with the silver reveal
         .to(sizeFactor, { v: 1, duration: TRAVEL_DURATION, ease: "power3.inOut", onUpdate: renderOrbit }, "travel")
+        .to(introProductLift, { v: 0, duration: TRAVEL_DURATION, ease: "power3.inOut", onUpdate: renderOrbit }, "travel")
         // Spotlight DISAPPEARS: flickers off, then retracts upward and fades out
         .to(spot, {
           keyframes: [
